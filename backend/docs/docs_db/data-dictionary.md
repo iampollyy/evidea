@@ -1,12 +1,12 @@
 # EVIDEA — Data Dictionary
 
-> **Version:** 1.0
+> **Version:** 1.1
 >
-> **Last updated:** 2025-07-14
+> **Last updated:** 2026-11-15
 >
 > **System:** EVIDEA — Multimodal Clinical Decision Support System for Rare Disease Diagnosis
 >
-> **Database:** PostgreSQL 15+
+> **Database:** PostgreSQL 15+ (schema verified on PostgreSQL 16)
 
 ---
 
@@ -168,7 +168,7 @@ for clinical identification purposes. Access restricted by RBAC (NFR-S2).
 | 2 | `name` | `TEXT` | NN | Patient's first name |
 | 3 | `surname` | `TEXT` | NN | Patient's last name |
 | 4 | `birth_date` | `DATE` | NN | Date of birth |
-| 5 | `sex` | `VARCHAR(64)` | NN | Biological sex. Allowed values: `male`, `female`, `other` |
+| 5 | `sex` | `VARCHAR(64)` | NN | Biological sex. Allowed values: `male`, `female`, `other`, `unknown` (CHECK, DQ-26) |
 | 6 | `email` | `TEXT` | NN | Contact email |
 | 7 | `phone_number` | `TEXT` | — | Contact phone number (optional) |
 | 8 | `created_at` | `DATE` | NN, default `CURRENT_DATE` | Date the record was created |
@@ -191,8 +191,8 @@ Central entity linking patient data to predictions.
 | 1 | `case_id` | `UUID` | PK, NN, default `gen_random_uuid()` | Unique case identifier |
 | 2 | `patient_id` | `UUID` | FK → `Patients.patient_id`, NN | Patient this case belongs to |
 | 3 | `created_by` | `UUID` | FK → `DoctorsAndAdmin.doc_id`, NN | Clinician who created the case |
-| 4 | `created_at` | `TIMESTAMP` | NN, default `now()` | Case creation timestamp |
-| 5 | `updated_at` | `TIMESTAMP` | NN, default `now()` | Last modification timestamp |
+| 4 | `created_at` | `TIMESTAMPTZ` | NN, default `now()` | Case creation timestamp |
+| 5 | `updated_at` | `TIMESTAMPTZ` | NN, default `now()` | Last modification timestamp |
 
 **Indexes:** `case_id` (PK), `patient_id` (lookup), `created_by` (audit).
 
@@ -216,8 +216,8 @@ fields that serve as input to the NLP (Transformer) branch of the ML pipeline.
 | 9 | `symptoms_duration` | `TEXT` | — | Duration and progression of symptoms |
 | 10 | `past_med_history` | `TEXT` | — | Past medical history |
 | 11 | `allergies` | `TEXT` | — | Known allergies |
-| 12 | `created_at` | `TIMESTAMP` | NN, default `now()` | Record creation timestamp |
-| 13 | `updated_at` | `TIMESTAMP` | NN, default `now()` | Last modification timestamp |
+| 12 | `created_at` | `TIMESTAMPTZ` | NN, default `now()` | Record creation timestamp |
+| 13 | `updated_at` | `TIMESTAMPTZ` | NN, default `now()` | Last modification timestamp |
 
 **Indexes:** `anamnesis_id` (PK), `case_id` (lookup), `patient_id` (patient history).
 
@@ -327,7 +327,7 @@ Individual measurable substances or parameters within a panel (e.g., "Hemoglobin
 | 3 | `code` | `VARCHAR(50)` | NN, UQ | LOINC-style code or internal code |
 | 4 | `name` | `VARCHAR(150)` | NN | Display name (e.g., "Hemoglobin") |
 | 5 | `unit` | `VARCHAR(30)` | — | Unit of measurement (e.g., `g/dL`, `mmol/L`) |
-| 6 | `data_type` | `VARCHAR(20)` | NN | Expected value type: `numeric`, `text`, `boolean` |
+| 6 | `data_type` | `VARCHAR(20)` | NN | Expected value type: `numeric`, `text`, `boolean` (CHECK; not a PostgreSQL ENUM) |
 | 7 | `is_active` | `BOOL` | NN, default `TRUE` | Whether this analyte is available |
 
 **Indexes:** `analyte_id` (PK), `panel_id` (lookup), `code` (UQ).
@@ -437,8 +437,8 @@ Tracks registration invitations sent by administrators to new clinicians (UC-2).
 | 1 | `invite_id` | `UUID` | PK, NN, default `gen_random_uuid()` | Unique invitation identifier |
 | 2 | `doctor_id` | `UUID` | FK → `DoctorsAndAdmin.doc_id`, NN | Invited user |
 | 3 | `token_hash` | `TEXT` | NN, UQ | SHA-256 hash of the invitation token |
-| 4 | `expires_at` | `TIMESTAMP` | NN | Token expiration time |
-| 5 | `used_at` | `TIMESTAMP` | — | When the invitation was accepted. `NULL` = pending |
+| 4 | `expires_at` | `TIMESTAMPTZ` | NN | Token expiration time |
+| 5 | `used_at` | `TIMESTAMPTZ` | — | When the invitation was accepted. `NULL` = pending |
 
 **Security:** Only the hash is stored; the raw token is sent to the user once and not persisted (NFR-S6).
 
@@ -457,8 +457,8 @@ Trained on a separate de-identified research dataset (not stored in this DB).
 | 2 | `name` | `VARCHAR(100)` | NN | Model name (e.g., "evidea-multimodal") |
 | 3 | `version` | `VARCHAR(30)` | NN, UQ | Semantic version (e.g., "1.0.0") |
 | 4 | `artifact_uri` | `TEXT` | NN | Path or URI to model artifacts |
-| 5 | `eval_metrics` | `JSON` | — | Evaluation metrics (Recall@5, Top-1 Accuracy, F1, etc.) |
-| 6 | `trained_at` | `TIMESTAMP` | NN | When the model was trained |
+| 5 | `eval_metrics` | `JSONB` | — | Evaluation metrics (Recall@5, Top-1 Accuracy, F1, etc.) |
+| 6 | `trained_at` | `TIMESTAMPTZ` | NN | When the model was trained |
 | 7 | `is_active` | `BOOL` | NN, default `FALSE` | Whether this is the current inference model |
 
 **Constraint:** At most one row should have `is_active = TRUE` at any time (application-level or partial unique index).
@@ -486,9 +486,9 @@ for reproducibility and audit.
 | 3 | case_id | UUID | FK → Cases.case_id, NN | Case analyzed |
 | 4 | model_version_id | UUID | FK → ModelVersions.model_version_id, NN | Model version used |
 | 5 | status | VARCHAR(20) | NN, default 'pending' | Run status |
-| 6 | input_snapshot | JSON | — | De-identified copy of all inputs at prediction time |
-| 7 | started_at | TIMESTAMP | — | Inference start time |
-| 8 | completed_at | TIMESTAMP | — | Inference completion time |
+| 6 | input_snapshot | JSONB | — | De-identified copy of all inputs at prediction time |
+| 7 | started_at | TIMESTAMPTZ | — | Inference start time |
+| 8 | completed_at | TIMESTAMPTZ | — | Inference completion time |
 | 9 | error_msg | TEXT | — | Error description if status = 'failed' |
 
 **Allowed status values**: pending, processing, completed, failed, unsupported.
@@ -514,7 +514,7 @@ cross-referenced with ICD codes.
 | 7 | created_at | TIMESTAMPTZ | NN, default now() | Record creation |
 | 8 | updated_at | TIMESTAMPTZ | NN, default now() | Last update |
 | 9 | inheritance_type | VARCHAR(50) | — | Mode of inheritance (e.g., "autosomal dominant") |
-| 10 | affected_systems | JSON | — | Affected organ systems |
+| 10 | affected_systems | JSONB | — | Affected organ systems |
 
 Attribution: © INSERM 1999 / Orphadata. Data version documented per import.
 
@@ -546,7 +546,7 @@ Feature-level explanations for each hypothesis, generated by SHAP or LIME.
 | 1 | explanation_id | UUID | PK, NN, default gen_random_uuid() | Unique explanation identifier |
 | 2 | hypothesis_id | UUID | FK → DiseaseHypotheses.hypothesis_id, NN | Explained hypothesis |
 | 3 | method | VARCHAR(20) | NN | Explanation method: shap, lime |
-| 4 | explanation_data | JSON | NN | Feature contributions (see example below) |
+| 4 | explanation_data | JSONB | NN | Feature contributions (see example below) |
 | 5 | summary | TEXT | — | Human-readable summary of key contributing factors |
 | 6 | created_at | TIMESTAMPTZ | NN, default now() | Generation timestamp |
 
@@ -610,6 +610,18 @@ Application-level event and error logging. Must not contain PII (NFR-S5).
 | DQ-14 | Diseases | orpha_code is unique | UNIQUE constraint |
 | DQ-15 | Invitations | token_hash is unique | UNIQUE constraint |
 
+**Implementation notes (v1.1, PostgreSQL migrations in `backend/db/migrations/`):**
+
+- **Table names** are snake_case plural: `DoctorsAndAdmin` → `doctors_and_admin`, `CaseAnamneses` → `case_anamneses`, `LabResultsItems` → `lab_results_items`, and so on. Column names are unchanged. CamelCase names are not used because unquoted identifiers are folded to lower case in PostgreSQL.
+- **Timestamps:** all event timestamps are `TIMESTAMPTZ`. `DATE` is kept only for `Patients.created_at` and `DoctorsAndAdmin.created_at`, as specified.
+- **JSON columns** are `JSONB` (`eval_metrics`, `input_snapshot`, `affected_systems`, `explanation_data`). This resolves the open question in `versioning.md`.
+- **Enumerated text** (`data_type`, `status`, `method`, `log_lvl`, `sex`) uses `VARCHAR` with CHECK constraints rather than PostgreSQL `ENUM`. Adding a value then needs no `ALTER TYPE`.
+- **Patient consistency** is enforced by composite foreign keys: a case's anamnesis, vital signs and lab reports must belong to the same patient as the case.
+- **DQ-22** is enforced by trigger `trg_lab_results_items_consistency`. It checks that the analyte belongs to the report's panel, that numeric analytes have `numeric_val`, and that text or boolean analytes have `text_val` and no `numeric_val`.
+- **DQ-03** email uniqueness is case-insensitive (unique index on `lower(email)`).
+- **Single active model (DQ-09)** is enforced by a partial unique index.
+- **Additional constraint not in the original rules:** `UNIQUE (prediction_run_id, disease_id)` in `disease_hypotheses`, so one disease appears at most once per run.
+- **Test and demo data** are in `backend/db/seeds/` (dev/test only). Constraint tests are in `backend/db/tests/`. Migrations are run by Alembic (`backend/db/alembic.ini`, `backend/db/migrations/env.py`); the checksum journal is the `migration_checksums` table, see [versioning.md](./versioning.md).
 
 ### 4.2 Application-Level Validation
 
@@ -617,11 +629,11 @@ Application-level event and error logging. Must not contain PII (NFR-S5).
 | :-- | :-- | :-- | :-- |
 | DQ-20 | CaseAnamneses | chief_complaint must be non-empty text (≥ 10 characters) | API input validation (US-05) |
 | DQ-21 | VitalSigns | Numeric ranges: weight 0.1–500 kg, BP 20–300 mmHg, HR 10–300 bpm, temp 25.0–45.0°C | API input validation |
-| DQ-22 | LabResultsItems | numeric_val must match the data_type of the referenced LabAnalyte | API validation before insert |
+| DQ-22 | LabResultsItems | The analyte must belong to the report's panel. `numeric` analytes require `numeric_val`. `text` and `boolean` analytes require `text_val` and no `numeric_val`. | DB trigger `trg_lab_results_items_consistency` (see implementation notes in 4.1) and API validation |
 | DQ-23 | PredictionRuns | input_snapshot must contain both text_input and lab_input keys | API validation |
 | DQ-24 | PredictionRuns | status transition: pending → processing → completed/failed | Application state machine |
 | DQ-25 | Patients | birth_date must not be in the future | API input validation |
-| DQ-26 | Patients | sex must be one of: male, female, other, unknown | CHECK or API validation |
+| DQ-26 | Patients | sex must be one of: male, female, other, unknown | CHECK constraint `chk_patients_sex` |
 | DQ-27 | All text fields submitted by clinician | Must not contain direct patient identifiers (names, SSN, etc.) | UI warning on input form (NFR-S5); not enforced at DB level |
 
 ### 4.3 Temporal Consistency Rules
