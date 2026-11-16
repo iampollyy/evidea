@@ -61,7 +61,7 @@ Applying: `cd backend/db`, install `requirements.txt`, set `DATABASE_URL`, run `
 
 ## 4. Schema change lifecycle
 
-1. **Branch and migration.** Create a branch and add a migration file with the next number. A new table or view must get grants to `app_read` or `app_write` in the same migration.
+1. **Branch and migration.** Create a branch and add a migration file with the next number. A new table or view must get explicit grants to `admin` and to at least one app role (`app_read` or `app_write`) in the same migration. The constraint test checks this and fails otherwise.
 2. **Dictionary update.** Update the corresponding tables, columns, and DQ rules in [data-dictionary.md](./data-dictionary.md). The dictionary version is bumped according to the rules in section 5.
 3. **Local verification.**
    - migrations are applied to an empty database from scratch;
@@ -110,5 +110,5 @@ Changes that lock a table or lose data are performed in several steps (expand/co
 | Passwords are not stored in plain text | Met | `doctors_and_admin.password_hash` accepts only bcrypt or Argon2 (CHECK, migration 0008). The dev seed uses a placeholder that is not a real hash. Local `.env` is git-ignored. |
 | CSV/Excel is not the only data store | Met | No CSV or Excel files in the repository. Orphanet data is loaded into PostgreSQL by `seeds/import_orphanet.py`. |
 | Unstructured JSON is not stored without a model | Met | Four `JSONB` columns only, each documented with its purpose, the reason for JSON, and the rules in the data dictionary. Patient-identifying data is not allowed in them. |
-| Data integrity is not ignored | Met | Primary, foreign and composite keys, CHECK and partial unique constraints, triggers for business rules. Each migration runs in a transaction. Seeds and imports run in `BEGIN`/`COMMIT`. 27 constraint tests run in CI. |
+| Data integrity is not ignored | Met | Primary, foreign and composite keys, CHECK and partial unique constraints, triggers for business rules. Each migration runs in a transaction. Seeds and imports run in `BEGIN`/`COMMIT`. 37 constraint tests run in CI. |
 
