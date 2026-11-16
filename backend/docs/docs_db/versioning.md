@@ -101,4 +101,14 @@ Changes that lock a table or lose data are performed in several steps (expand/co
 ### Open questions
 
 - **`Diseases` import version.** Decided: no `source_version` column in `Diseases`. The Orphanet import version is recorded in `SystemLogs` on each import.
-- **JSON column type.** Resolved in dictionary v1.1: `eval_metrics`, `input_snapshot`, `affected_systems`, and `explanation_data` are `JSONB`, which supports indexing and key-level operations.
+- **JSON column type.** Resolved in dictionary v1.1: `eval_metrics`, `input_snapshot`, `affected_systems`, and `explanation_data` are `JSONB`, which supports indexing and key-level operations. The justification and the rule for promoting fields to columns are in the data dictionary, section "Implementation notes".
+
+## Restrictions compliance check
+
+| Restriction | Status | Evidence |
+| :-- | :-- | :-- |
+| Passwords are not stored in plain text | Met | `doctors_and_admin.password_hash` accepts only bcrypt or Argon2 (CHECK, migration 0008). The dev seed uses a placeholder that is not a real hash. Local `.env` is git-ignored. |
+| CSV/Excel is not the only data store | Met | No CSV or Excel files in the repository. Orphanet data is loaded into PostgreSQL by `seeds/import_orphanet.py`. |
+| Unstructured JSON is not stored without a model | Met | Four `JSONB` columns only, each documented with its purpose, the reason for JSON, and the rules in the data dictionary. Patient-identifying data is not allowed in them. |
+| Data integrity is not ignored | Met | Primary, foreign and composite keys, CHECK and partial unique constraints, triggers for business rules. Each migration runs in a transaction. Seeds and imports run in `BEGIN`/`COMMIT`. 27 constraint tests run in CI. |
+
