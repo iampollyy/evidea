@@ -47,7 +47,7 @@ backend/db/migrations/
   sql/        schema SQL executed by the revisions: 0001_create_doctors_and_roles.sql, ...
 ```
 
-Applying: `cd backend/db`, install `requirements.txt`, set `DATABASE_URL`, run `alembic upgrade head`.
+Applying: `cd backend/db`, install `requirements.txt`, set `DATABASE_URL`, run `alembic upgrade head`. Step-by-step instructions, including the quick check for reviewers, are in [backend/db/README.md](../../db/README.md). The GitHub Actions workflow `.github/workflows/db-check.yml` runs the same steps on every change to `backend/db/`.
 
 - The number has 4 digits. Duplicate numbers are not allowed; if two branches conflict, the PR merged first keeps its number and the second one is renumbered.
 - One migration is one logical unit of change. Do not mix table creation, data changes, and column removal in one file.

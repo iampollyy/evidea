@@ -1,0 +1,56 @@
+name: db-check
+
+on:
+  push:
+    paths:
+      - "backend/db/**"
+      - ".github/workflows/db-check.yml"
+  pull_request:
+    paths:
+      - "backend/db/**"
+      - ".github/workflows/db-check.yml"
+
+jobs:
+  db:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: evidea
+          POSTGRES_DB: evidea
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://postgres:evidea@localhost:5432/evidea
+
+    defaults:
+      run:
+        working-directory: backend/db
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Apply migrations
+        run: alembic upgrade head
+
+      - name: Apply seed
+        run: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f seeds/dev_seed.sql
+
+      - name: Run constraint tests
+        run: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/constraints_test.sql
