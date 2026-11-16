@@ -26,7 +26,7 @@ python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
 export DATABASE_URL="postgresql://postgres:evidea@localhost:5433/evidea"
 
-alembic upgrade head                                  # create the schema (0001 -> 0007)
+alembic upgrade head                                  # create the schema (0001 -> 0009)
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f seeds/dev_seed.sql   # fake data
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/constraints_test.sql   # expect 27 PASS, exit code 0
 ```
@@ -38,7 +38,7 @@ Without Docker, use your local PostgreSQL: create an empty database and set `DAT
 1. `cd backend/db`, install `requirements.txt` into a virtualenv.
 2. Set `DATABASE_URL` from `.env` (see [Configuration](#configuration-env)); format `postgresql://user:password@host:port/dbname`.
 3. Run `alembic upgrade head`. Already applied revisions are skipped.
-4. Check the state with `alembic current` (should show `0008 (head)`).
+4. Check the state with `alembic current` (should show `0009 (head)`).
 
 Rules:
 - Never edit an applied SQL file. `migrations/env.py` compares SHA-256 checksums and stops on a mismatch. Add a new revision instead.

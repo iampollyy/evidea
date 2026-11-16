@@ -135,6 +135,13 @@ SELECT pg_temp.expect_sqlstate('doctor: MD5 password hash rejected',
        SELECT 'Md5', 'User', 'md5.user@example.test', role_id, '5f4dcc3b5aa765d61d8327deb882cf99', DATE '2025-01-01'
        FROM roles WHERE role_name = 'clinician'$s$, '23514');
 
+-- Doctor sex is limited to the same values as patient sex
+SELECT pg_temp.expect_sqlstate('doctor: unknown sex value rejected',
+    $s$INSERT INTO doctors_and_admin (name, surname, sex, email, role, password_hash, created_at)
+       SELECT 'Sex', 'User', 'robot', 'sex.user@example.test', role_id,
+              '$2b$12$DEVONLYNOTAREALBCRYPTPLACEHOLDER0123456789ABCDEFGHIJK', DATE '2025-01-01'
+       FROM roles WHERE role_name = 'clinician'$s$, '23514');
+
 -- Least privilege: app roles cannot read raw patient or credential data, and cannot delete clinical data
 INSERT INTO test_results (label, ok, detail) VALUES
     ('app_read: no direct access to patients', NOT has_table_privilege('app_read', 'patients', 'SELECT'), ''),
@@ -144,7 +151,8 @@ INSERT INTO test_results (label, ok, detail) VALUES
     ('app_write: cannot change reference data', NOT has_table_privilege('app_write', 'lab_analytes', 'UPDATE'), ''),
     ('app_write: system log is append-only', NOT has_table_privilege('app_write', 'system_logs', 'UPDATE'), ''),
     ('app_write: can run anonymize_patient', has_function_privilege('app_write', 'anonymize_patient(uuid)', 'EXECUTE'), ''),
-    ('app_write: cannot change migration journal', NOT has_table_privilege('admin', 'migration_checksums', 'UPDATE'), '');
+    ('admin: cannot change migration journal', NOT has_table_privilege('admin', 'migration_checksums', 'UPDATE'), ''),
+    ('app_write: cannot change migration journal', NOT has_table_privilege('app_write', 'migration_checksums', 'UPDATE'), '');
 
 -- Every table must be reachable by an app role; a new table without grants fails here,
 -- so its privileges are reviewed when it is added
@@ -156,6 +164,46 @@ WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p')
   AND c.relname NOT IN ('alembic_version', 'migration_checksums')
   AND NOT has_table_privilege('app_read', c.oid, 'SELECT')
   AND NOT has_table_privilege('app_write', c.oid, 'SELECT');
+
+-- Every table must also be readable by admin; a table created without an admin grant fails here
+INSERT INTO test_results (label, ok, detail)
+SELECT 'every table is granted to admin', count(*) = 0, coalesce(string_agg(c.relname, ', '), '')
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p')
+  AND NOT has_table_privilege('admin', c.oid, 'SELECT');
+
+-- Masking functions return fixed outputs; the masked view hides raw name and email
+INSERT INTO test_results (label, ok, detail) VALUES
+    ('mask_name: keeps first letter only', mask_name('Test') = 'T***', mask_name('Test')),
+    ('mask_email: keeps first letter and domain', mask_email('john.doe@example.com') = 'j***@example.com', mask_email('john.doe@example.com')),
+    ('mask_phone: keeps last two digits', mask_phone('+380501234567') = '***********67', mask_phone('+380501234567')),
+    ('v_patients_masked: name and surname masked',
+     coalesce((SELECT name = 'S*****' AND surname = 'P******' AND email = 'p***@example.test'
+               FROM v_patients_masked WHERE patient_id = '00000000-0000-0000-0000-000000000199'), FALSE), '');
+
+-- Top-1 hypothesis of the latest completed run is exposed per case
+INSERT INTO test_results (label, ok, detail)
+SELECT 'v_case_latest_prediction: top hypothesis of completed run',
+       count(*) = 1 AND bool_and(prediction_run_id = '00000000-0000-0000-0000-000000000901' AND top_score = 0.9),
+       ''
+FROM v_case_latest_prediction
+WHERE case_id = '00000000-0000-0000-0000-000000000201';
+
+-- Anonymization success path: personal data is replaced, row is soft-deleted and hidden from the masked view
+CALL anonymize_patient('00000000-0000-0000-0000-000000000199');
+
+INSERT INTO test_results (label, ok, detail)
+SELECT 'anonymize_patient: personal data replaced and row soft-deleted',
+       name = 'ANONYMIZED' AND surname = 'ANONYMIZED' AND deleted_at IS NOT NULL
+       AND email = 'anon-00000000-0000-0000-0000-000000000199@anonymized.invalid',
+       ''
+FROM patients WHERE patient_id = '00000000-0000-0000-0000-000000000199';
+
+INSERT INTO test_results (label, ok, detail)
+SELECT 'v_patients_masked: anonymized patient is hidden',
+       NOT EXISTS (SELECT 1 FROM v_patients_masked WHERE patient_id = '00000000-0000-0000-0000-000000000199'),
+       '';
 
 -- Report results
 SELECT label, CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS status, detail FROM test_results ORDER BY label;

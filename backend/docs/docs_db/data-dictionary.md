@@ -91,6 +91,48 @@ to the model storage. The production database never stores raw training data.
 
 ---
 
+### 1.5 Normalization Decisions
+
+The schema is normalized to 3NF. There are two deliberate exceptions.
+
+**Repeated `patient_id` in case-level tables.** `case_anamneses`, `case_vital_signs`
+and `case_lab_reports` store `patient_id`, although it can be derived from `case_id`.
+This is a transitive dependency (`case_id → patient_id`), so it deviates from 3NF on purpose.
+Each of these tables has a composite foreign key `(case_id, patient_id)` that references
+`cases (case_id, patient_id)`. The database therefore rejects a measurement that is attached
+to one case but belongs to another patient. Without the column, the same check would need
+a trigger or a join on every insert. The rule is covered by negative tests in
+`constraints_test.sql` (for example, "case_vital_signs: vitals belong to another patient").
+
+**`diseases.affected_systems` as JSONB.** The column holds a list of organ systems per disease.
+A list is a multi-valued attribute, so storing it in one column breaks 1NF. It is kept as a
+JSONB array because the values are descriptive tags that are read together with the disease,
+and the application never joins or filters on them. A separate `disease_affected_systems`
+table would add a join for data that is always read with its parent row. The trade-off:
+the database checks that the value is a JSON array, but not the names inside it, and no
+import script fills the column yet. If the systems are later used for filtering or reporting,
+the column should be replaced with a junction table through a migration that moves the data.
+
+### 1.6 Data Layers: Raw, Staging and Data Mart
+
+The database does not use separate raw, staging or data mart layers. The reasons:
+
+- **The data originates in the application.** Clinicians enter cases, lab reports and
+  predictions directly. No external feed delivers files that would need a raw landing area,
+  and a raw copy would duplicate the operational tables.
+- **Bulk loads are reference data only.** The Orphanet import (`backend/db/seeds/import_orphanet.py`)
+  writes disease records straight into `diseases`. A staging step would only pay off if imports
+  grew in volume or came from several sources.
+- **Analytics is served by views.** Dashboard aggregates are provided by the materialized view
+  `mv_model_run_stats` and by `v_case_latest_prediction`. Together they play the role of a data mart.
+- **Training data is outside this database** (section 1.4).
+
+Revisit this decision when a second external source is added or analytical queries start to
+slow down clinical writes. Then add separate `staging` and `mart` schemas in the same PostgreSQL
+instance, using the same migration process.
+
+---
+
 ## 2. Domain Map
 
 ### 2.1 Domain Color Coding
@@ -386,7 +428,7 @@ User accounts for clinicians and administrators. Patients do not have accounts
 | 2 | `name` | `TEXT` | NN | First name |
 | 3 | `surname` | `TEXT` | NN | Last name |
 | 4 | `birth_date` | `DATE` | — | Date of birth |
-| 5 | `sex` | `VARCHAR(64)` | — | Biological sex |
+| 5 | `sex` | `VARCHAR(64)` | — | Biological sex. Allowed values as for patients: `male`, `female`, `other`, `unknown`; NULL allowed (CHECK `chk_doctors_and_admin_sex`, migration 0009) |
 | 6 | `email` | `TEXT` | NN, UQ | Email address (used for login) |
 | 7 | `phone_number` | `TEXT` | — | Contact phone |
 | 8 | `role` | `UUID` | FK → `Roles.role_id`, NN | Assigned role |
@@ -627,9 +669,10 @@ Application-level event and error logging. Must not contain PII (NFR-S5).
   - *Business rule trigger:* `trg_prediction_runs_status_transition` allows only forward status changes (`pending` → `processing` → `completed`/`failed`; `pending` → `failed`/`unsupported`) and sets `started_at` and `completed_at` automatically.
   - *Functions:* `patient_age_years()` and the masking functions `mask_name()`, `mask_email()`, `mask_phone()`.
   - *Views:* `v_patients_masked` (masked personal data, age instead of birth date, active patients only); `v_case_latest_prediction` (top-1 diagnosis of the latest completed run per case).
-  - *Materialized view:* `mv_model_run_stats` (runs per model, day and status, average top-1 score). Refresh with `REFRESH MATERIALIZED VIEW CONCURRENTLY mv_model_run_stats`.
-  - *Roles and grants (migration 0008):* NOLOGIN roles `app_read`, `app_write`, `admin` with least-privilege grants; `PUBLIC` cannot create objects in schema `public`. A test checks that every table is granted to an app role. Login users are created outside migrations, see [backend/db/README.md](../../db/README.md).
+  - *Materialized view:* `mv_model_run_stats` (runs per model, day and status, average top-1 score). Refresh with `REFRESH MATERIALIZED VIEW CONCURRENTLY mv_model_run_stats`. The database has no built-in scheduler, so the refresh is not automatic: run it from the application's job scheduler or cron, as the object owner (the migration role), after prediction runs complete. The `CONCURRENTLY` option keeps the view readable during the refresh and needs the unique index `uq_mv_model_run_stats`.
+  - *Roles and grants (migration 0008):* NOLOGIN roles `app_read`, `app_write`, `admin` with least-privilege grants; `PUBLIC` cannot create objects in schema `public`. A test checks that every table is granted to an app role and to `admin`. New objects get explicit grants in their own migration. Login users are created outside migrations, see [backend/db/README.md](../../db/README.md).
   - *Password hash CHECK (migration 0008):* `doctors_and_admin.password_hash` must be a bcrypt (`$2a$`/`$2b$`/`$2y$`, cost, 53 chars) or Argon2 string. MD5, SHA-1 and plaintext are rejected.
+  - *Doctor sex CHECK (migration 0009):* `doctors_and_admin.sex` accepts the same values as `patients.sex` (`male`, `female`, `other`, `unknown`), and NULL.
   - *Procedure:* `anonymize_patient(patient_id)` for the right to erasure. It replaces name, surname, email and phone, reduces birth date to the year, and sets `deleted_at`. The row is kept so cases and runs stay linked. Free-text anamnesis fields are not changed by this procedure.
 
 ### 4.2 Application-Level Validation
@@ -702,6 +745,21 @@ fails, the entire transaction is rolled back and no partial data is persisted.
 ##### TX-1: Submit a Case and Generate Predictions (UC-1)
 
 This is the most complex transaction in the system, covering steps 3–8 of UC-1:
+
+| Step | Operation | Table(s) | Guard in the database |
+|---|---|---|---|
+| 1 | `BEGIN` (`READ COMMITTED`) | — | — |
+| 2 | INSERT the anamnesis and vital signs of the case | `case_anamneses`, `case_vital_signs` | Composite FKs `(case_id, patient_id)` keep both rows tied to the same patient |
+| 3 | INSERT the lab report and its result items, if labs were entered | `lab_reports`, `lab_results_items` | CHECK constraints on result values and trigger `check_lab_results_item_consistency` (DQ-22) |
+| 4 | INSERT the prediction run with `status = 'pending'` and `input_snapshot` | `prediction_runs` | CHECK `chk_prediction_runs_snapshot_keys` requires `text_input` and `lab_input` |
+| 5 | UPDATE the run to `processing` | `prediction_runs` | Trigger `trg_prediction_runs_status_transition` allows only forward moves and sets `started_at` |
+| 6 | INSERT the ranked hypotheses | `disease_hypotheses` | UNIQUE `(prediction_run_id, rank)` and `(prediction_run_id, disease_id)`; `score` between 0 and 1 |
+| 7 | UPDATE the run to `completed` | `prediction_runs` | Trigger sets `completed_at`; CHECK `completed_at >= started_at` |
+| 8 | `COMMIT` | — | — |
+
+**Failure handling.** If any step from 2 to 7 fails, the transaction is rolled back, so no case, lab, or hypothesis rows are left half-written. A model error or unsupported input is then recorded in a separate short transaction: the run moves to `failed` or `unsupported` with `error_msg` filled in. The status trigger permits `pending → failed`, `pending → unsupported`, and `processing → failed`. This keeps a record of the attempt without storing partial results.
+
+*Note: the step breakdown is derived from the table design and the UC-1 references in this document. Check it against the full UC-1 text in the requirements.*
 
 
 
