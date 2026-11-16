@@ -622,6 +622,13 @@ Application-level event and error logging. Must not contain PII (NFR-S5).
 - **Single active model (DQ-09)** is enforced by a partial unique index.
 - **Additional constraint not in the original rules:** `UNIQUE (prediction_run_id, disease_id)` in `disease_hypotheses`, so one disease appears at most once per run.
 - **Test and demo data** are in `backend/db/seeds/` (dev/test only). Constraint tests are in `backend/db/tests/`. Migrations are run by Alembic (`backend/db/alembic.ini`, `backend/db/migrations/env.py`); the checksum journal is the `migration_checksums` table, see [versioning.md](./versioning.md).
+- **Advanced database objects (migration 0007):**
+  - *Indexes:* `vital_signs (patient_id, created_at DESC)` for the latest vitals; `lab_reports (patient_id, collected DESC)` for lab history; partial index on `prediction_runs (status)` for open runs only (`pending`, `processing`). Two plain `patient_id` indexes were dropped because the new composite indexes cover them.
+  - *Business rule trigger:* `trg_prediction_runs_status_transition` allows only forward status changes (`pending` → `processing` → `completed`/`failed`; `pending` → `failed`/`unsupported`) and sets `started_at` and `completed_at` automatically.
+  - *Functions:* `patient_age_years()` and the masking functions `mask_name()`, `mask_email()`, `mask_phone()`.
+  - *Views:* `v_patients_masked` (masked personal data, age instead of birth date, active patients only); `v_case_latest_prediction` (top-1 diagnosis of the latest completed run per case).
+  - *Materialized view:* `mv_model_run_stats` (runs per model, day and status, average top-1 score). Refresh with `REFRESH MATERIALIZED VIEW CONCURRENTLY mv_model_run_stats`.
+  - *Procedure:* `anonymize_patient(patient_id)` for the right to erasure. It replaces name, surname, email and phone, reduces birth date to the year, and sets `deleted_at`. The row is kept so cases and runs stay linked. Free-text anamnesis fields are not changed by this procedure.
 
 ### 4.2 Application-Level Validation
 

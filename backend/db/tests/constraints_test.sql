@@ -120,6 +120,15 @@ SELECT pg_temp.expect_sqlstate('system_logs: invalid level',
 SELECT pg_temp.expect_sqlstate('cases: delete with prediction runs',
     $s$DELETE FROM cases WHERE case_id = '00000000-0000-0000-0000-000000000201'$s$, '23503');
 
+-- Prediction run status can only move forward (trigger): completed runs cannot be reopened
+SELECT pg_temp.expect_sqlstate('prediction_runs: completed run reopened',
+    $s$UPDATE prediction_runs SET status = 'processing'
+       WHERE prediction_run_id = '00000000-0000-0000-0000-000000000901'$s$, '23514');
+
+-- Anonymization of an unknown patient must fail, not silently do nothing
+SELECT pg_temp.expect_sqlstate('anonymize_patient: unknown patient',
+    $s$CALL anonymize_patient('00000000-0000-0000-0000-00000000dead')$s$, 'P0002');
+
 -- Report results
 SELECT label, CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS status, detail FROM test_results ORDER BY label;
 
