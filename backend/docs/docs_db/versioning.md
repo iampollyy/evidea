@@ -61,7 +61,7 @@ Applying: `cd backend/db`, install `requirements.txt`, set `DATABASE_URL`, run `
 
 ## 4. Schema change lifecycle
 
-1. **Branch and migration.** Create a branch and add a migration file with the next number.
+1. **Branch and migration.** Create a branch and add a migration file with the next number. A new table or view must get grants to `app_read` or `app_write` in the same migration.
 2. **Dictionary update.** Update the corresponding tables, columns, and DQ rules in [data-dictionary.md](./data-dictionary.md). The dictionary version is bumped according to the rules in section 5.
 3. **Local verification.**
    - migrations are applied to an empty database from scratch;

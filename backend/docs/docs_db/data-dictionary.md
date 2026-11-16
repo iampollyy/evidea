@@ -597,7 +597,7 @@ Application-level event and error logging. Must not contain PII (NFR-S5).
 | DQ-01 | All tables with UUID PK | Primary keys are non-null, unique, auto-generated | PK, DEFAULT gen_random_uuid() |
 | DQ-02 | All FK columns | FK references are type-consistent (UUID → UUID) | FK constraints |
 | DQ-03 | DoctorsAndAdmin | Email must be unique across all users | UNIQUE constraint on email |
-| DQ-04 | DoctorsAndAdmin | Password is never stored in plaintext | Application-level hashing; password_hash type TEXT |
+| DQ-04 | DoctorsAndAdmin | Password is never stored in plaintext | Application-level hashing; DB CHECK `chk_doctors_password_hash_format` accepts only bcrypt/Argon2 strings (migration 0008) |
 | DQ-05 | LabResultsItems | At least one of numeric_val or text_val is non-NULL | CHECK (numeric_val IS NOT NULL OR text_val IS NOT NULL) |
 | DQ-06 | DiseaseHypotheses | rank is unique per prediction run | UNIQUE (prediction_run_id, rank) |
 | DQ-07 | DiseaseHypotheses | score is between 0 and 1 | CHECK (score >= 0 AND score <= 1) |
@@ -628,6 +628,8 @@ Application-level event and error logging. Must not contain PII (NFR-S5).
   - *Functions:* `patient_age_years()` and the masking functions `mask_name()`, `mask_email()`, `mask_phone()`.
   - *Views:* `v_patients_masked` (masked personal data, age instead of birth date, active patients only); `v_case_latest_prediction` (top-1 diagnosis of the latest completed run per case).
   - *Materialized view:* `mv_model_run_stats` (runs per model, day and status, average top-1 score). Refresh with `REFRESH MATERIALIZED VIEW CONCURRENTLY mv_model_run_stats`.
+  - *Roles and grants (migration 0008):* NOLOGIN roles `app_read`, `app_write`, `admin` with least-privilege grants; `PUBLIC` cannot create objects in schema `public`. A test checks that every table is granted to an app role. Login users are created outside migrations, see [backend/db/README.md](../../db/README.md).
+  - *Password hash CHECK (migration 0008):* `doctors_and_admin.password_hash` must be a bcrypt (`$2a$`/`$2b$`/`$2y$`, cost, 53 chars) or Argon2 string. MD5, SHA-1 and plaintext are rejected.
   - *Procedure:* `anonymize_patient(patient_id)` for the right to erasure. It replaces name, surname, email and phone, reduces birth date to the year, and sets `deleted_at`. The row is kept so cases and runs stay linked. Free-text anamnesis fields are not changed by this procedure.
 
 ### 4.2 Application-Level Validation

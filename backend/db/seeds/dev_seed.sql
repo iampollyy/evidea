@@ -8,14 +8,14 @@ BEGIN;
 INSERT INTO doctors_and_admin
     (doc_id, name, surname, birth_date, sex, email, phone_number, role, password_hash, created_at)
 SELECT '00000000-0000-0000-0000-000000000001', 'Dev', 'Clinician', DATE '1985-04-12', 'female',
-       'dev.clinician@example.test', NULL, role_id, 'DEV_ONLY_NOT_A_REAL_HASH', DATE '2025-01-10'
+       'dev.clinician@example.test', NULL, role_id, '$2b$12$DEVONLYNOTAREALBCRYPTPLACEHOLDER0123456789ABCDEFGHIJK', DATE '2025-01-10'
 FROM roles WHERE role_name = 'clinician'
 ON CONFLICT (doc_id) DO NOTHING;
 
 INSERT INTO doctors_and_admin
     (doc_id, name, surname, birth_date, sex, email, phone_number, role, password_hash, created_at)
 SELECT '00000000-0000-0000-0000-000000000002', 'Dev', 'Admin', DATE '1980-09-30', 'male',
-       'dev.admin@example.test', NULL, role_id, 'DEV_ONLY_NOT_A_REAL_HASH', DATE '2025-01-10'
+       'dev.admin@example.test', NULL, role_id, '$2b$12$DEVONLYNOTAREALBCRYPTPLACEHOLDER0123456789ABCDEFGHIJK', DATE '2025-01-10'
 FROM roles WHERE role_name = 'admin'
 ON CONFLICT (doc_id) DO NOTHING;
 

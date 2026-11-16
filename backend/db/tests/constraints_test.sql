@@ -60,7 +60,7 @@ SELECT pg_temp.expect_sqlstate('patient: invalid sex',
 -- Email uniqueness is case-insensitive
 SELECT pg_temp.expect_sqlstate('doctor: duplicate email in other case',
     $s$INSERT INTO doctors_and_admin (name, surname, email, role, password_hash, created_at)
-       SELECT 'Dup', 'User', 'DEV.CLINICIAN@example.test', role_id, 'x', DATE '2025-01-01'
+       SELECT 'Dup', 'User', 'DEV.CLINICIAN@example.test', role_id, '$2b$12$DEVONLYNOTAREALBCRYPTPLACEHOLDER0123456789ABCDEFGHIJK', DATE '2025-01-01'
        FROM roles WHERE role_name = 'clinician'$s$, '23505');
 
 -- Anamnesis must belong to the same patient as its case (composite FK)
@@ -128,6 +128,34 @@ SELECT pg_temp.expect_sqlstate('prediction_runs: completed run reopened',
 -- Anonymization of an unknown patient must fail, not silently do nothing
 SELECT pg_temp.expect_sqlstate('anonymize_patient: unknown patient',
     $s$CALL anonymize_patient('00000000-0000-0000-0000-00000000dead')$s$, 'P0002');
+
+-- Password hashes must be bcrypt or Argon2; MD5 is rejected
+SELECT pg_temp.expect_sqlstate('doctor: MD5 password hash rejected',
+    $s$INSERT INTO doctors_and_admin (name, surname, email, role, password_hash, created_at)
+       SELECT 'Md5', 'User', 'md5.user@example.test', role_id, '5f4dcc3b5aa765d61d8327deb882cf99', DATE '2025-01-01'
+       FROM roles WHERE role_name = 'clinician'$s$, '23514');
+
+-- Least privilege: app roles cannot read raw patient or credential data, and cannot delete clinical data
+INSERT INTO test_results (label, ok, detail) VALUES
+    ('app_read: no direct access to patients', NOT has_table_privilege('app_read', 'patients', 'SELECT'), ''),
+    ('app_read: no access to doctors_and_admin', NOT has_table_privilege('app_read', 'doctors_and_admin', 'SELECT'), ''),
+    ('app_read: masked view is readable', has_table_privilege('app_read', 'v_patients_masked', 'SELECT'), ''),
+    ('app_write: cannot delete patients', NOT has_table_privilege('app_write', 'patients', 'DELETE'), ''),
+    ('app_write: cannot change reference data', NOT has_table_privilege('app_write', 'lab_analytes', 'UPDATE'), ''),
+    ('app_write: system log is append-only', NOT has_table_privilege('app_write', 'system_logs', 'UPDATE'), ''),
+    ('app_write: can run anonymize_patient', has_function_privilege('app_write', 'anonymize_patient(uuid)', 'EXECUTE'), ''),
+    ('app_write: cannot change migration journal', NOT has_table_privilege('admin', 'migration_checksums', 'UPDATE'), '');
+
+-- Every table must be reachable by an app role; a new table without grants fails here,
+-- so its privileges are reviewed when it is added
+INSERT INTO test_results (label, ok, detail)
+SELECT 'every table is granted to an app role', count(*) = 0, coalesce(string_agg(c.relname, ', '), '')
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p')
+  AND c.relname NOT IN ('alembic_version', 'migration_checksums')
+  AND NOT has_table_privilege('app_read', c.oid, 'SELECT')
+  AND NOT has_table_privilege('app_write', c.oid, 'SELECT');
 
 -- Report results
 SELECT label, CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS status, detail FROM test_results ORDER BY label;
