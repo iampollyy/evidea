@@ -22,9 +22,10 @@
 
 | What is versioned | Where it is stored | How it is tracked |
 |---|---|---|
-| Database structure (tables, columns, indexes, constraints) | `backend/migrations/` — ordered SQL files | Git history of the files, PRs, the applied-migrations journal inside the database |
-| Reference data required by the application (roles, lab categories, panels, analytes) | Data migrations in `backend/migrations/` | Same as the schema: via Git and the migrations journal |
-| Test and demo data | `backend/seeds/` | Git. Applied only in dev/test, never run in production |
+| Database structure (tables, columns, indexes, constraints) | `backend/db/migrations/` — Alembic revisions and the SQL they run | Git history of the files, PRs, the `alembic_version` table and `migration_checksums` inside the database |
+| Reference data required by the application (roles, lab categories, panels, analytes) | Data migrations in `backend/db/migrations/` | Same as the schema: via Git and the migrations journal |
+| Test and demo data | `backend/db/seeds/` | Git. Applied only in dev/test, never run in production |
+| Migration runner: Alembic config and checksum check | `backend/db/alembic.ini`, `backend/db/migrations/env.py`, `backend/db/requirements.txt` | Git |
 | Human-readable schema description (tables, DQ rules, dictionary version) | [data-dictionary.md](./data-dictionary.md) | `Version` and `Last updated` fields in the header, Git |
 | ML model versions (data, not schema) | `ModelVersions` table | One row per model version, `is_active` flag, rule DQ-09 |
 | Version of the Orphanet disease catalog import | `Diseases` table | See section 6, open questions |
@@ -41,25 +42,26 @@ It is important to distinguish three different things:
 Files are numbered sequentially, without gaps, with a short description in English:
 
 ```
-backend/migrations/
-  0001_create_doctors_and_roles.sql
-  0002_create_patients_cases.sql
-  0003_create_lab_reference.sql
-  0004_add_partial_unique_active_model.sql
-  ...
+backend/db/migrations/
+  versions/   Alembic revisions (Python), one per SQL file: 0001_create_doctors_and_roles.py, ...
+  sql/        schema SQL executed by the revisions: 0001_create_doctors_and_roles.sql, ...
 ```
+
+Applying: `cd backend/db`, install `requirements.txt`, set `DATABASE_URL`, run `alembic upgrade head`. Step-by-step instructions, including the quick check for reviewers, are in [backend/db/README.md](../../db/README.md). The GitHub Actions workflow `.github/workflows/db-check.yml` runs the same steps on every change to `backend/db/`.
 
 - The number has 4 digits. Duplicate numbers are not allowed; if two branches conflict, the PR merged first keeps its number and the second one is renumbered.
 - One migration is one logical unit of change. Do not mix table creation, data changes, and column removal in one file.
 - Every migration must run without errors on an empty database. Migrations that depend on data must be idempotent or explicitly guarded by checks.
 
-> The migration tool (Flyway, Alembic, node-pg-migrate, or similar) will be chosen together with the backend stack. It must maintain a journal of applied migrations with a checksum of each file. If a checksum changes, the migration is considered corrupted and application stops.
+> **Tool: Alembic** (decided). Alembic keeps its own `alembic_version` journal. On top of it, the table `migration_checksums` stores a SHA-256 checksum of each applied SQL file. Before upgrading, `migrations/env.py` compares the stored checksums with the files; on a mismatch it stops with an error. Applied migrations must never be edited: add a new revision instead.
+>
+> Migrations are forward-only: `downgrade` raises an error. Each revision runs in its own transaction.
 
 ---
 
 ## 4. Schema change lifecycle
 
-1. **Branch and migration.** Create a branch and add a migration file with the next number.
+1. **Branch and migration.** Create a branch and add a migration file with the next number. A new table or view must get grants to `app_read` or `app_write` in the same migration.
 2. **Dictionary update.** Update the corresponding tables, columns, and DQ rules in [data-dictionary.md](./data-dictionary.md). The dictionary version is bumped according to the rules in section 5.
 3. **Local verification.**
    - migrations are applied to an empty database from scratch;
@@ -67,7 +69,7 @@ backend/migrations/
    - application tests pass on the updated schema.
 4. **Pull Request.** Review checks the SQL, consistency with the dictionary, and presence of DQ rules for new constraints.
 5. **Deployment.** A database snapshot is taken before applying to production. Migrations are applied automatically at service startup or as a separate deployment step. Manual application is allowed only with agreement and a journal entry.
-6. **Post-deployment check.** The migrations journal in the database matches the contents of `backend/migrations/`.
+6. **Post-deployment check.** The migrations journal in the database matches the contents of `backend/db/migrations/`.
 
 ---
 
@@ -92,12 +94,21 @@ Changes that lock a table or lose data are performed in several steps (expand/co
 
 ## 6. Change history and audit
 
-- **Schema history** is `git log -- backend/migrations/` and `git blame` on a specific file. Each file is linked to the PR in which the change was discussed.
+- **Schema history** is `git log -- backend/db/migrations/` and `git blame` on a specific file. Each file is linked to the PR in which the change was discussed.
 - **Application journal** — the migrations journal table in each environment shows which migrations were applied and when. A mismatch with Git indicates a deployment problem.
 - **Link to business requirements** — the PR description lists the user story or use case numbers (for example, US-12, UC-1) that require the change.
 
 ### Open questions
 
-- **Migration tool not chosen.** The repository does not yet contain a backend, so the specific tool and journal format will be decided later.
-- **`Diseases` import version.** The dictionary states that the data version is recorded on each import, but the table has no field for it. Proposal: add a `source_version` column or record the import version in `SystemLogs`.
-- **JSON column type.** The dictionary describes `eval_metrics`, `input_snapshot`, and `affected_systems` as `JSON`. `JSONB` is preferred for indexing and key-level operations. The choice should be fixed in a migration and reflected in the dictionary.
+- **`Diseases` import version.** Decided: no `source_version` column in `Diseases`. The Orphanet import version is recorded in `SystemLogs` on each import.
+- **JSON column type.** Resolved in dictionary v1.1: `eval_metrics`, `input_snapshot`, `affected_systems`, and `explanation_data` are `JSONB`, which supports indexing and key-level operations. The justification and the rule for promoting fields to columns are in the data dictionary, section "Implementation notes".
+
+## Restrictions compliance check
+
+| Restriction | Status | Evidence |
+| :-- | :-- | :-- |
+| Passwords are not stored in plain text | Met | `doctors_and_admin.password_hash` accepts only bcrypt or Argon2 (CHECK, migration 0008). The dev seed uses a placeholder that is not a real hash. Local `.env` is git-ignored. |
+| CSV/Excel is not the only data store | Met | No CSV or Excel files in the repository. Orphanet data is loaded into PostgreSQL by `seeds/import_orphanet.py`. |
+| Unstructured JSON is not stored without a model | Met | Four `JSONB` columns only, each documented with its purpose, the reason for JSON, and the rules in the data dictionary. Patient-identifying data is not allowed in them. |
+| Data integrity is not ignored | Met | Primary, foreign and composite keys, CHECK and partial unique constraints, triggers for business rules. Each migration runs in a transaction. Seeds and imports run in `BEGIN`/`COMMIT`. 27 constraint tests run in CI. |
+
