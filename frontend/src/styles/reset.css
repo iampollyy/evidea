@@ -82,7 +82,7 @@ input::-ms-clear {
 }
 
 button,
-input[type="submit"] {
+input[type='submit'] {
   display: inline-block;
   box-shadow: none;
   background-color: transparent;
@@ -95,8 +95,8 @@ input[type="submit"] {
   outline: none;
 }
 
-input[type="checkbox"]:focus-visible,
-input[type="radio"]:focus-visible {
+input[type='checkbox']:focus-visible,
+input[type='radio']:focus-visible {
   outline: 3px solid var(--focus, var(--navy-soft, #213d52));
   outline-offset: 2px;
 }
