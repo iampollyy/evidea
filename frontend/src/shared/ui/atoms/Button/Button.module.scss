@@ -103,6 +103,14 @@
   }
 }
 
+.iconOnly {
+  --btn-px: var(--btn-py);
+
+  &.sm {
+    --btn-icon-size: 0.875rem;
+  }
+}
+
 .fullWidth {
   width: 100%;
 }

@@ -32,6 +32,7 @@ export function Button({
     styles[variant],
     styles[size],
     fullWidth && styles.fullWidth,
+    children == null && styles.iconOnly,
     className,
   ]
     .filter(Boolean)
