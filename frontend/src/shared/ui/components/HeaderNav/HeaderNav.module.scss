@@ -1,0 +1,67 @@
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.iconButton,
+.profileButton {
+  &:focus-visible {
+    outline: 0.125rem solid var(--ev-color-action-focus);
+    outline-offset: 0.125rem;
+  }
+}
+
+.iconButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 0.0625rem solid var(--ev-color-border-default);
+  border-radius: 1.25rem;
+  box-shadow: var(--ev-shadow-default);
+  background-color: var(--ev-color-surface-default);
+  color: var(--ev-color-text-primary);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--ev-color-action-hover-subtle);
+  }
+}
+
+.icon {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  font-size: 1rem;
+}
+
+.dot {
+  position: absolute;
+  top: 0.4375rem;
+  left: 0.9375rem;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background-color: var(--ev-color-red-475);
+}
+
+.profileButton {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
