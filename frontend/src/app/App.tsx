@@ -1,3 +1,7 @@
 export function App() {
-  return <div>hi</div>;
+  return (
+    <main>hi</main>
+   
+    
+  );
 }
