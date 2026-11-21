@@ -23,6 +23,7 @@ admin tools for managing clinician accounts.
 
 - Node.js 20.19+ or 22.12+ (required by Vite 8)
 - npm
+- npm (a `package-lock.json` is committed)
 
 ## Getting started
 
