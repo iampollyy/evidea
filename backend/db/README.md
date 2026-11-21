@@ -17,18 +17,16 @@ PostgreSQL 16 schema, managed by Alembic. Full rules and decisions: [versioning.
 You need Docker, or a local PostgreSQL 16, and Python 3.9+.
 
 ```bash
-# 1. Start an empty PostgreSQL 16 on port 5433
 docker run --name evidea-db -e POSTGRES_PASSWORD=evidea -e POSTGRES_DB=evidea -p 5433:5432 -d postgres:16
 
-# 2. Run everything from backend/db
 cd backend/db
 python3 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt
 export DATABASE_URL="postgresql://postgres:evidea@localhost:5433/evidea"
 
-alembic upgrade head                                  # create the schema (0001 -> 0009)
-psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f seeds/dev_seed.sql   # fake data
-psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/constraints_test.sql   # expect 27 PASS, exit code 0
+alembic upgrade head
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f seeds/dev_seed.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/constraints_test.sql
 ```
 
 Without Docker, use your local PostgreSQL: create an empty database and set `DATABASE_URL` to it. `psql` must be installed.
@@ -38,7 +36,7 @@ Without Docker, use your local PostgreSQL: create an empty database and set `DAT
 1. `cd backend/db`, install `requirements.txt` into a virtualenv.
 2. Set `DATABASE_URL` from `.env` (see [Configuration](#configuration-env)); format `postgresql://user:password@host:port/dbname`.
 3. Run `alembic upgrade head`. Already applied revisions are skipped.
-4. Check the state with `alembic current` (should show `0009 (head)`).
+4. Check the state with `alembic current` (should show `0014 (head)`).
 
 Rules:
 - Never edit an applied SQL file. `migrations/env.py` compares SHA-256 checksums and stops on a mismatch. Add a new revision instead.
@@ -51,7 +49,7 @@ Rules:
 Connection settings live in `.env` in the repository root. Copy the template and fill in real values:
 
 ```bash
-cp .env.example .env   # .env is git-ignored, never commit it
+cp .env.example .env
 ```
 
 Variables: `DATABASE_URL` (owner, used by migrations, seeds and tests), `EVIDEA_APP_PASSWORD` (password for the login role `evidea_app`, used once), `DATABASE_APP_URL` (runtime connection for the application). Load them into the shell before running any command below:
