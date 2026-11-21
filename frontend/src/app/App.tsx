@@ -1,3 +1,5 @@
+import { LoginPage } from '@/shared/ui/pages/LoginPage/LoginPage';
+
 export function App() {
-  return <div>hi</div>;
+  return <LoginPage />;
 }

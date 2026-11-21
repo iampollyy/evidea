@@ -1,0 +1,107 @@
+.field {
+  --picker-size: 4.5rem;
+  --picker-ring: transparent;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+
+  &:has(input:focus-visible) {
+    --picker-ring: var(--ev-color-action-focus);
+  }
+}
+
+.label {
+  color: var(--ev-color-text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3125rem;
+  white-space: nowrap;
+}
+
+.picker {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--picker-size);
+  height: var(--picker-size);
+  overflow: hidden;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.125rem var(--picker-ring);
+  background-color: var(--ev-color-surface-subtle);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    background-color: var(--ev-color-neutral-065);
+  }
+}
+
+.preview {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.placeholderIcon {
+  color: var(--ev-color-text-placeholder);
+  font-size: 0.875rem;
+}
+
+.badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  height: 1.0625rem;
+  padding-top: 0.25rem;
+  background-color: var(--ev-color-neutral-825);
+}
+
+.badgeIcon {
+  color: var(--ev-color-white);
+  font-size: 0.625rem;
+}
+
+.error {
+  margin: 0;
+  color: var(--ev-color-status-error-text);
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+}
+
+.invalid {
+  --picker-ring: var(--ev-color-red-475);
+}
+
+.disabled .picker {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

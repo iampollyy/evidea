@@ -1,0 +1,55 @@
+.image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.ratio1x1,
+.ratio4x3,
+.ratio3x2,
+.ratio16x9,
+.ratio3x4,
+.ratio2x3,
+.ratio9x16 {
+  width: 100%;
+}
+
+.ratio1x1 {
+  aspect-ratio: 1 / 1;
+}
+
+.ratio4x3 {
+  aspect-ratio: 4 / 3;
+}
+
+.ratio3x2 {
+  aspect-ratio: 3 / 2;
+}
+
+.ratio16x9 {
+  aspect-ratio: 16 / 9;
+}
+
+.ratio3x4 {
+  aspect-ratio: 3 / 4;
+}
+
+.ratio2x3 {
+  aspect-ratio: 2 / 3;
+}
+
+.ratio9x16 {
+  aspect-ratio: 9 / 16;
+}
+
+.cover {
+  object-fit: cover;
+}
+
+.contain {
+  object-fit: contain;
+}
+
+.fill {
+  object-fit: fill;
+}

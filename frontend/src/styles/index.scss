@@ -1,9 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:wght@400..700&family=M+PLUS+Code+Latin:wght@700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0&display=swap');
 
 :root {
-  /* Brand colors */
-
   --ev-color-brand: #2e37a4;
   --ev-color-primary: #0a1b39;
   --ev-color-neutral: #f5f6f8;
@@ -11,7 +10,6 @@
   --ev-color-teal: #63fddd;
   --ev-color-violet: #a684ff;
 
-  /* Neutral */
   --ev-color-neutral-010: #fbfcfd;
   --ev-color-neutral-020: #f8fafc;
   --ev-color-neutral-025-2: #f7f8fa;
@@ -46,8 +44,6 @@
   --ev-color-neutral-990: #030303;
 
   --ev-color-neutral-black: #000000;
-
-  /* Support colors */
 
   --ev-color-amber-040: #fffbeb;
   --ev-color-amber-045: #fff8e8;
@@ -124,62 +120,54 @@
   --ev-color-red-620: #c10007;
   --ev-color-red-675: #a62900;
 
-  /*Semantic colors*/
-    /*Action*/
-  --ev-color-action-primary: #2E37A4;
-  --ev-color-action-secondary: #1447E6;
-  --ev-color-action-hover: #636EEF;
-  --ev-color-action-focus: #4F7BFF;
-  --ev-color-action-on-primary: #FFFFFF;
-  --ev-color-action-selected-surface: #EFFBFF;
-  --ev-color-action-hover-subtle: #E3E5FD;
-    
-  /*Surface*/
-  --ev-color-surface-canvas: #F5F6F8;
-  --ev-color-surface-canvas-diagnostic: #F8FAFC;
-  --ev-color-surface-default: #FFFFFF;
-  --ev-color-surface-subtle: #F1F5F9;
-  --ev-color-surface-brand-subtle: #ECEDF7;
-  
-  /*Text*/
-  --ev-color-text-primary: #0A1B39;
-  --ev-color-text-secondary: #6C7688;
-  --ev-color-text-tertiary: #8290A3;
-  --ev-color-text-placeholder: #9DA4B0;
-  --ev-color-text-diagnostic-heading: #0F172B;
+  --ev-color-action-primary: #2e37a4;
+  --ev-color-action-secondary: #1447e6;
+  --ev-color-action-hover: #636eef;
+  --ev-color-action-focus: #4f7bff;
+  --ev-color-action-on-primary: #ffffff;
+  --ev-color-action-selected-surface: #effbff;
+  --ev-color-action-hover-subtle: #e3e5fd;
+
+  --ev-color-surface-canvas: #f5f6f8;
+  --ev-color-surface-canvas-diagnostic: #f8fafc;
+  --ev-color-surface-default: #ffffff;
+  --ev-color-surface-subtle: #f1f5f9;
+  --ev-color-surface-brand-subtle: #ecedf7;
+
+  --ev-color-text-primary: #0a1b39;
+  --ev-color-text-secondary: #6c7688;
+  --ev-color-text-tertiary: #8290a3;
+  --ev-color-text-placeholder: #9da4b0;
+  --ev-color-text-diagnostic-heading: #0f172b;
   --ev-color-text-diagnostic-body: #314158;
-  --ev-color-text-diagnostic-secondary: #45556C;
-  --ev-color-text-diagnostic-muted: #62748E;
-  --ev-color-text-diagnostic-subtle: #90A1B9;
+  --ev-color-text-diagnostic-secondary: #45556c;
+  --ev-color-text-diagnostic-muted: #62748e;
+  --ev-color-text-diagnostic-subtle: #90a1b9;
 
-  /*Border*/
-  --ev-color-border-default: #E7E8EB;
-  --ev-color-border-subtle: #EDF0F4;
-  --ev-color-border-card: #E1E6ED;
-  --ev-color-border-diagnostic: #E2E8F0;
+  --ev-color-border-default: #e7e8eb;
+  --ev-color-border-subtle: #edf0f4;
+  --ev-color-border-card: #e1e6ed;
+  --ev-color-border-diagnostic: #e2e8f0;
 
-  /*Status*/
   --ev-color-status-active-text: #137044;
-  --ev-color-status-active-border: #B7E4CA;
-  --ev-color-status-active-surface: #ECFDF3;
-  --ev-color-status-success-text: #0D7A55;
-  --ev-color-status-success-surface: #D0FAE5;
-  --ev-color-status-info-text: #193C88;
-  --ev-color-status-info-surface: #EFF6FF;
-  --ev-color-status-info-border: #BEDBFF;
-  --ev-color-status-error-text: #C10007;
-  --ev-color-status-error-surface: #FEF2F2;
-  --ev-color-status-warning-text: #BB4D00;
-  --ev-color-status-warning-surface: #FFFBEB;
+  --ev-color-status-active-border: #b7e4ca;
+  --ev-color-status-active-surface: #ecfdf3;
+  --ev-color-status-success-text: #0d7a55;
+  --ev-color-status-success-surface: #d0fae5;
+  --ev-color-status-info-text: #193c88;
+  --ev-color-status-info-surface: #eff6ff;
+  --ev-color-status-info-border: #bedbff;
+  --ev-color-status-error-text: #c10007;
+  --ev-color-status-error-surface: #fef2f2;
+  --ev-color-status-warning-text: #bb4d00;
+  --ev-color-status-warning-surface: #fffbeb;
 
-  /*Data*/
-  --ev-color-data-clinical: #1447E6;
-  --ev-color-data-clinical-surface: #ECFDF3;
-  --ev-color-data-laboratory: #00786F;
-  --ev-color-data-laboratory-surface: #F0FDFA;
-  --ev-color-data-score: #1D4ED8;
-  --ev-color-data-negative-contribution: #D97706;
+  --ev-color-data-clinical: #1447e6;
+  --ev-color-data-clinical-surface: #ecfdf3;
+  --ev-color-data-laboratory: #00786f;
+  --ev-color-data-laboratory-surface: #f0fdfa;
+  --ev-color-data-score: #1d4ed8;
+  --ev-color-data-negative-contribution: #d97706;
 
-  
-
+  --ev-shadow-default: 0 0.0625rem 0.0625rem rgb(0 0 0 / 5%);
 }

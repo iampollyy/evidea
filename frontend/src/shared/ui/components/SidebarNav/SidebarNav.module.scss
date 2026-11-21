@@ -1,0 +1,75 @@
+.nav {
+  box-sizing: border-box;
+  width: 14.4375rem;
+  height: 100%;
+  padding: 1rem 0.75rem;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  --nav-color: var(--ev-color-text-diagnostic-secondary);
+
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  color: var(--nav-color);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  text-decoration: none;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover:not(.active) {
+    --nav-color: var(--ev-color-text-diagnostic-heading);
+
+    background-color: var(--ev-color-surface-canvas-diagnostic);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 0.125rem var(--ev-color-action-focus);
+  }
+}
+
+.active {
+  --nav-color: var(--ev-color-data-clinical);
+
+  background-color: var(--ev-color-status-info-surface);
+}
+
+.icon {
+  flex-shrink: 0;
+  color: var(--nav-color);
+  font-size: 1.125rem;
+}
+
+.label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  flex-shrink: 0;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background-color: var(--ev-color-surface-default);
+  color: var(--ev-color-text-diagnostic-muted);
+  font-size: 0.6875rem;
+  line-height: 0.982rem;
+}
