@@ -4,11 +4,13 @@ import { Image } from '@/shared/ui/atoms/Image/Image';
 import styles from './Avatar.module.scss';
 
 export type AvatarSize = 'sm' | 'md' | 'lg';
+export type AvatarTone = 'subtle' | 'solid';
 
 export interface AvatarProps extends Omit<ComponentPropsWithRef<'span'>, 'children'> {
   name: string;
   src?: string;
   size?: AvatarSize;
+  tone?: AvatarTone;
   decorative?: boolean;
 }
 
@@ -26,11 +28,12 @@ export function Avatar({
   name,
   src,
   size = 'md',
+  tone = 'subtle',
   decorative = false,
   className,
   ...rest
 }: AvatarProps) {
-  const classes = [styles.avatar, styles[size], className].filter(Boolean).join(' ');
+  const classes = [styles.avatar, styles[size], styles[tone], className].filter(Boolean).join(' ');
   const label = decorative ? undefined : name;
 
   const initials = (
