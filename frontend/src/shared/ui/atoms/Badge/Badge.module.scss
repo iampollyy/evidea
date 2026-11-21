@@ -70,6 +70,10 @@
   color: var(--badge-on-color);
 }
 
+.pill {
+  border-radius: 999px;
+}
+
 .sm {
   --badge-height: 1.25rem;
   --badge-px: 0.375rem;

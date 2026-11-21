@@ -77,6 +77,15 @@
   }
 }
 
+.ghost {
+  background-color: transparent;
+  color: var(--ev-color-text-primary);
+
+  &:hover:not(:disabled) {
+    background-color: var(--ev-color-surface-canvas);
+  }
+}
+
 .sm {
   --btn-py: 0.25rem;
   --btn-font-size: 0.75rem;

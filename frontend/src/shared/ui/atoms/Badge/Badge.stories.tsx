@@ -13,6 +13,7 @@ const meta = {
     variant: 'brand',
     size: 'md',
     inverse: false,
+    pill: false,
   },
   argTypes: {
     variant: {
@@ -76,4 +77,13 @@ export const Sizes: Story = {
       </Badge>
     </div>
   ),
+};
+
+export const Pill: Story = {
+  args: {
+    children: 'Active patient',
+    variant: 'success',
+    size: 'sm',
+    pill: true,
+  },
 };

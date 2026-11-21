@@ -2,7 +2,7 @@ import type { ComponentPropsWithRef, ReactNode } from 'react';
 
 import styles from './Button.module.scss';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
+export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'ghost';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonBaseProps extends Omit<ComponentPropsWithRef<'button'>, 'children'> {

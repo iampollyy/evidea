@@ -9,6 +9,7 @@ export interface BadgeProps extends ComponentPropsWithRef<'span'> {
   variant?: BadgeVariant;
   size?: BadgeSize;
   inverse?: boolean;
+  pill?: boolean;
   icon?: ReactNode;
 }
 
@@ -16,6 +17,7 @@ export function Badge({
   variant = 'brand',
   size = 'md',
   inverse = false,
+  pill = false,
   icon,
   className,
   children,
@@ -26,6 +28,7 @@ export function Badge({
     styles[variant],
     styles[size],
     inverse && styles.inverse,
+    pill && styles.pill,
     className,
   ]
     .filter(Boolean)

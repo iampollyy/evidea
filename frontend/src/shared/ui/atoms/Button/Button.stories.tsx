@@ -47,6 +47,15 @@ export const Tertiary: Story = {
   },
 };
 
+export const Ghost: Story = {
+  args: {
+    variant: 'ghost',
+    children: undefined,
+    icon: <Icon name="close" />,
+    'aria-label': 'Close',
+  },
+};
+
 export const Sizes: Story = {
   render: () => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
