@@ -20,3 +20,14 @@ export const WithoutTagline: Story = {
 export const AsLink: Story = {
   args: { href: '/' },
 };
+
+export const InverseLarge: Story = {
+  args: { tone: 'inverse', size: 'lg', tagline: null },
+  decorators: [
+    (Story) => (
+      <div style={{ padding: '1.5rem', backgroundColor: 'var(--ev-color-brand)' }}>
+        <Story />
+      </div>
+    ),
+  ],
+};

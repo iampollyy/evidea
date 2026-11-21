@@ -1,7 +1,5 @@
+import { LoginPage } from '@/shared/ui/pages/LoginPage/LoginPage';
+
 export function App() {
-  return (
-    <main>hi</main>
-   
-    
-  );
+  return <LoginPage />;
 }
