@@ -10,6 +10,8 @@ export interface InputProps extends Omit<ComponentPropsWithRef<'input'>, 'size'>
   hideLabel?: boolean;
   hint?: ReactNode;
   error?: ReactNode;
+  leadingIcon?: ReactNode;
+  trailing?: ReactNode;
 }
 
 export function Input({
@@ -18,6 +20,8 @@ export function Input({
   hideLabel = false,
   hint,
   error,
+  leadingIcon,
+  trailing,
   id,
   required,
   disabled,
@@ -41,6 +45,8 @@ export function Input({
     styles[size],
     hasError && styles.invalid,
     disabled && styles.disabled,
+    leadingIcon != null && styles.hasLeading,
+    trailing != null && styles.hasTrailing,
     className,
   ]
     .filter(Boolean)
@@ -56,16 +62,24 @@ export function Input({
           </span>
         )}
       </label>
-      <input
-        id={inputId}
-        type={type}
-        required={required}
-        disabled={disabled}
-        aria-invalid={hasError || undefined}
-        aria-describedby={describedBy}
-        className={styles.input}
-        {...rest}
-      />
+      <div className={styles.control}>
+        {leadingIcon != null && (
+          <span className={styles.leading} aria-hidden="true">
+            {leadingIcon}
+          </span>
+        )}
+        <input
+          id={inputId}
+          type={type}
+          required={required}
+          disabled={disabled}
+          aria-invalid={hasError || undefined}
+          aria-describedby={describedBy}
+          className={styles.input}
+          {...rest}
+        />
+        {trailing != null && <span className={styles.trailing}>{trailing}</span>}
+      </div>
       {hint != null && (
         <p id={hintId} className={styles.hint}>
           {hint}

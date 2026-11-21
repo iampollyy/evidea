@@ -7,6 +7,8 @@
   --label-line-height: 1.3125rem;
   --input-border: var(--ev-color-border-default);
   --input-focus-ring: var(--ev-color-action-focus);
+  --input-icon-size: 0.875rem;
+  --input-icon-gap: 0.5rem;
 
   display: flex;
   flex-direction: column;
@@ -26,6 +28,43 @@
 .required {
   margin-left: 0.25rem;
   color: var(--ev-color-red-475);
+}
+
+.control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.leading,
+.trailing {
+  position: absolute;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+}
+
+.leading {
+  left: var(--input-px);
+  color: var(--ev-color-text-primary);
+  font-size: var(--input-icon-size);
+  pointer-events: none;
+}
+
+.trailing {
+  right: calc(var(--input-px) - 0.25rem);
+  color: var(--ev-color-text-primary);
+  font-size: var(--input-icon-size);
+}
+
+.hasLeading .input {
+  padding-left: calc(var(--input-px) + var(--input-icon-size) + var(--input-icon-gap));
+}
+
+.hasTrailing .input {
+  padding-right: calc(var(--input-px) + var(--input-icon-size) + var(--input-icon-gap));
 }
 
 .input {

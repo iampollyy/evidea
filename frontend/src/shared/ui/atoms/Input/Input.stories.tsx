@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
 import { Input } from './Input';
 
 const meta = {
@@ -95,4 +96,13 @@ export const Sizes: Story = {
       <Input {...args} size="lg" label="Large" />
     </div>
   ),
+};
+
+export const WithLeadingIcon: Story = {
+  args: {
+    label: 'Email Address',
+    type: 'email',
+    placeholder: 'Enter Email Address',
+    leadingIcon: <Icon name="person" />,
+  },
 };
