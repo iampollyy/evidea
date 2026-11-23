@@ -1,5 +1,3 @@
-"""HTTP layer for /lab-catalog: the active reference catalog used by the lab entry form."""
-
 from collections import defaultdict
 from uuid import UUID
 
@@ -24,7 +22,6 @@ router = APIRouter(prefix="/lab-catalog", tags=["Lab catalog"])
 def get_lab_catalog(
     _: Doctor = Depends(get_current_user), session: Session = Depends(get_session)
 ) -> LabCatalog:
-    """Active categories, panels and analytes as one tree. Inactive branches are hidden."""
     categories, panels, analytes = CatalogRepository(session).active_catalog()
 
     analytes_by_panel: dict[UUID, list[AnalyteRef]] = defaultdict(list)

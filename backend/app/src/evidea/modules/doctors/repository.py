@@ -1,5 +1,3 @@
-"""Data access for doctors and invitations. The only place with SQL for these tables."""
-
 from datetime import datetime
 from typing import Literal, cast
 from uuid import UUID
@@ -16,11 +14,6 @@ EMAIL_CONSTRAINT = "uq_doctors_and_admin_email"
 
 
 def doctor_status_expr() -> ColumnElement[str]:
-    """Account status computed in SQL (one query also works for lists, no N+1).
-
-    deactivated: deactivated_at is set; invited: has invitations but none accepted;
-    active: everything else (e.g. the bootstrap admin, who was never invited).
-    """
     has_invitation = exists().where(Invitation.doctor_id == Doctor.id)
     has_accepted = exists().where(
         Invitation.doctor_id == Doctor.id, Invitation.used_at.is_not(None)
@@ -100,7 +93,6 @@ class DoctorRepository:
         self.session.flush()
 
     def expire_open_invitations(self, doctor_id: UUID, *, now: datetime) -> None:
-        """Invalidate earlier unused links when a new invitation is issued."""
         self.session.execute(
             update(Invitation)
             .where(
@@ -112,7 +104,6 @@ class DoctorRepository:
         )
 
     def find_open_invitation(self, token_hash: str, *, now: datetime) -> Invitation | None:
-        """Unused, unexpired invitation; the row is locked so it cannot be accepted twice."""
         return self.session.scalars(
             select(Invitation)
             .where(

@@ -27,8 +27,6 @@ def avatar_url(doctor: Doctor) -> str | None:
 
 
 class DoctorOut(ApiModel):
-    """Public view of an account. `password_hash` is never part of it (DQ-44)."""
-
     id: UUID
     name: str
     surname: str

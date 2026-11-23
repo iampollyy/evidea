@@ -1,5 +1,3 @@
-"""The global error handlers turn every failure into RFC 9457 problem+json."""
-
 from collections.abc import Iterator
 from datetime import date
 from typing import Any
@@ -119,6 +117,15 @@ def test_unknown_fields_and_invalid_json_are_rejected(probe_client: TestClient) 
         "/probe/body", content=b"{not json", headers={"Content-Type": "application/json"}
     )
     assert_problem(broken, 422, "VALIDATION_ERROR")
+
+
+def test_unparseable_json_returns_bad_request_problem(probe_client: TestClient) -> None:
+    response = probe_client.post(
+        "/api/v1/auth/login",
+        content=b"\x00" * 9,
+        headers={"Content-Type": "application/json"},
+    )
+    assert_problem(response, 400, "BAD_REQUEST")
 
 
 def test_unknown_route_and_wrong_method(probe_client: TestClient) -> None:

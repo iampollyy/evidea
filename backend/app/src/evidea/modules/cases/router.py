@@ -1,5 +1,3 @@
-"""HTTP layer for cases: /patients/{id}/cases and /cases/{id}."""
-
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, Response, status
@@ -31,9 +29,6 @@ router = APIRouter(tags=["Cases"])
 
 def get_case_service(session: Session = Depends(get_session)) -> CaseService:
     return CaseService(session)
-
-
-
 
 
 def _doctor_ref(doctor: Doctor) -> DoctorRef:
@@ -97,9 +92,6 @@ def _case_detail(view: CaseView) -> CaseDetail:
     )
 
 
-
-
-
 @router.get(
     "/patients/{patient_id}/cases",
     response_model=Page[CaseSummary],
@@ -107,12 +99,11 @@ def _case_detail(view: CaseView) -> CaseDetail:
 )
 def list_patient_cases(
     patient_id: UUID,
-    page: int = Query(1, ge=1),
+    page: int = Query(1, ge=1, le=2_147_483_647),
     page_size: int = Query(20, ge=1, le=100, alias="pageSize"),
     _: Doctor = Depends(get_current_user),
     service: CaseService = Depends(get_case_service),
 ) -> Page[CaseSummary]:
-    """Newest first."""
     rows, total = service.list_for_patient(patient_id, page=page, page_size=page_size)
     return Page[CaseSummary](
         items=[
@@ -143,7 +134,6 @@ def create_case(
     user: Doctor = Depends(get_current_user),
     service: CaseService = Depends(get_case_service),
 ) -> CaseDetail:
-    """Case, anamnesis, vital signs and lab reports are saved in one transaction."""
     view = service.create(patient_id, body, actor=user)
     response.headers["Location"] = f"/api/v1/cases/{view.case.id}"
     return _case_detail(view)
@@ -167,5 +157,4 @@ def replace_anamnesis(
     user: Doctor = Depends(get_current_user),
     service: CaseService = Depends(get_case_service),
 ) -> AnamnesisOut:
-    """Full replacement. Earlier prediction runs keep their own input snapshot."""
     return _anamnesis(*service.replace_anamnesis(case_id, body, actor=user))

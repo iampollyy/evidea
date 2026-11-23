@@ -1,6 +1,3 @@
-"""Guard against drift: the schema is owned by SQL migrations, the ORM only describes it.
-If a migration changes a column and the model is not updated, this test fails."""
-
 from importlib import import_module
 
 from sqlalchemy import Engine, text

@@ -1,5 +1,3 @@
-"""Shared fixtures. Tests without the `integration` marker need no database."""
-
 from collections.abc import Iterator
 
 import pytest

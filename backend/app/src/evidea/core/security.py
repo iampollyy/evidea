@@ -85,10 +85,7 @@ def decode_session_token(token: str, *, secret: str) -> SessionClaims | None:
         return None
 
 
-
-
 def generate_one_time_token() -> str:
-    """32 random bytes, URL-safe. Sent to the user once; only its hash is stored."""
     return secrets.token_urlsafe(32)
 
 

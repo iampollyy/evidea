@@ -1,12 +1,3 @@
-"""Integration tests against a real PostgreSQL with all migrations applied.
-
-Environment:
-  TEST_DATABASE_URL      owner connection, used only to reset data and prepare fixtures
-  TEST_DATABASE_APP_URL  connection as evidea_app: the API runs with least privileges,
-                         exactly as in production
-  REQUIRE_INTEGRATION_TESTS=1  fail instead of skip when the variables are missing (CI)
-"""
-
 import os
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
@@ -18,10 +9,11 @@ from uuid import UUID, uuid4
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import Engine, create_engine, select, text
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from evidea.adapters.email import OutgoingEmail
 from evidea.core.config import Settings
+from evidea.core.db import create_db_engine, create_session_factory
 from evidea.core.security import (
     generate_one_time_token,
     hash_one_time_token,
@@ -79,8 +71,6 @@ def storage_dir(tmp_path: Path) -> Path:
 
 
 class FakeEmailSender:
-    """Collects emails instead of sending them."""
-
     def __init__(self) -> None:
         self.outbox: list[OutgoingEmail] = []
         self.fail = False
@@ -169,7 +159,6 @@ def login(client: TestClient, email: str, password: str = PASSWORD) -> None:
 
 @pytest.fixture
 def clinician(api: TestClient, make_doctor: MakeDoctor) -> Doctor:
-    """A signed-in clinician (the API client carries the session cookie)."""
     doctor = make_doctor("clinician")
     login(api, doctor.email)
     return doctor
@@ -204,7 +193,6 @@ class Catalog:
 
 @pytest.fixture
 def lab_catalog(owner_session: Session) -> Catalog:
-    """Reference data is read-only for evidea_app, so it is inserted as the owner."""
     ids = {name: uuid4() for name in Catalog.__dataclass_fields__}
     hem, bio = uuid4(), uuid4()
     statements = [
@@ -233,3 +221,48 @@ def lab_catalog(owner_session: Session) -> Catalog:
         owner_session.execute(text(statement), {**ids, "hem": hem, "bio": bio})
     owner_session.commit()
     return Catalog(**ids)
+
+
+@pytest.fixture(scope="session")
+def app_session_factory(owner_engine: Engine) -> Iterator[sessionmaker[Session]]:
+    engine = create_db_engine(
+        os.environ["TEST_DATABASE_APP_URL"].replace("postgresql://", "postgresql+psycopg://", 1)
+    )
+    yield create_session_factory(engine)
+    engine.dispose()
+
+
+@dataclass(frozen=True)
+class ModelSetup:
+    model_id: UUID
+    disease_ids: list[UUID]
+    inactive_disease_id: UUID
+
+
+@pytest.fixture
+def active_model(owner_session: Session) -> ModelSetup:
+    model_id = uuid4()
+    owner_session.execute(
+        text(
+            "INSERT INTO model_versions "
+            "(model_version_id, name, version, artifact_uri, trained_at, is_active) "
+            "VALUES (:m, 'evidea-stub (demo)', '0.1.0-demo', 'stub://evidea/demo', now(), TRUE)"
+        ),
+        {"m": model_id},
+    )
+    disease_ids = [uuid4() for _ in range(7)]
+    for number, disease_id in enumerate(disease_ids, start=1):
+        owner_session.execute(
+            text("INSERT INTO diseases (disease_id, orpha_code, name) VALUES (:d, :o, :n)"),
+            {"d": disease_id, "o": f"ORPHA:{900 + number}", "n": f"Test disease {number}"},
+        )
+    inactive = uuid4()
+    owner_session.execute(
+        text(
+            "INSERT INTO diseases (disease_id, orpha_code, name, is_active) "
+            "VALUES (:d, 'ORPHA:999', 'Retired disease', FALSE)"
+        ),
+        {"d": inactive},
+    )
+    owner_session.commit()
+    return ModelSetup(model_id, disease_ids, inactive)

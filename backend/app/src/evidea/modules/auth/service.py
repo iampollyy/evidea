@@ -1,5 +1,3 @@
-"""Authentication use cases: sign in and accept an invitation."""
-
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -110,7 +108,6 @@ class AuthService:
         return LoginResult(doctor=doctor, status=status, session_token=token)
 
     def accept_invitation(self, *, token: str, password: str) -> None:
-        """Set the password of an invited doctor. The token works once and only before expiry."""
         now = self.clock()
         invitation = self.repo.find_open_invitation(hash_one_time_token(token), now=now)
         doctor = self.repo.get(invitation.doctor_id) if invitation else None

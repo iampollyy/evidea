@@ -1,5 +1,3 @@
-"""HTTP layer for /doctors. Account management is admin only; avatars are visible to all users."""
-
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, Request, Response, status
@@ -31,15 +29,14 @@ def get_doctor_service(
 
 @router.get("", response_model=Page[DoctorOut], operation_id="listDoctors")
 def list_doctors(
-    page: int = Query(1, ge=1),
+    page: int = Query(1, ge=1, le=2_147_483_647),
     page_size: int = Query(20, ge=1, le=100, alias="pageSize"),
-    search: str | None = Query(None, min_length=2, max_length=100),
+    search: str | None = Query(None, min_length=2, max_length=100, pattern=r"^[^\x00-\x1f\x7f]+$"),
     status_filter: DoctorStatus | None = Query(None, alias="status"),
     role: RoleName | None = Query(None),
     _: Doctor = Depends(require_admin),
     service: DoctorService = Depends(get_doctor_service),
 ) -> Page[DoctorOut]:
-    """Admin only. Sorted by surname, then name."""
     rows, total = service.list(
         page=page, page_size=page_size, search=search, status=status_filter, role=role
     )
@@ -58,7 +55,6 @@ def create_doctor(
     admin: Doctor = Depends(require_admin),
     service: DoctorService = Depends(get_doctor_service),
 ) -> DoctorOut:
-    """Admin only. Creates the account and emails a one-time invitation link."""
     doctor, doctor_status = service.create(body, actor=admin)
     response.headers["Location"] = f"/api/v1/doctors/{doctor.id}"
     return DoctorOut.build(doctor, doctor_status)
@@ -79,7 +75,6 @@ def deactivate_doctor(
     admin: Doctor = Depends(require_admin),
     service: DoctorService = Depends(get_doctor_service),
 ) -> DoctorOut:
-    """Admin only. Idempotent. Existing sessions of the doctor stop working immediately."""
     return DoctorOut.build(*service.deactivate(doctor_id, actor=admin))
 
 
@@ -89,7 +84,6 @@ def activate_doctor(
     admin: Doctor = Depends(require_admin),
     service: DoctorService = Depends(get_doctor_service),
 ) -> DoctorOut:
-    """Admin only. Idempotent."""
     return DoctorOut.build(*service.activate(doctor_id, actor=admin))
 
 
@@ -104,7 +98,6 @@ def resend_invitation(
     admin: Doctor = Depends(require_admin),
     service: DoctorService = Depends(get_doctor_service),
 ) -> InvitationIssued:
-    """Admin only. Issues a new link and invalidates earlier unused ones."""
     return InvitationIssued(expires_at=service.resend_invitation(doctor_id, actor=admin))
 
 

@@ -1,5 +1,3 @@
-"""Use cases for doctor accounts: admin management, invitations and avatars."""
-
 from collections.abc import Callable
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
@@ -63,8 +61,6 @@ class DoctorService:
         self.email_sender = email_sender
         self.clock = clock
 
-
-
     def list(
         self,
         *,
@@ -85,7 +81,6 @@ class DoctorService:
         return found
 
     def create(self, data: DoctorCreate, *, actor: Doctor) -> tuple[Doctor, DoctorStatus]:
-        """Create the account without a usable password and email a one-time invitation."""
         doctor = Doctor(
             **data.model_dump(exclude={"role"}),
             role_id=self.repo.role_by_name(data.role).id,
@@ -138,8 +133,6 @@ class DoctorService:
             self.session.commit()
         return self.get(doctor_id)
 
-
-
     def set_avatar(self, doctor: Doctor, data: bytes) -> Doctor:
         image_type = validate_image(data, max_bytes=self.settings.max_upload_bytes)
         new_key = self.storage.save(data, folder="avatars", extension=image_type.extension)
@@ -170,8 +163,6 @@ class DoctorService:
         if doctor is None or doctor.avatar_key is None or data is None:
             raise NotFoundError()
         return data, media_type_for_key(doctor.avatar_key)
-
-
 
     def _get_doctor(self, doctor_id: UUID) -> Doctor:
         doctor = self.repo.get(doctor_id)
@@ -209,7 +200,6 @@ class DoctorService:
         try:
             self.email_sender.send(email)
         except Exception:
-
             log.exception("invitation_email_failed", doctor_id=str(doctor.id))
             record_event(
                 self.session,

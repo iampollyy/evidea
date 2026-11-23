@@ -1,5 +1,3 @@
-"""Lab result rules (DQ-22) are pure functions: tested without a database."""
-
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal

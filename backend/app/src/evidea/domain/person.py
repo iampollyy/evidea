@@ -1,9 +1,3 @@
-"""Business rules for personal data shared by patients and doctors.
-
-Pure functions without FastAPI or database code, so they are easy to unit-test.
-Messages match the frontend validators (frontend/src/shared/lib/validation/person.ts).
-"""
-
 import re
 from datetime import date
 
@@ -21,7 +15,6 @@ DOCTOR_MAX_AGE = 100
 
 
 def validate_person_name(value: str, label: str) -> str:
-    """Letters of any alphabet, spaces, apostrophes and hyphens; 2 to 100 characters."""
     cleaned = value.strip()
     if not cleaned:
         raise ValueError(f"{label} is required")
@@ -35,7 +28,6 @@ def validate_person_name(value: str, label: str) -> str:
 
 
 def validate_phone(value: str) -> str:
-    """Optional `+`, digits, spaces, brackets, hyphens; 7 to 15 digits."""
     cleaned = value.strip()
     digits = sum(ch.isdigit() for ch in cleaned)
     if not _PHONE_PATTERN.match(cleaned) or not PHONE_MIN_DIGITS <= digits <= PHONE_MAX_DIGITS:
@@ -44,7 +36,6 @@ def validate_phone(value: str) -> str:
 
 
 def age_on(birth_date: date, today: date) -> int:
-    """Full years on `today`."""
     had_birthday = (today.month, today.day) >= (birth_date.month, birth_date.day)
     return today.year - birth_date.year - (0 if had_birthday else 1)
 

@@ -14,9 +14,6 @@ class FileStorage(Protocol):
 
 
 class LocalFileStorage:
-    """Stores files on disk (a Docker volume in deployment). File names are generated, never
-    taken from the client, so uploads cannot overwrite other files or escape the folder."""
-
     def __init__(self, base_dir: Path) -> None:
         self.base_dir = base_dir.resolve()
 

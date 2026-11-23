@@ -1,9 +1,3 @@
-"""Login brute-force protection: at most N failed attempts per key in a sliding time window.
-
-Kept in process memory (no Redis): enough for a single API instance. With several
-instances each would count separately; that limitation is documented.
-"""
-
 import math
 import threading
 import time
@@ -35,7 +29,6 @@ class LoginRateLimiter:
         return attempts
 
     def retry_after(self, key: str) -> int | None:
-        """Seconds to wait if the key is blocked, otherwise None."""
         with self._lock:
             now = self._clock()
             attempts = self._prune(key, now)

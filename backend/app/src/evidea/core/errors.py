@@ -52,8 +52,6 @@ class NotFoundError(AppError):
 
 
 class ConflictError(AppError):
-    """409 with a specific code, e.g. EMAIL_ALREADY_USED or PATIENT_ARCHIVED."""
-
     status = 409
 
 
@@ -132,6 +130,7 @@ def _message(raw: str) -> str:
 
 
 _HTTP_CODES = {
+    400: ("BAD_REQUEST", "Bad request"),
     401: ("UNAUTHENTICATED", "Authentication required"),
     403: ("FORBIDDEN", "Forbidden"),
     404: ("NOT_FOUND", "Resource not found"),

@@ -1,5 +1,3 @@
-"""Request schemas enforce the agreed contract before any business code runs."""
-
 from typing import Any
 from uuid import uuid4
 

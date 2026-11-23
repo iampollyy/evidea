@@ -1,5 +1,3 @@
-"""Request and response models of the patients API (see docs/reference/openapi.yaml)."""
-
 from datetime import date, datetime
 from typing import Literal
 from uuid import UUID
@@ -49,8 +47,6 @@ class PatientCreate(_PatientFields):
 
 
 class PatientReplace(_PatientFields):
-    """PUT = full replacement: every field must be sent; `phoneNumber: null` clears it."""
-
     phone_number: str | None = Field(max_length=30)
 
 
@@ -61,8 +57,6 @@ def photo_url(patient_id: UUID, key: str | None) -> str | None:
 
 
 class PatientListItem(ApiModel):
-    """Compact view for lists: no email or phone (data minimisation)."""
-
     id: UUID
     name: str
     surname: str

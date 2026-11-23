@@ -1,4 +1,12 @@
+from pathlib import Path
+from typing import Any
+
+import pytest
+import yaml
 from fastapi.testclient import TestClient
+
+OPENAPI_PATH = Path(__file__).resolve().parents[4] / "docs" / "reference" / "openapi.yaml"
+OPENAPI: dict[str, Any] = yaml.safe_load(OPENAPI_PATH.read_text(encoding="utf-8"))
 
 
 def test_liveness(client: TestClient) -> None:
@@ -12,6 +20,22 @@ def test_readiness_reports_unavailable_database(client: TestClient) -> None:
     response = client.get("/api/v1/health/ready")
     assert response.status_code == 503
     assert response.json() == {"status": "unavailable", "checks": {"database": "unavailable"}}
+
+
+@pytest.mark.parametrize(
+    ("path", "status_code"),
+    [("/health/live", 200), ("/health/ready", 503)],
+)
+def test_health_response_matches_openapi_example(
+    client: TestClient, path: str, status_code: int
+) -> None:
+    response = client.get(f"/api/v1{path}")
+    expected = OPENAPI["paths"][path]["get"]["responses"][str(status_code)]["content"][
+        "application/json"
+    ]["example"]
+
+    assert response.status_code == status_code
+    assert response.json() == expected
 
 
 def test_request_id_is_echoed_when_valid(client: TestClient) -> None:

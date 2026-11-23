@@ -1,5 +1,3 @@
-"""HTTP layer for /patients. Clinicians and admins see all patients (agreed in Phase 2)."""
-
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, File, Query, Request, Response, UploadFile, status
@@ -37,15 +35,14 @@ def get_patient_service(
 
 @router.get("", response_model=Page[PatientListItem], operation_id="listPatients")
 def list_patients(
-    page: int = Query(1, ge=1),
+    page: int = Query(1, ge=1, le=2_147_483_647),
     page_size: int = Query(20, ge=1, le=100, alias="pageSize"),
-    search: str | None = Query(None, min_length=2, max_length=100),
+    search: str | None = Query(None, min_length=2, max_length=100, pattern=r"^[^\x00-\x1f\x7f]+$"),
     status_filter: PatientStatusFilter = Query("active", alias="status"),
     sort: PatientSort = Query("name"),
     _: Doctor = Depends(get_current_user),
     service: PatientService = Depends(get_patient_service),
 ) -> Page[PatientListItem]:
-    """List and search patients. `meta.totalItems` feeds the sidebar counter."""
     rows, total = service.list(
         page=page, page_size=page_size, status=status_filter, search=search, sort=sort
     )
@@ -89,7 +86,6 @@ def replace_patient(
     user: Doctor = Depends(get_current_user),
     service: PatientService = Depends(get_patient_service),
 ) -> PatientOut:
-    """Full replacement: send every field. Archived patients cannot be changed."""
     return PatientOut.build(service.replace(patient_id, body, actor=user), today())
 
 
@@ -99,7 +95,6 @@ def archive_patient(
     user: Doctor = Depends(get_current_user),
     service: PatientService = Depends(get_patient_service),
 ) -> PatientOut:
-    """Irreversible and idempotent."""
     return PatientOut.build(service.archive(patient_id, actor=user), today())
 
 
@@ -109,7 +104,6 @@ def anonymize_patient(
     admin: Doctor = Depends(require_admin),
     service: PatientService = Depends(get_patient_service),
 ) -> PatientOut:
-    """Admin only. Irreversible right-to-erasure via the `anonymize_patient` procedure."""
     return PatientOut.build(service.anonymize(patient_id, actor=admin), today())
 
 

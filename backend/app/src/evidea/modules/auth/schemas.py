@@ -5,7 +5,6 @@ from evidea.core.security import PASSWORD_MAX_LENGTH, password_policy_errors
 
 
 class _RawInput(InputModel):
-
     model_config = ConfigDict(str_strip_whitespace=False)
 
 

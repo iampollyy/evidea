@@ -1,5 +1,3 @@
-"""Request and response models of the cases API (see docs/reference/openapi.yaml)."""
-
 from datetime import datetime
 from decimal import Decimal
 from typing import Annotated, Self
@@ -41,8 +39,6 @@ class _AnamnesisInput(InputModel):
 
 
 class AnamnesisCreate(_AnamnesisInput):
-    """Do not enter patient identifiers (names, IDs) in free text (DQ-27)."""
-
     chief_complaint: ChiefComplaint
     symptoms_duration: str | None = Field(default=None, max_length=200)
     clinical_notes: str | None = Field(default=None, max_length=10000)
@@ -53,8 +49,6 @@ class AnamnesisCreate(_AnamnesisInput):
 
 
 class AnamnesisReplace(_AnamnesisInput):
-    """PUT = full replacement: every field must be sent; `null` clears an optional one."""
-
     chief_complaint: ChiefComplaint
     symptoms_duration: str | None = Field(max_length=200)
     clinical_notes: str | None = Field(max_length=10000)
@@ -76,9 +70,6 @@ class AnamnesisOut(ApiModel):
     created_by: DoctorRef
     created_at: datetime
     updated_at: datetime
-
-
-
 
 
 class _VitalSignsFields(ApiModel):
@@ -107,10 +98,6 @@ class VitalSignsOut(_VitalSignsFields):
     @classmethod
     def _decimal_to_float(cls, value: Decimal | float | None) -> float | None:
         return None if value is None else float(value)
-
-
-
-
 
 
 LabValue = (
@@ -143,9 +130,6 @@ class LabReportOut(ApiModel):
     results: list[LabResultOut]
 
 
-
-
-
 class CaseCreate(InputModel):
     anamnesis: AnamnesisCreate
     vital_signs: VitalSignsCreate | None = None
@@ -153,8 +137,6 @@ class CaseCreate(InputModel):
 
 
 class LatestPrediction(ApiModel):
-    """Top-1 hypothesis of the latest completed run (view `v_case_latest_prediction`)."""
-
     run_id: UUID
     completed_at: datetime
     top_disease_name: str

@@ -1,7 +1,3 @@
-"""Case use cases. Creating a case is one transaction: case, anamnesis, vital signs and lab
-reports are saved together or not at all (TX-1 in the data dictionary, without the model call:
-predictions run asynchronously in a separate step)."""
-
 from collections import defaultdict
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -72,8 +68,6 @@ class CaseService:
         self.catalog = CatalogRepository(session)
         self.clock = clock
 
-
-
     def create(self, patient_id: UUID, data: CaseCreate, *, actor: Doctor) -> CaseView:
         patient = self._active_patient(patient_id)
 
@@ -86,7 +80,6 @@ class CaseService:
         )
         if errors:
             raise DomainValidationError(errors)
-
 
         case = Case(id=uuid4(), patient_id=patient.id, created_by=actor.id)
         anamnesis = CaseAnamnesis(
@@ -129,7 +122,6 @@ class CaseService:
     def replace_anamnesis(
         self, case_id: UUID, data: AnamnesisReplace, *, actor: Doctor
     ) -> tuple[CaseAnamnesis, Doctor]:
-        """Earlier prediction runs keep their own input snapshot, so they are not affected."""
         case = self._get_case(case_id)
         self._active_patient(case.patient_id)
         found = self.repo.get_anamnesis(case_id, for_update=True)
@@ -141,8 +133,6 @@ class CaseService:
         record_event(self.session, "case.anamnesis_updated", actor_id=actor.id, case_id=case_id)
         self.session.commit()
         return anamnesis, author
-
-
 
     def get(self, case_id: UUID) -> CaseView:
         case = self._get_case(case_id)
@@ -175,8 +165,6 @@ class CaseService:
         rows, total = self.repo.list_for_patient(patient_id, page=page, page_size=page_size)
         latest = self.repo.latest_predictions(row.case.id for row in rows)
         return [(row, latest.get(row.case.id)) for row in rows], total
-
-
 
     def _get_case(self, case_id: UUID) -> Case:
         case = self.repo.get(case_id)

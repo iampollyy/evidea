@@ -1,5 +1,3 @@
-"""Data access for patients. The only place with SQL for the `patients` table."""
-
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Literal
@@ -75,7 +73,6 @@ class PatientRepository:
         search: str | None,
         sort: PatientSort,
     ) -> tuple[list[PatientRow], int]:
-        """One query for the page (last visit included, no N+1) and one for the total."""
         last_visit = _last_visit_expr().label("last_visit_at")
         order_by = {
             "name": (Patient.surname, Patient.name, Patient.id),
@@ -98,5 +95,4 @@ class PatientRepository:
         self.session.flush()
 
     def anonymize(self, patient_id: UUID) -> None:
-        """Right to erasure, implemented by the database procedure (migration 0007)."""
         self.session.execute(text("CALL anonymize_patient(:id)"), {"id": patient_id})

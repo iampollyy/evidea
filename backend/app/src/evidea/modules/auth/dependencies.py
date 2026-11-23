@@ -1,8 +1,3 @@
-"""FastAPI dependencies for authentication and authorization.
-
-Usage in a router:  `user: Doctor = Depends(get_current_user)` or `Depends(require_admin)`.
-"""
-
 from fastapi import Depends, Request
 from sqlalchemy.orm import Session
 
@@ -25,11 +20,6 @@ def get_current_user(
     session: Session = Depends(get_session),
     settings: Settings = Depends(get_settings_from_app),
 ) -> Doctor:
-    """The signed-in doctor, loaded fresh from the database on every request.
-
-    The role and the deactivation flag are read from the database, not from the token,
-    so deactivating an account or changing a role takes effect immediately.
-    """
     token = request.cookies.get(settings.session_cookie_name)
     claims = (
         decode_session_token(token, secret=settings.jwt_secret.get_secret_value())

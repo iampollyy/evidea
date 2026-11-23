@@ -8,8 +8,6 @@ from evidea.core.db import Base
 
 
 class Patient(Base):
-    """ORM mapping of `patients`. `deleted_at` set means the patient is archived."""
-
     __tablename__ = "patients"
     __mapper_args__ = {"eager_defaults": True}
 

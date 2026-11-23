@@ -1,6 +1,3 @@
-"""Patient use cases. Each public method is one transaction: it commits on success,
-and on any error the session is rolled back by the request (see core/db.py)."""
-
 from collections.abc import Callable
 from datetime import UTC, date, datetime
 from uuid import UUID
@@ -55,8 +52,6 @@ class PatientService:
         self.max_upload_bytes = max_upload_bytes
         self.clock = clock
 
-
-
     def get(self, patient_id: UUID) -> PatientRow:
         row = self.repo.get_row(patient_id)
         if row is None:
@@ -83,8 +78,6 @@ class PatientService:
             raise NotFoundError()
         return data, media_type_for_key(patient.photo_key)
 
-
-
     def create(self, data: PatientCreate, *, actor: Doctor) -> PatientRow:
         patient = Patient(**data.model_dump())
         self._save(patient)
@@ -102,7 +95,6 @@ class PatientService:
         return self.get(patient_id)
 
     def archive(self, patient_id: UUID, *, actor: Doctor) -> PatientRow:
-        """Irreversible (agreed in Phase 2). Idempotent: archiving twice changes nothing."""
         patient = self._get_for_update(patient_id)
         if patient.deleted_at is None:
             patient.deleted_at = self.clock()
@@ -111,7 +103,6 @@ class PatientService:
         return self.get(patient_id)
 
     def anonymize(self, patient_id: UUID, *, actor: Doctor) -> PatientRow:
-        """Right to erasure: the DB procedure replaces personal data; we also drop the photo."""
         patient = self._get_for_update(patient_id)
         old_photo = patient.photo_key
         patient.photo_key = None
@@ -153,8 +144,6 @@ class PatientService:
         )
         self.session.commit()
         self.storage.delete(old_key)
-
-
 
     def _get_for_update(self, patient_id: UUID) -> Patient:
         patient = self.repo.get(patient_id, for_update=True)

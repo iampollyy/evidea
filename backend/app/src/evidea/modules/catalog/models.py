@@ -1,5 +1,3 @@
-"""ORM mapping of the lab reference catalog (read-only for the application role)."""
-
 from uuid import UUID
 
 from sqlalchemy import Boolean, ForeignKey, String

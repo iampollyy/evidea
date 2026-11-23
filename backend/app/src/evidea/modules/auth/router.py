@@ -1,5 +1,3 @@
-"""HTTP layer for /auth and /me. No business logic here: parse, call the service, respond."""
-
 from fastapi import APIRouter, Depends, File, Request, Response, UploadFile, status
 from sqlalchemy.orm import Session
 
@@ -25,8 +23,6 @@ me_router = APIRouter(prefix="/me", tags=["Me"])
 
 
 def _set_session_cookie(response: Response, settings: Settings, token: str | None) -> None:
-    """HttpOnly (no JavaScript access), Secure (HTTPS only), SameSite=Strict (CSRF defence).
-    `token=None` clears the cookie."""
     if token is None:
         response.delete_cookie(
             settings.session_cookie_name,
@@ -55,7 +51,6 @@ def login(
     service: AuthService = Depends(get_auth_service),
     settings: Settings = Depends(get_settings_from_app),
 ) -> DoctorOut:
-    """Verify email and password and set the session cookie."""
     result = service.login(
         email=body.email,
         password=body.password,
@@ -67,7 +62,6 @@ def login(
 
 @auth_router.post("/logout", status_code=status.HTTP_204_NO_CONTENT, operation_id="logout")
 def logout(response: Response, settings: Settings = Depends(get_settings_from_app)) -> None:
-    """Clear the session cookie. Works without a session too."""
     _set_session_cookie(response, settings, None)
 
 
@@ -79,7 +73,6 @@ def logout(response: Response, settings: Settings = Depends(get_settings_from_ap
 def accept_invitation(
     body: AcceptInvitationRequest, service: AuthService = Depends(get_auth_service)
 ) -> None:
-    """Set a password using the one-time token from the invitation email."""
     service.accept_invitation(token=body.token, password=body.password)
 
 

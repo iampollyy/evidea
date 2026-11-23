@@ -6,7 +6,7 @@ from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 
 class Base(DeclarativeBase):
-    """Base class of ORM models. The schema itself is owned by the SQL migrations in backend/db."""
+    pass
 
 
 def create_db_engine(url: str, *, connect_timeout_seconds: int = 5) -> Engine:

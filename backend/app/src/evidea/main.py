@@ -1,5 +1,3 @@
-"""Application factory. Run with:  uvicorn evidea.main:create_app --factory"""
-
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from importlib import import_module
@@ -21,6 +19,7 @@ from evidea.modules.catalog.router import router as catalog_router
 from evidea.modules.doctors.router import router as doctors_router
 from evidea.modules.health.router import router as health_router
 from evidea.modules.patients.router import router as patients_router
+from evidea.modules.predictions.router import router as predictions_router
 
 API_PREFIX = "/api/v1"
 
@@ -67,6 +66,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         patients_router,
         cases_router,
         catalog_router,
+        predictions_router,
         health_router,
     ):
         app.include_router(router, prefix=API_PREFIX)

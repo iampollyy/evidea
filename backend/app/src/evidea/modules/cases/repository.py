@@ -1,6 +1,3 @@
-"""Data access for cases and their clinical data. Every read uses a fixed number of queries
-(no query per row), regardless of how many vital signs or lab results a case has."""
-
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from datetime import datetime
@@ -56,8 +53,6 @@ class NewLabReport:
 class CaseRepository:
     def __init__(self, session: Session) -> None:
         self.session = session
-
-
 
     def get(self, case_id: UUID) -> Case | None:
         return self.session.get(Case, case_id)
@@ -144,8 +139,6 @@ class CaseRepository:
         )
         return [CaseSummaryRow(r[0], r[1], r[2]) for r in rows], int(total or 0)
 
-
-
     def add_case(
         self,
         case: Case,
@@ -153,7 +146,6 @@ class CaseRepository:
         vital_signs: VitalSigns | None,
         lab_reports: list[NewLabReport],
     ) -> None:
-        """Insert everything in dependency order. The caller commits (one transaction)."""
         self.session.add(case)
         self.session.flush()
 

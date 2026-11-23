@@ -8,8 +8,6 @@ from evidea.core.db import Base
 
 
 class AuditLog(Base):
-    """Business audit trail (`system_logs`). IDs only, never personal data (DQ-41)."""
-
     __tablename__ = "system_logs"
 
     id: Mapped[UUID] = mapped_column("log_id", primary_key=True, default=uuid4)

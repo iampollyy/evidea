@@ -12,7 +12,6 @@ class CatalogRepository:
         self.session = session
 
     def active_catalog(self) -> tuple[list[LabCategory], list[LabPanel], list[LabAnalyte]]:
-        """Three small queries for the whole active tree (no query per category or panel)."""
         categories = self.session.scalars(
             select(LabCategory).where(LabCategory.is_active).order_by(LabCategory.name)
         ).all()

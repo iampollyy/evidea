@@ -1,9 +1,3 @@
-"""Writes business events to `system_logs` inside the caller's transaction.
-
-The event is committed together with the change it describes, so the audit trail never
-claims something happened that was rolled back.
-"""
-
 from typing import Literal
 from uuid import UUID
 

@@ -107,6 +107,15 @@ def test_list_paginates_searches_and_hides_contact_data(api: TestClient, clinici
     assert search("maria.k@") == ["Kowalska"]
     assert search("100%") == []
     assert api.get(PATIENTS, params={"search": "a"}).status_code == 422
+    assert api.get(PATIENTS, params={"search": "a\x00"}).status_code == 422
+
+
+def test_list_rejects_page_numbers_beyond_the_supported_range(
+    api: TestClient, clinician: Doctor
+) -> None:
+    response = api.get(PATIENTS, params={"page": 2_147_483_648, "pageSize": 100})
+    assert response.status_code == 422
+    assert response.json()["code"] == "VALIDATION_ERROR"
 
 
 def test_last_visit_comes_from_latest_case_and_can_be_sorted(

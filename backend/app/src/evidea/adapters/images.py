@@ -41,5 +41,4 @@ def media_type_for_key(key: str) -> str:
 
 
 def image_version(key: str) -> str:
-    """Short version string for cache-busting URLs; changes on every upload."""
     return PurePosixPath(key).stem[:12]

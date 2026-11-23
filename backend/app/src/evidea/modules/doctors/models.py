@@ -1,9 +1,3 @@
-"""ORM mapping of the existing tables `roles`, `doctors_and_admin`, `invitations`.
-
-The schema is owned by the SQL migrations in backend/db; these classes only describe it
-(they never create tables). A test compares them with the real database.
-"""
-
 from datetime import date, datetime
 from uuid import UUID, uuid4
 

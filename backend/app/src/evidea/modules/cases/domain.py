@@ -1,9 +1,3 @@
-"""Business rules for lab results (DQ-22), independent of FastAPI and the database.
-
-The database enforces the same rules with a trigger; checking them here first lets the API
-return precise field errors (e.g. `labReports.0.results.1.value`) instead of a generic failure.
-"""
-
 from collections.abc import Mapping, Sequence
 from datetime import datetime
 from decimal import Decimal
@@ -56,7 +50,6 @@ def _error(field: str, message: str, code: str) -> dict[str, str]:
 
 def value_matches_type(value: LabValue, data_type: str) -> bool:
     if data_type == "numeric":
-
         return isinstance(value, int | float) and not isinstance(value, bool)
     if data_type == "boolean":
         return isinstance(value, bool)
@@ -70,7 +63,6 @@ def validate_lab_reports(
     analytes: Mapping[UUID, AnalyteInfo],
     now: datetime,
 ) -> list[dict[str, str]]:
-    """Return all field errors at once (empty list = valid)."""
     errors: list[dict[str, str]] = []
     for i, report in enumerate(reports):
         prefix = f"labReports.{i}"
@@ -119,7 +111,6 @@ def validate_lab_reports(
 
 
 def to_columns(value: LabValue) -> tuple[Decimal | None, str | None]:
-    """Map an API value to (numeric_val, text_val). Call only after validation."""
     if isinstance(value, bool):
         return None, "true" if value else "false"
     if isinstance(value, int | float):
@@ -128,7 +119,6 @@ def to_columns(value: LabValue) -> tuple[Decimal | None, str | None]:
 
 
 def from_columns(numeric: Decimal | None, text: str | None, data_type: str) -> LabValue:
-    """Map stored columns back to a typed API value."""
     if data_type == "numeric" and numeric is not None:
         return int(numeric) if numeric == numeric.to_integral_value() else float(numeric)
     if data_type == "boolean":

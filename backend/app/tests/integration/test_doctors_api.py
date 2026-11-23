@@ -54,13 +54,11 @@ def test_full_onboarding_flow(
     assert body["status"] == "invited"
     assert body["role"] == "clinician"
 
-
     assert len(mailer.outbox) == 1
     assert mailer.outbox[0].to == "tomas.kazlauskas@clinic.example"
     token = invitation_token(mailer)
     stored = owner_session.scalars(text("SELECT token_hash FROM invitations")).all()
     assert token not in stored
-
 
     api.post("/api/v1/auth/logout")
     attempt = api.post(

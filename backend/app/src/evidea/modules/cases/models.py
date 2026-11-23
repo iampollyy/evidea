@@ -1,10 +1,3 @@
-"""ORM mapping of clinical case tables (owned by the SQL migrations in backend/db).
-
-Measurements (vital signs, lab reports) belong to the patient and are linked to cases through
-junction tables. Composite foreign keys (case_id, patient_id) in the database guarantee that a
-case only links data of its own patient.
-"""
-
 from datetime import datetime
 from decimal import Decimal
 from uuid import UUID, uuid4
