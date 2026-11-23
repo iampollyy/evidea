@@ -52,5 +52,10 @@ jobs:
       - name: Apply seed
         run: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f seeds/dev_seed.sql
 
+      - name: Apply demo seed twice (must be idempotent)
+        run: |
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f seeds/demo_seed.sql
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f seeds/demo_seed.sql
+
       - name: Run constraint tests
         run: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f tests/constraints_test.sql

@@ -1,0 +1,82 @@
+name: evidea
+
+x-api-environment: &api-environment
+  DATABASE_APP_URL: postgresql://evidea_app:${EVIDEA_APP_PASSWORD:?set EVIDEA_APP_PASSWORD in .env}@postgres:5432/evidea
+  JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+  ENVIRONMENT: ${ENVIRONMENT:-development}
+  COOKIE_SECURE: ${COOKIE_SECURE:-true}
+  ALLOWED_ORIGINS: '["${PUBLIC_URL:-http://localhost:8080}"]'
+  FRONTEND_URL: ${PUBLIC_URL:-http://localhost:8080}
+  SMTP_HOST: mailpit
+  SMTP_PORT: "1025"
+  MAIL_FROM: ${MAIL_FROM:-EVIDEA <no-reply@evidea.local>}
+  LOG_LEVEL: ${LOG_LEVEL:-INFO}
+  LOG_JSON: "true"
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: evidea
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d evidea"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  migrate:
+    build: ./backend/db
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/evidea
+      EVIDEA_APP_PASSWORD: ${EVIDEA_APP_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build: ./backend/app
+    image: evidea-backend:latest
+    restart: unless-stopped
+    environment: *api-environment
+    volumes:
+      - storage:/data/storage
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  worker:
+    image: evidea-backend:latest
+    restart: unless-stopped
+    command: ["python", "-m", "evidea.worker"]
+    environment: *api-environment
+    healthcheck:
+      disable: true
+    depends_on:
+      api:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  mailpit:
+    image: axllent/mailpit:v1.21
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${MAILPIT_UI_PORT:-8025}:8025"
+
+volumes:
+  pgdata:
+  storage:

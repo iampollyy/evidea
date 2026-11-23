@@ -87,6 +87,22 @@ python3 seeds/import_orphanet.py en_product4.xml | psql "$DATABASE_URL" -v ON_ER
 
 The import is repeatable. It adds or updates diseases by `orpha_code` and writes one `INFO` row to `system_logs` with the Orphanet version. New diseases are inactive (`is_active = FALSE`). This file contains names only: ICD codes, descriptions and inheritance come from other Orphanet files and are not loaded yet.
 
+## Demo data and first users
+
+`seeds/demo_seed.sql` prepares a database for a demonstration: it activates the stub prediction model `evidea-stub (demo)` (version `0.1.0-demo`), activates 12 Orphanet diseases and adds a small lab catalog (CBC, muscle enzymes). It is idempotent and runs as the owner, because reference data is read-only for `evidea_app`:
+
+```bash
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f seeds/demo_seed.sql
+```
+
+The stub model is deterministic and labelled as a demo; its scores are not medical predictions.
+
+Accounts are created with the backend CLI (from `backend/app`, with `DATABASE_APP_URL` and `JWT_SECRET` set). The password is read from `EVIDEA_USER_PASSWORD` or asked interactively, checked against the password policy and stored as an Argon2id hash. Use it to create the first admin in any environment:
+
+```bash
+python -m evidea.cli create-user --email admin@clinic.example --name Dev --surname Admin --role admin
+```
+
 ## Automatic check
 
 The workflow [db-check.yml](../../.github/workflows/db-check.yml) runs on every push and pull request that touches `backend/db/`. It starts PostgreSQL 16 in a service container and runs the same steps as the quick check above. A failing migration, seed or test fails the build.
