@@ -1,13 +1,14 @@
 openapi: 3.1.0
 info:
   title: EVIDEA API
-  version: 1.0.0-draft
+  version: 1.0.0
   summary: Clinical decision support API for rare disease hypotheses.
   description: |
     REST API of EVIDEA. Clinicians manage patients and cases and request ranked
     rare-disease hypotheses; administrators manage clinician accounts.
 
-    **Status:** DRAFT contract (Phase 5). Not implemented yet.
+    **Status:** Implemented API contract. `info.version` identifies this contract release;
+    the URL prefix (`/api/v1`) identifies the major API version.
 
     ## Conventions
     - Base path `/api/v1`. JSON request and response bodies use **camelCase**.
@@ -71,6 +72,7 @@ paths:
             schema: { $ref: '#/components/schemas/LoginRequest' }
             example: { email: sarah.chen@clinic.example, password: correct-horse-battery }
       responses:
+        '400': { $ref: '#/components/responses/BadRequest' }
         '200':
           description: Signed in. Returns the current user.
           headers:
@@ -189,6 +191,7 @@ paths:
           multipart/form-data:
             schema: { $ref: '#/components/schemas/ImageUpload' }
       responses:
+        '400': { $ref: '#/components/responses/BadRequest' }
         '200':
           description: Avatar stored.
           content:
@@ -272,6 +275,7 @@ paths:
               phoneNumber: '+370 612 45 648'
               role: clinician
       responses:
+        '400': { $ref: '#/components/responses/BadRequest' }
         '201':
           description: Doctor created, invitation sent.
           headers:
@@ -329,6 +333,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /doctors/{doctorId}/deactivate:
     parameters:
@@ -351,6 +356,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
         '409':
           description: Admin tried to deactivate their own account.
           content:
@@ -382,6 +388,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /doctors/{doctorId}/invitations:
     parameters:
@@ -414,6 +421,7 @@ paths:
                 status: 409
                 code: DOCTOR_NOT_INVITED
                 requestId: 4b1d2c3e-0f9a-4e8b-a7c6-5d4e3f2a1b0c
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /doctors/{doctorId}/avatar:
     parameters:
@@ -432,6 +440,7 @@ paths:
             image/webp: { schema: { $ref: '#/components/schemas/Binary' } }
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /patients:
     get:
@@ -492,6 +501,7 @@ paths:
               email: alberto.ripley@mail.example
               phoneNumber: '+370 612 45 648'
       responses:
+        '400': { $ref: '#/components/responses/BadRequest' }
         '201':
           description: Patient created.
           headers:
@@ -535,6 +545,7 @@ paths:
                 activePatient: { $ref: '#/components/examples/ActivePatient' }
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
     put:
       tags: [Patients]
       operationId: replacePatient
@@ -555,6 +566,7 @@ paths:
               email: alberto.ripley@mail.example
               phoneNumber: '+370 600 00 001'
       responses:
+        '400': { $ref: '#/components/responses/BadRequest' }
         '200':
           description: Updated patient.
           content:
@@ -587,6 +599,7 @@ paths:
                 archivedPatient: { $ref: '#/components/examples/ArchivedPatient' }
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /patients/{patientId}/anonymize:
     parameters:
@@ -622,6 +635,7 @@ paths:
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /patients/{patientId}/photo:
     parameters:
@@ -639,6 +653,7 @@ paths:
             image/webp: { schema: { $ref: '#/components/schemas/Binary' } }
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
     put:
       tags: [Patients]
       operationId: uploadPatientPhoto
@@ -650,6 +665,7 @@ paths:
           multipart/form-data:
             schema: { $ref: '#/components/schemas/ImageUpload' }
       responses:
+        '400': { $ref: '#/components/responses/BadRequest' }
         '200':
           description: Photo stored.
           content:
@@ -670,6 +686,7 @@ paths:
         '204': { description: Photo removed (or there was none). }
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /patients/{patientId}/cases:
     parameters:
@@ -743,6 +760,7 @@ paths:
                     - { analyteId: 00000000-0000-0000-0000-000000000702, value: 1520 }
                     - { analyteId: 00000000-0000-0000-0000-000000000703, value: 89 }
       responses:
+        '400': { $ref: '#/components/responses/BadRequest' }
         '201':
           description: Case created.
           headers:
@@ -777,6 +795,7 @@ paths:
                 caseDetail: { $ref: '#/components/examples/CaseDetail' }
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /cases/{caseId}/anamnesis:
     parameters:
@@ -802,6 +821,7 @@ paths:
               pastMedicalHistory: null
               allergies: None known
       responses:
+        '400': { $ref: '#/components/responses/BadRequest' }
         '200':
           description: Updated anamnesis.
           content:
@@ -941,6 +961,7 @@ paths:
                 status: 503
                 code: NO_ACTIVE_MODEL
                 requestId: 4b1d2c3e-0f9a-4e8b-a7c6-5d4e3f2a1b0c
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /prediction-runs/{runId}:
     parameters:
@@ -990,6 +1011,7 @@ paths:
                       inheritanceType: null
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /hypotheses/{hypothesisId}/explanations:
     parameters:
@@ -1029,6 +1051,7 @@ paths:
                     createdAt: '2026-11-18T09:31:12Z'
         '401': { $ref: '#/components/responses/Unauthenticated' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
 
   /health/live:
     get:
@@ -1084,7 +1107,7 @@ components:
       name: page
       in: query
       description: Page number, starting at 1.
-      schema: { type: integer, minimum: 1, default: 1 }
+      schema: { type: integer, minimum: 1, maximum: 2147483647, default: 1 }
     PageSize:
       name: pageSize
       in: query
@@ -1093,8 +1116,8 @@ components:
     Search:
       name: search
       in: query
-      description: Case-insensitive substring search, 2 to 100 characters.
-      schema: { type: string, minLength: 2, maxLength: 100 }
+      description: Case-insensitive substring search, 2 to 100 characters; control characters are not allowed.
+      schema: { type: string, minLength: 2, maxLength: 100, pattern: '^[^\x00-\x1f\x7f]+$' }
     DoctorId:
       name: doctorId
       in: path
@@ -1121,6 +1144,17 @@ components:
       schema: { type: string, format: uuid }
 
   responses:
+    BadRequest:
+      description: The request body could not be parsed.
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+          example:
+            type: https://evidea.example/problems/bad-request
+            title: Bad request
+            status: 400
+            code: BAD_REQUEST
+            requestId: 4b1d2c3e-0f9a-4e8b-a7c6-5d4e3f2a1b0c
     Unauthenticated:
       description: No valid session (missing, expired or invalid cookie, or the account was deactivated).
       content:
@@ -1364,6 +1398,7 @@ components:
           description: Stable machine-readable error code. Clients should branch on this, not on `title`.
           enum:
             - VALIDATION_ERROR
+            - BAD_REQUEST
             - UNAUTHENTICATED
             - INVALID_CREDENTIALS
             - ACCOUNT_DEACTIVATED
@@ -1607,6 +1642,7 @@ components:
 
     ImageUpload:
       type: object
+      additionalProperties: false
       required: [file]
       properties:
         file:
@@ -1635,6 +1671,7 @@ components:
 
     AnamnesisCreate:
       description: Do not enter patient identifiers (names, IDs) in free text (DQ-27).
+      unevaluatedProperties: false
       allOf:
         - $ref: '#/components/schemas/AnamnesisFields'
         - type: object
@@ -1642,6 +1679,7 @@ components:
 
     AnamnesisReplace:
       description: Complete anamnesis for `PUT`; every field is required, optional ones may be `null`.
+      unevaluatedProperties: false
       allOf:
         - $ref: '#/components/schemas/AnamnesisFields'
         - type: object
@@ -1671,6 +1709,7 @@ components:
 
     VitalSignsCreate:
       description: At least one measurement is required.
+      unevaluatedProperties: false
       allOf:
         - $ref: '#/components/schemas/VitalSignsFields'
         - type: object
