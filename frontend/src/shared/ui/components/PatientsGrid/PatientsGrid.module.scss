@@ -7,6 +7,11 @@
   list-style: none;
 }
 
+.list {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
 .item {
   display: flex;
   min-width: 0;

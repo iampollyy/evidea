@@ -1,0 +1,70 @@
+.card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border: 0.0625rem solid var(--ev-color-border-card);
+  border-radius: 0.375rem;
+  box-shadow: 0 0.0625rem 0.0625rem rgb(0 0 0 / 4%);
+  background-color: var(--ev-color-surface-default);
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  box-sizing: border-box;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 0.0625rem solid var(--ev-color-neutral-090);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  min-width: 0;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: var(--ev-color-text-primary);
+  font-size: 1.125rem;
+}
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  color: var(--ev-color-neutral-890);
+  font-family: 'Instrument Sans', 'Inter', sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--ev-color-text-secondary);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.body {
+  padding: 1.25rem;
+}

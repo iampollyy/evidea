@@ -1,20 +1,15 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react';
 
-import { useValidatedForm } from '@/shared/lib/form/useValidatedForm';
-import { SEX_OPTIONS } from '@/shared/lib/person/sex';
-import { toIsoDate } from '@/shared/lib/validation/person';
+import { EMPTY_PATIENT, PATIENT_FIELD_ORDER } from '@/constants/forms.constants';
+import { SEX_OPTIONS } from '@/constants/person.constants';
+import { useValidatedForm } from '@/shared/hooks/useValidatedForm';
+import type { AddPatientFormValues } from '@/shared/types/forms.types';
 import { Dropdown } from '@/shared/ui/atoms/Dropdown/Dropdown';
 import { Input } from '@/shared/ui/atoms/Input/Input';
 import { FormPanel } from '@/shared/ui/components/FormPanel/FormPanel';
 import { FormSection } from '@/shared/ui/components/FormSection/FormSection';
-import {
-  EMPTY_PATIENT,
-  PATIENT_FIELD_ORDER,
-  validatePatient,
-  type AddPatientFormValues,
-} from './validatePatient';
-
-export type { AddPatientFormValues } from './validatePatient';
+import { toIsoDate } from '@/utils/date';
+import { validatePatient } from '@/utils/validation/patient';
 
 export interface AddPatientFormProps extends Omit<
   ComponentPropsWithRef<'form'>,

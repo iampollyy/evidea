@@ -5,7 +5,7 @@ x-api-environment: &api-environment
   JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
   ENVIRONMENT: ${ENVIRONMENT:-development}
   COOKIE_SECURE: ${COOKIE_SECURE:-true}
-  ALLOWED_ORIGINS: '["${PUBLIC_URL:-http://localhost:8080}"]'
+  ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-["${PUBLIC_URL:-http://localhost:8080}"]}
   FRONTEND_URL: ${PUBLIC_URL:-http://localhost:8080}
   SMTP_HOST: mailpit
   SMTP_PORT: "1025"

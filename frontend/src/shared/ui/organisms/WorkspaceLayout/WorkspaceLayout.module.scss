@@ -1,0 +1,116 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--ev-color-surface-canvas);
+  color: var(--ev-color-text-primary);
+  font-family: 'Inter', sans-serif;
+}
+
+.skipLink {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 30;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  background-color: var(--ev-color-action-primary);
+  color: var(--ev-color-action-on-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+
+  &:focus-visible {
+    outline: 0.125rem solid var(--ev-color-action-focus);
+    outline-offset: 0.125rem;
+    transform: none;
+  }
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  flex: 0 0 15rem;
+  height: 100vh;
+}
+
+.workspace {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  flex: 0 0 3.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 2rem;
+  border-bottom: 0.0625rem solid var(--ev-color-border-default);
+  background-color: var(--ev-color-surface-default);
+}
+
+.workspaceLabel {
+  color: var(--ev-color-text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.signOutError {
+  margin: 0;
+  padding: 0.625rem 2rem;
+  background-color: var(--ev-color-status-error-surface);
+  color: var(--ev-color-status-error-text);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 100rem;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@media (max-width: 68rem) {
+  .content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: static;
+    flex-basis: auto;
+    width: 100%;
+    height: auto;
+  }
+
+  .sidebar > :global(nav) {
+    display: none;
+  }
+
+  .topbar {
+    flex-basis: 3.5rem;
+    padding: 0 1rem;
+  }
+
+  .content {
+    gap: 1.125rem;
+    padding: 1rem;
+  }
+}

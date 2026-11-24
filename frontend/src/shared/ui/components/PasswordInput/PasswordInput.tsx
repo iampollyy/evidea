@@ -19,7 +19,7 @@ export function PasswordInput({ disabled, ...rest }: PasswordInputProps) {
           variant="ghost"
           size="sm"
           icon={<Icon name={visible ? 'visibility' : 'visibility_off'} />}
-          aria-label={visible ? 'Hide password' : 'Show password'}
+          aria-label="Show password"
           aria-pressed={visible}
           disabled={disabled}
           className={styles.toggle}

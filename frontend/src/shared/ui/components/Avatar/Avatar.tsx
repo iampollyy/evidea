@@ -1,6 +1,7 @@
 import type { ComponentPropsWithRef } from 'react';
 
 import { Image } from '@/shared/ui/atoms/Image/Image';
+import { getInitials } from '@/utils/getInitials';
 import styles from './Avatar.module.scss';
 
 export type AvatarSize = 'sm' | 'md' | 'lg';
@@ -12,16 +13,6 @@ export interface AvatarProps extends Omit<ComponentPropsWithRef<'span'>, 'childr
   size?: AvatarSize;
   tone?: AvatarTone;
   decorative?: boolean;
-}
-
-function getInitials(name: string) {
-  return name
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0].toUpperCase())
-    .join('');
 }
 
 export function Avatar({

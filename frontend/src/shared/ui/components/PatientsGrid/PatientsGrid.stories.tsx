@@ -1,4 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { MouseEvent } from 'react';
+
+import { fn } from 'storybook/test';
 
 import sampleAvatar from '@/assets/sample-image.jpg';
 import { PatientsGrid, type PatientsGridPatient } from './PatientsGrid';
@@ -19,8 +22,16 @@ const meta = {
   args: {
     patients,
     'aria-label': 'Patients',
+    getPatientHref: (patient) => `/doctor/patients/${patient.id}`,
+    onPatientNavigate: fn((_patient: PatientsGridPatient, event: MouseEvent<HTMLAnchorElement>) =>
+      event.preventDefault(),
+    ),
   },
   argTypes: {
+    layout: {
+      control: 'inline-radio',
+      options: ['grid', 'list'],
+    },
     onPatientMenuClick: { action: 'patient menu clicked' },
   },
   decorators: [
@@ -37,6 +48,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const List: Story = {
+  args: {
+    layout: 'list',
+    patients: patients.slice(0, 4),
+  },
+};
 
 export const MixedContent: Story = {
   args: {
