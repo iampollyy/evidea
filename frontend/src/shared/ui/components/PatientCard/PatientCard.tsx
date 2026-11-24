@@ -1,5 +1,6 @@
-import type { ComponentPropsWithRef } from 'react';
+import type { ComponentPropsWithRef, MouseEvent } from 'react';
 
+import { isPlainLeftClick } from '@/shared/lib/dom/isPlainLeftClick';
 import { Button } from '@/shared/ui/atoms/Button/Button';
 import { Icon } from '@/shared/ui/atoms/Icon/Icon';
 import { Avatar } from '@/shared/ui/components/Avatar/Avatar';
@@ -16,6 +17,8 @@ export interface PatientCardPatient {
 
 export interface PatientCardProps extends Omit<ComponentPropsWithRef<'article'>, 'children'> {
   patient: PatientCardPatient;
+  href?: string;
+  onNavigate?: (event: MouseEvent<HTMLAnchorElement>) => void;
   onMenuClick?: () => void;
 }
 
@@ -41,9 +44,16 @@ function toIsoDate(date: Date) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
-export function PatientCard({ patient, onMenuClick, className, ...rest }: PatientCardProps) {
+export function PatientCard({
+  patient,
+  href,
+  onNavigate,
+  onMenuClick,
+  className,
+  ...rest
+}: PatientCardProps) {
   const { name, age, gender, avatarSrc, lastAppointment, location } = patient;
-  const classes = [styles.card, className].filter(Boolean).join(' ');
+  const classes = [styles.card, href && styles.interactive, className].filter(Boolean).join(' ');
   const hasMeta = lastAppointment != null || location != null;
 
   return (
@@ -52,7 +62,21 @@ export function PatientCard({ patient, onMenuClick, className, ...rest }: Patien
         <div className={styles.details}>
           <Avatar name={name} src={avatarSrc} size="md" decorative />
           <div className={styles.identity}>
-            <h3 className={styles.name}>{name}</h3>
+            <h3 className={styles.name}>
+              {href ? (
+                <a
+                  href={href}
+                  className={styles.link}
+                  onClick={(event) => {
+                    if (onNavigate && isPlainLeftClick(event)) onNavigate(event);
+                  }}
+                >
+                  {name}
+                </a>
+              ) : (
+                name
+              )}
+            </h3>
             <p className={styles.secondary}>
               {age}, {gender}
             </p>
@@ -63,6 +87,7 @@ export function PatientCard({ patient, onMenuClick, className, ...rest }: Patien
           size="sm"
           icon={<Icon name="more_vert" className={styles.menuIcon} />}
           aria-label={`More actions for ${name}`}
+          className={styles.menuButton}
           onClick={onMenuClick}
         />
       </div>

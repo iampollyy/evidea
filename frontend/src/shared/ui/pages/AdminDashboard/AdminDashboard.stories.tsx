@@ -4,7 +4,7 @@ import { fn } from 'storybook/test';
 import { adminNavItemsMock } from '@/shared/mocks/adminNav.mock';
 import { adminUserMock } from '@/shared/mocks/currentUser.mock';
 import { doctorMetricsMock, doctorsMock } from '@/shared/mocks/doctors.mock';
-import { AdminLayout } from '@/shared/ui/organisms/AdminLayout/AdminLayout';
+import { WorkspaceLayout } from '@/shared/ui/organisms/WorkspaceLayout/WorkspaceLayout';
 import { INITIAL_FILTERS } from './AdminDashboard.constants';
 import { AdminDashboard } from './AdminDashboard';
 
@@ -26,7 +26,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <AdminLayout
+      <WorkspaceLayout
         user={adminUserMock}
         navItems={adminNavItemsMock}
         activeNavId={adminNavItemsMock[0].id}
@@ -34,7 +34,7 @@ const meta = {
         onSignOut={fn()}
       >
         <Story />
-      </AdminLayout>
+      </WorkspaceLayout>
     ),
   ],
   parameters: {

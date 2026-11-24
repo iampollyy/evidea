@@ -1,3 +1,5 @@
+import type { MouseEvent } from 'react';
+
 import type { PatientStatus } from '@/shared/api/patients.types';
 import type { LayoutOption } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
 import type { AddPatientFormValues } from '@/shared/ui/components/AddPatientForm/AddPatientForm';
@@ -27,4 +29,11 @@ export interface DoctorDashboardProps {
   onAddPatientOpen?: () => void;
   onAddPatientCancel?: () => void;
   onAddPatientSubmit?: (values: AddPatientFormValues) => void;
+  getPatientHref?: (patient: PatientsGridPatient) => string;
+  onPatientOpen?: (patient: PatientsGridPatient, event: MouseEvent<HTMLAnchorElement>) => void;
 }
+
+export type DoctorDashboardNavigationProps = Pick<
+  DoctorDashboardProps,
+  'getPatientHref' | 'onPatientOpen'
+>;

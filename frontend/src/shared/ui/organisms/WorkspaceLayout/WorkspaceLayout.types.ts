@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import type { CurrentUser } from '@/shared/api/auth.types';
 import type { SidebarNavItem, SidebarNavProps } from '@/shared/ui/components/SidebarNav/SidebarNav';
 
-export interface AdminLayoutProps {
+export interface WorkspaceLayoutProps {
   user: CurrentUser;
   navItems: SidebarNavItem[];
   activeNavId?: string;

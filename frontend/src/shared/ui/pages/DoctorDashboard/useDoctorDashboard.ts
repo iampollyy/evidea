@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 
 import { createPatient, listPatients } from '@/shared/api/patients';
 import type { PatientsPage } from '@/shared/api/patients.types';
+import { getErrorMessage } from '@/shared/lib/errors/getErrorMessage';
 import type { LayoutOption } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
 import type { AddPatientFormValues } from '@/shared/ui/components/AddPatientForm/AddPatientForm';
+import { toPatientInput } from '@/shared/ui/components/AddPatientForm/validatePatient';
 import {
   INITIAL_FILTERS,
   MIN_SEARCH_LENGTH,
@@ -11,7 +13,7 @@ import {
   PATIENT_ADDED_NOTICE,
 } from './DoctorDashboard.constants';
 import type { DoctorDashboardProps, PatientFilters } from './DoctorDashboard.types';
-import { getErrorMessage, toGridPatient, toPatientInput } from './DoctorDashboard.utils';
+import { toGridPatient } from './DoctorDashboard.utils';
 
 interface Loaded<T> {
   key: string;

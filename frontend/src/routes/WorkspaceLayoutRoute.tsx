@@ -3,7 +3,7 @@ import { matchPath, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/shared/api/auth';
 import type { SidebarNavItem } from '@/shared/ui/components/SidebarNav/SidebarNav';
-import { AdminLayout } from '@/shared/ui/organisms/AdminLayout/AdminLayout';
+import { WorkspaceLayout } from '@/shared/ui/organisms/WorkspaceLayout/WorkspaceLayout';
 import { useCurrentUser } from './CurrentUserContext';
 import { ROUTES } from './paths';
 
@@ -33,7 +33,7 @@ export function WorkspaceLayoutRoute({ navItems, homeHref }: WorkspaceLayoutRout
   };
 
   return (
-    <AdminLayout
+    <WorkspaceLayout
       user={user}
       navItems={navItems}
       activeNavId={activeNavId}
@@ -46,6 +46,6 @@ export function WorkspaceLayoutRoute({ navItems, homeHref }: WorkspaceLayoutRout
       onSignOut={handleSignOut}
     >
       <Outlet />
-    </AdminLayout>
+    </WorkspaceLayout>
   );
 }

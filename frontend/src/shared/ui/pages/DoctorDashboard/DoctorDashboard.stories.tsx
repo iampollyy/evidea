@@ -1,12 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import { fn } from 'storybook/test';
 
 import { clinicianUserMock } from '@/shared/mocks/currentUser.mock';
 import { doctorNavItemsMock } from '@/shared/mocks/doctorNav.mock';
 import { patientsMock } from '@/shared/mocks/patients.mock';
+import type { PatientsGridPatient } from '@/shared/ui/components/PatientsGrid/PatientsGrid';
 import type { LayoutOption } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
-import { AdminLayout } from '@/shared/ui/organisms/AdminLayout/AdminLayout';
+import { WorkspaceLayout } from '@/shared/ui/organisms/WorkspaceLayout/WorkspaceLayout';
 import { INITIAL_FILTERS } from './DoctorDashboard.constants';
 import { DoctorDashboard } from './DoctorDashboard';
 import type { PatientFilters } from './DoctorDashboard.types';
@@ -26,10 +27,14 @@ const meta = {
     onAddPatientOpen: fn(),
     onAddPatientCancel: fn(),
     onAddPatientSubmit: fn(),
+    getPatientHref: (patient) => `/doctor/patients/${patient.id}/overview`,
+    onPatientOpen: fn((_patient: PatientsGridPatient, event: MouseEvent<HTMLAnchorElement>) =>
+      event.preventDefault(),
+    ),
   },
   decorators: [
     (Story) => (
-      <AdminLayout
+      <WorkspaceLayout
         user={clinicianUserMock}
         navItems={doctorNavItemsMock}
         activeNavId={doctorNavItemsMock[0].id}
@@ -37,7 +42,7 @@ const meta = {
         onSignOut={fn()}
       >
         <Story />
-      </AdminLayout>
+      </WorkspaceLayout>
     ),
   ],
   parameters: {

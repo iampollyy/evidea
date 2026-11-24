@@ -3,11 +3,11 @@ import { fn } from 'storybook/test';
 
 import { adminUserMock } from '@/shared/mocks/currentUser.mock';
 import { adminNavItemsMock } from '@/shared/mocks/adminNav.mock';
-import { AdminLayout } from './AdminLayout';
+import { WorkspaceLayout } from './WorkspaceLayout';
 
 const meta = {
-  title: 'Organisms/AdminLayout',
-  component: AdminLayout,
+  title: 'Organisms/WorkspaceLayout',
+  component: WorkspaceLayout,
   args: {
     user: adminUserMock,
     navItems: adminNavItemsMock,
@@ -21,7 +21,7 @@ const meta = {
     layout: 'fullscreen',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof AdminLayout>;
+} satisfies Meta<typeof WorkspaceLayout>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

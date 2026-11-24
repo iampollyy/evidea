@@ -18,6 +18,16 @@ export interface PatientListItem {
   lastVisitAt: string | null;
 }
 
+export interface PatientDetail extends PatientListItem {
+  birthDate: string;
+  email: string;
+  phoneNumber: string | null;
+  createdOn: string;
+  archivedAt: string | null;
+}
+
+export type PatientReplaceInput = PatientCreateInput;
+
 export interface PatientsPage {
   items: PatientListItem[];
   meta: PageMeta;

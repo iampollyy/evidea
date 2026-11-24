@@ -34,6 +34,8 @@ export function DoctorDashboard({
   onAddPatientOpen,
   onAddPatientCancel,
   onAddPatientSubmit,
+  getPatientHref,
+  onPatientOpen,
 }: DoctorDashboardProps) {
   const searchLength = filters.search.trim().length;
   const isEmpty = !isLoading && !error && patients.length === 0;
@@ -105,7 +107,13 @@ export function DoctorDashboard({
               : 'No patients yet.'}
           </p>
         ) : (
-          <PatientsGrid patients={patients} layout={layout} aria-label="Patients" />
+          <PatientsGrid
+            patients={patients}
+            layout={layout}
+            aria-label="Patients"
+            getPatientHref={getPatientHref}
+            onPatientNavigate={onPatientOpen}
+          />
         )}
       </div>
 

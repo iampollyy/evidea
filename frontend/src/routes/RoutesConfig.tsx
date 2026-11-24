@@ -2,11 +2,17 @@ import type { JSX } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { AdminDashboardPage } from '@/shared/ui/pages/AdminDashboard/AdminDashboardPage';
-import { DoctorDashboardPage } from '@/shared/ui/pages/DoctorDashboard/DoctorDashboardPage';
 import { ADMIN_NAV_ITEMS } from './adminNav';
 import { DOCTOR_NAV_ITEMS } from './doctorNav';
 import { ROUTES } from './paths';
-import { AcceptInvitationRoute, ForbiddenPage, HomeRoute, LoginRoute } from './RoutePages';
+import {
+  AcceptInvitationRoute,
+  DoctorDashboardRoute,
+  ForbiddenPage,
+  HomeRoute,
+  LoginRoute,
+  PatientProfileRoute,
+} from './RoutePages';
 import { WorkspaceLayoutRoute } from './WorkspaceLayoutRoute';
 
 export type RouteAccess = 'public' | 'authenticated' | 'admin' | 'clinician';
@@ -66,7 +72,15 @@ export const routesConfig: IRoute[] = [
       },
       {
         path: ROUTES.doctor.dashboard,
-        element: <DoctorDashboardPage />,
+        element: <DoctorDashboardRoute />,
+      },
+      {
+        path: ROUTES.doctor.patient,
+        element: <PatientProfileRoute />,
+      },
+      {
+        path: ROUTES.doctor.patientTab,
+        element: <PatientProfileRoute />,
       },
     ],
   },

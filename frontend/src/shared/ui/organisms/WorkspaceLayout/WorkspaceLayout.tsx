@@ -1,10 +1,10 @@
 import { ROLE_LABELS } from '@/shared/lib/doctor/role';
 import { HeaderNav } from '@/shared/ui/components/HeaderNav/HeaderNav';
 import { Sidebar } from '@/shared/ui/components/Sidebar/Sidebar';
-import type { AdminLayoutProps } from './AdminLayout.types';
-import styles from './AdminLayout.module.scss';
+import type { WorkspaceLayoutProps } from './WorkspaceLayout.types';
+import styles from './WorkspaceLayout.module.scss';
 
-export function AdminLayout({
+export function WorkspaceLayout({
   user,
   navItems,
   activeNavId,
@@ -13,7 +13,7 @@ export function AdminLayout({
   onNavigate,
   onSignOut,
   children,
-}: AdminLayoutProps) {
+}: WorkspaceLayoutProps) {
   const roleLabel = ROLE_LABELS[user.role];
   const avatarUrl = user.avatarUrl ?? undefined;
 

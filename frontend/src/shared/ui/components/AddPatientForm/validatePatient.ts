@@ -1,3 +1,4 @@
+import type { PatientCreateInput } from '@/shared/api/patients.types';
 import type { FormErrors } from '@/shared/lib/form/useValidatedForm';
 import type { Sex } from '@/shared/lib/person/sex';
 import {
@@ -48,5 +49,27 @@ export function validatePatient(
     sex: validateRequiredChoice(values.sex, 'sex'),
     email: validateEmail(values.email),
     phoneNumber: validatePhone(values.phoneNumber, { required: false }),
+  };
+}
+
+export function toPatientInput({
+  name,
+  surname,
+  birthDate,
+  sex,
+  email,
+  phoneNumber,
+}: AddPatientFormValues): PatientCreateInput {
+  if (!sex) {
+    throw new Error('Select a sex.');
+  }
+
+  return {
+    name,
+    surname,
+    birthDate,
+    sex,
+    email,
+    phoneNumber: phoneNumber || null,
   };
 }

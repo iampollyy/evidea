@@ -3,7 +3,9 @@ import {
   SEXES,
   type ListPatientsOptions,
   type PatientCreateInput,
+  type PatientDetail,
   type PatientListItem,
+  type PatientReplaceInput,
   type PatientsPage,
 } from './patients.types';
 
@@ -33,6 +35,31 @@ function isPatientListItem(value: unknown): value is PatientListItem {
     isNullableString(value.photoUrl) &&
     isNullableString(value.lastVisitAt)
   );
+}
+
+function isPatientDetail(value: unknown): value is PatientDetail {
+  return (
+    isPatientListItem(value) &&
+    isRecord(value) &&
+    typeof value.birthDate === 'string' &&
+    typeof value.email === 'string' &&
+    isNullableString(value.phoneNumber) &&
+    typeof value.createdOn === 'string' &&
+    isNullableString(value.archivedAt)
+  );
+}
+
+async function readErrorCode(response: Response) {
+  try {
+    const body: unknown = await response.json();
+    return isRecord(body) && typeof body.code === 'string' ? body.code : null;
+  } catch {
+    return null;
+  }
+}
+
+function patientUrl(patientId: string) {
+  return `${PATIENTS_URL}/${encodeURIComponent(patientId)}`;
 }
 
 function isPatientsPage(value: unknown): value is PatientsPage {
@@ -94,4 +121,56 @@ export async function createPatient(
   if (!response.ok) {
     throw new Error(`Unable to add patient: HTTP ${response.status}`);
   }
+}
+
+export async function getPatient(patientId: string, signal?: AbortSignal): Promise<PatientDetail> {
+  const response = await fetch(patientUrl(patientId), { credentials: 'include', signal });
+  if (response.status === 404) {
+    throw new Error('Patient not found.');
+  }
+  if (!response.ok) {
+    throw new Error(`Unable to load patient: HTTP ${response.status}`);
+  }
+
+  const patient: unknown = await response.json();
+  if (!isPatientDetail(patient)) {
+    throw new Error('Unable to load patient: invalid response');
+  }
+
+  return patient;
+}
+
+const REPLACE_CONFLICTS: Record<string, string> = {
+  EMAIL_ALREADY_USED: 'Another active patient already uses this email.',
+  PATIENT_ARCHIVED: 'Archived patients cannot be changed.',
+};
+
+export async function replacePatient(
+  patientId: string,
+  input: PatientReplaceInput,
+  signal?: AbortSignal,
+): Promise<PatientDetail> {
+  const response = await fetch(patientUrl(patientId), {
+    method: 'PUT',
+    credentials: 'include',
+    signal,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  if (response.status === 409) {
+    const code = await readErrorCode(response);
+    throw new Error(
+      (code && REPLACE_CONFLICTS[code]) ?? 'Patient details conflict with existing data.',
+    );
+  }
+  if (!response.ok) {
+    throw new Error(`Unable to save patient: HTTP ${response.status}`);
+  }
+
+  const patient: unknown = await response.json();
+  if (!isPatientDetail(patient)) {
+    throw new Error('Unable to save patient: invalid response');
+  }
+
+  return patient;
 }
