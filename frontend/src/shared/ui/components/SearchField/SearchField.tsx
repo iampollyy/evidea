@@ -1,16 +1,12 @@
-import { useEffect, useId, useRef, type ComponentPropsWithRef, type Ref } from 'react';
+import { useEffect, useId, useRef, type ComponentPropsWithRef } from 'react';
 
 import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { assignRef } from '@/utils/assignRef';
 import styles from './SearchField.module.scss';
 
 export interface SearchFieldProps extends Omit<ComponentPropsWithRef<'input'>, 'size' | 'type'> {
   label?: string;
   shortcutKey?: string | null;
-}
-
-function assignRef<T>(ref: Ref<T> | undefined, value: T | null) {
-  if (typeof ref === 'function') ref(value);
-  else if (ref) ref.current = value;
 }
 
 export function SearchField({

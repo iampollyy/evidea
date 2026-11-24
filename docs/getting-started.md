@@ -7,7 +7,7 @@ patient information in a development environment.
 
 - Docker with Compose v2
 - Git
-- Node.js 20.19+ or 22.12+ and npm (only if running the frontend outside Docker)
+- Node.js 22.13+ or 24+ and npm (only if running the frontend outside Docker)
 - Python 3.12+ (only for local backend commands and tests)
 
 ## Start the full stack
