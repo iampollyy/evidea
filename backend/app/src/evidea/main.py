@@ -12,6 +12,7 @@ from evidea.core.db import create_db_engine, create_session_factory
 from evidea.core.errors import register_error_handlers
 from evidea.core.logging import configure_logging
 from evidea.core.middleware import OriginCheckMiddleware, RequestContextMiddleware
+from evidea.core.openapi import ContractFastAPI, load_contract
 from evidea.modules.auth.rate_limit import LoginRateLimiter
 from evidea.modules.auth.router import auth_router, me_router
 from evidea.modules.cases.router import router as cases_router
@@ -40,7 +41,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         yield
         engine.dispose()
 
-    app = FastAPI(
+    app = ContractFastAPI(
         title="EVIDEA API",
         version=__version__,
         openapi_url=f"{API_PREFIX}/openapi.json",
@@ -70,4 +71,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         health_router,
     ):
         app.include_router(router, prefix=API_PREFIX)
+    app.contract_schema = load_contract(settings.openapi_spec_path, API_PREFIX)
     return app

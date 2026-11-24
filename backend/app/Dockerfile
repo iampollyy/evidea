@@ -12,6 +12,7 @@ RUN pip install -r requirements.txt
 
 COPY pyproject.toml ./
 COPY src ./src
+COPY --from=contract openapi.yaml ./openapi.yaml
 RUN pip install --no-deps . \
     && useradd --create-home --uid 10001 evidea \
     && mkdir -p /data/storage \
@@ -19,7 +20,8 @@ RUN pip install --no-deps . \
 
 USER evidea
 
-ENV STORAGE_DIR=/data/storage
+ENV STORAGE_DIR=/data/storage \
+    OPENAPI_SPEC_PATH=/app/openapi.yaml
 EXPOSE 8000
 
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=3 \
