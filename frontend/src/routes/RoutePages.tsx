@@ -2,7 +2,6 @@ import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from '
 
 import { DEFAULT_PATIENT_PROFILE_TAB } from '@/constants/patientProfile.constants';
 import { useCurrentUser } from '@/shared/hooks/useCurrentUser';
-import { useSession } from '@/shared/hooks/useSession';
 import { DoctorDashboardPage } from '@/pages/DoctorDashboardPage/DoctorDashboardPage';
 import { HomePage } from '@/pages/HomePage/HomePage';
 import { LoginPage } from '@/pages/LoginPage/LoginPage';
@@ -10,20 +9,22 @@ import { PatientProfilePage } from '@/pages/PatientProfilePage/PatientProfilePag
 import { SetPasswordPage } from '@/pages/SetPasswordPage/SetPasswordPage';
 import type { CurrentUser } from '@/shared/types/auth.types';
 import type { LoginLocationState } from '@/shared/types/routes.types';
+import { useAppDispatch } from '@/store/hooks';
+import { userSet } from '@/store/sessionSlice';
 import { isPatientProfileTab } from '@/utils/patientProfile';
 import { HOME_PATH_BY_ROLE, patientProfilePath, ROUTES } from './paths';
 
 export function LoginRoute() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { setUser } = useSession();
+  const dispatch = useAppDispatch();
   const from = (location.state as LoginLocationState)?.from;
 
   const handleLoginSuccess = (user: CurrentUser) => {
     const target = from
       ? `${from.pathname}${from.search}${from.hash}`
       : HOME_PATH_BY_ROLE[user.role];
-    setUser(user);
+    dispatch(userSet(user));
     navigate(target, { replace: true });
   };
 

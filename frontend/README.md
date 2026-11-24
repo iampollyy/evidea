@@ -41,14 +41,14 @@ frontend yet. The REST API for them exists in `backend/app`.
 | Build / dev server | Vite 8 with `@vitejs/plugin-react`                                               |
 | Styles             | SCSS modules (`sass-embedded`), global design tokens in `src/styles/index.scss`  |
 | Icons              | Material Symbols (Google Fonts) rendered by the `Icon` atom                      |
-| State              | React state, plus one app-level context for the session (no external store)      |
+| State              | Redux Toolkit 2 + React Redux 9 for global state, React state for local state    |
 | Unit tests         | Vitest 5, React Testing Library, `user-event`, `jest-dom`, jsdom                 |
 | Linting            | ESLint 10 (flat config) with `typescript-eslint`, `react-hooks`, `react-refresh` |
 | Formatting         | Prettier 3                                                                       |
 | Component catalog  | Storybook 10                                                                     |
 
-Runtime dependencies are only `react`, `react-dom` and `react-router-dom`. Everything else is a
-dev dependency.
+Runtime dependencies are only `react`, `react-dom`, `react-router-dom`, `@reduxjs/toolkit` and
+`react-redux`. Everything else is a dev dependency.
 
 ---
 
@@ -65,7 +65,6 @@ frontend/
 │   ├── app/                    # Entry point (main.tsx) and root component (App.tsx)
 │   ├── assets/                 # SVG and image assets
 │   ├── constants/              # Constants grouped by feature (*.constants.ts)
-│   ├── context/                # App-level session state: context, provider, reducer
 │   ├── pages/                  # Route-level screens: connect a hook to an organism
 │   ├── routes/                 # Route config, guards, route wrappers, paths, nav items
 │   ├── shared/
@@ -76,6 +75,7 @@ frontend/
 │   │       ├── atoms/          # Smallest building blocks: Button, Input, Dropdown, Icon, …
 │   │       ├── components/     # Composed elements: LoginForm, Modal, PatientCard, Sidebar, …
 │   │       └── organisms/      # Screen sections: AdminDashboard, DoctorsTable, WorkspaceLayout
+│   ├── store/                  # Redux store, typed hooks, slices (global state)
 │   ├── styles/                 # reset.css and global tokens (colours, shadows, fonts)
 │   ├── test/                   # Test setup and shared test helpers
 │   └── utils/                  # Pure helpers: mappers, validation, type guards, dates
@@ -93,7 +93,7 @@ Data flows in one direction:
 routes/  →  pages/  →  shared/hooks/  →  api/
    │           │             │
    │           └─ props ─→ shared/ui/organisms → components → atoms
-   └─ guards (ProtectedRoute) read session state from context/
+   └─ guards (ProtectedRoute) read session state from store/
 ```
 
 | Layer                         | Responsibility                                                                                                                                             | Must not                                          |
@@ -113,32 +113,43 @@ plain fixture data and no network. For example, `AdminDashboardPage` is just
 
 | Kind of state                                   | Where it lives                                                                                     |
 | :---------------------------------------------- | :------------------------------------------------------------------------------------------------- |
-| Current user / session                          | `SessionProvider` (`src/context/`), React Context + `useReducer`, mounted once in `App.tsx`        |
+| Current user / session                          | `session` slice in the Redux store (`src/store/sessionSlice.ts`)                                   |
 | Server data for a screen (doctors, patients, …) | The screen's hook (`useAdminDashboard`, `useDoctorDashboard`, `usePatientProfile`) with `useState` |
 | Filters, pagination                             | The screen's hook                                                                                  |
 | Form values, touched fields, validation         | `useValidatedForm` inside each form component                                                      |
 | Pure UI state (menu open, active option, focus) | The component itself                                                                               |
 
+Global state lives in one Redux Toolkit store:
+
+- `src/store/store.ts` builds the store with `makeStore(preloadedState?)` and exports `store`,
+  `RootState`, `AppDispatch` and `AppStore`. `main.tsx` wraps the app in `<Provider store={store}>`.
+- `src/store/hooks.ts` exports the typed `useAppDispatch` and `useAppSelector`. Components use
+  them instead of the plain `useDispatch` and `useSelector`.
+- Each piece of global state is a slice made with `createSlice`. A slice exports its actions,
+  selectors, reducer and async thunks. To add new global state, create a slice in `src/store/` and
+  register its reducer in `store.ts`.
+
 How the session works:
 
-- `SessionProvider` asks `GET /api/v1/me` once when the app starts. The answer is `checking`, then
-  one of `{ user }`, `unauthenticated` or `{ error }`.
-- `ProtectedRoute` only reads that state. It shows a status message, redirects to `/login` or
-  `/forbidden`, offers a retry, or renders the protected content.
-- After a successful login, `LoginRoute` calls `setUser(user)` with the user that the login
+- `useSessionCheck()` in `App.tsx` dispatches the `checkSession` thunk once when the app starts.
+  The thunk calls `GET /api/v1/me`. The state is `checking`, then one of `{ user }`,
+  `unauthenticated` or `{ error }`.
+- `ProtectedRoute` reads the state with `useAppSelector(selectSessionState)`. It shows a status
+  message, redirects to `/login` or `/forbidden`, offers a retry (dispatches `checkSession()`
+  again), or renders the protected content.
+- After a successful login, `LoginRoute` dispatches `userSet(user)` with the user that the login
   response returned. The app does not ask `/me` again.
-- On sign-out, `useSignOut` navigates to `/login` first and then calls `clearUser()`. This order
-  keeps the previous page from being saved as the post-login redirect target for the next user.
-- `useSession()` exposes `sessionState`, `setUser`, `updateUser`, `clearUser` and `retrySession`.
-  `useCurrentUser()` returns the user and can only be used inside a protected route.
-- All actions are typed (`SessionAction` in `src/shared/types/session.types.ts`) and handled by a
-  pure reducer (`sessionReducer.ts`) that has its own unit tests.
+- On sign-out, `useSignOut` navigates to `/login` first and then dispatches `userCleared()`. This
+  order keeps the previous page from being saved as the post-login redirect target for the next
+  user.
+- A check that resolves after `userSet` or `userCleared` is ignored, and a check that is aborted
+  (for example by the StrictMode double effect) does not change the state.
+- `useCurrentUser()` returns the user and can only be used inside a protected route.
 
-`updateUser` has no caller yet. It is there for the planned "edit my profile" screen, so the
+`userUpdated` has no caller yet. It is there for the planned "edit my profile" screen, so the
 sidebar and header can show changes without asking `/me` again.
 
-Why there is no Redux here is explained in
-[ADR-2](#adr-2-session-state-react-context--usereducer-instead-of-redux-toolkit).
+See [ADR-2](#adr-2-global-state-redux-toolkit).
 
 ### Working with the API
 
@@ -217,33 +228,21 @@ considered, and how well it scales.
   pointer input, needed for focus and keyboard tests), `@testing-library/jest-dom` (DOM matchers
   such as `toHaveFocus` and `toHaveAccessibleDescription`). No runtime dependencies were added.
 
-### ADR-2: Session state: React Context + `useReducer` instead of Redux Toolkit
+### ADR-2: Global state: Redux Toolkit
 
-- **Problem**: the user was kept in local state inside `ProtectedRoute`. Every protected route
-  mounted its own `useSession`, which asked `/me` again. The user returned by `POST /auth/login`
-  was thrown away, so every login caused a second `/me` request and showed a "Checking your
-  session…" flash. Opening `/` caused two `/me` requests, one for `/` and one for the redirect
-  target. Nothing could update or clear the user from outside the guard.
-- **Decision**: lift the session into one `SessionProvider` at the app root. It uses a typed
-  reducer with `userSet`, `userUpdated`, `userCleared`, `checkStarted` and `checkFailed` actions
-  and exposes `setUser`, `updateUser`, `clearUser` and `retrySession`.
-- **Why not Redux Toolkit**: the only app-wide state is one small object that changes rarely, at
-  login, logout or a profile edit. All other state belongs to one screen and is already kept
-  close to where it is used. Redux would add two runtime dependencies (`@reduxjs/toolkit`,
-  `react-redux`), a store, a provider and typed hooks just to hold that one object. Those costs
-  would not fix anything beyond what the context already fixes. The project rules also say not to
-  add dependencies without a clear need.
-- **Benefits**: no new dependencies. The reducer is a pure function and easy to test. The action
-  names match Redux Toolkit's slice style on purpose, so the reducer could become a `createSlice`
-  with almost no changes.
-- **Alternatives**: _Redux Toolkit_ (above). _Zustand_: small, but still a dependency for one
-  object. _TanStack Query / RTK Query_ for server state: this is the tool that would actually help
-  next (see below).
-- **Scale and when to revisit**: the context value only changes when the session changes, so
-  re-renders stay rare. Revisit this decision when screens start sharing cached server data, such
-  as the same patient on a dashboard and a case view, or when cache invalidation becomes common.
-  At that point a server-state library such as TanStack Query or RTK Query is the right step, not
-  a global store for UI state.
+- **Problem**: the session was kept in a React Context with `useReducer`. Each new piece of
+  app-wide state would need its own context, provider and hooks, and there was no single place to
+  see or debug global state.
+- **Decision**: keep global state in one Redux Toolkit store. The session is the first slice
+  (`sessionSlice`), and the `/me` request is a `createAsyncThunk` (`checkSession`).
+- **Benefits**: one standard pattern for all global state. Slices, thunks and selectors are typed
+  out of the box. Components re-render only when the selected value changes. Redux DevTools work
+  without extra setup. Reducers stay pure and are tested on their own.
+- **Alternatives**: _React Context + `useReducer`_ (the previous approach): no dependencies, but
+  needs a new provider for each piece of state. _Zustand_: smaller, but less structure and tooling.
+- **Scale and when to revisit**: new global state is added as new slices. When screens start
+  sharing cached server data, such as the same patient on a dashboard and a case view, RTK Query
+  can be added to the same store.
 
 ### ADR-3: A shared `Modal` component with focus management
 
@@ -381,11 +380,11 @@ npx vitest run src/shared/ui/components                           # everything u
 Tests sit **next to the code they test** and are named `*.test.ts` or `*.test.tsx`. Shared
 helpers are in `src/test/`:
 
-| File                   | Purpose                                                                                                        |
-| :--------------------- | :------------------------------------------------------------------------------------------------------------- |
-| `src/test/setup.ts`    | Registers `jest-dom` matchers and unmounts rendered trees after each test                                      |
-| `src/test/fixtures.ts` | Factories for test data, such as `createUser({ role: 'admin' })`                                               |
-| `src/test/render.tsx`  | `renderWithProviders(ui, { route })` wraps the UI in `SessionProvider` and `MemoryRouter` and returns a `user` |
+| File                   | Purpose                                                                                                                                                               |
+| :--------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/test/setup.ts`    | Registers `jest-dom` matchers and unmounts rendered trees after each test                                                                                             |
+| `src/test/fixtures.ts` | Factories for test data, such as `createUser({ role: 'admin' })`                                                                                                      |
+| `src/test/render.tsx`  | `renderWithProviders(ui, { route, preloadedState, store })` wraps the UI in a fresh Redux store, the session check and `MemoryRouter`, and returns `store` and `user` |
 
 `vitest.config.ts` also sets `restoreMocks` and `unstubGlobals`, so spies and stubbed globals are
 reset between tests and tests do not leak into each other.
@@ -401,7 +400,7 @@ for the next iterations (see [Roadmap](#roadmap)).
 | `shared/ui/atoms/Button/Button.test.tsx`            | Activation by mouse, Enter and Space. Defaults to `type="button"`, so it does not submit a form by accident. Disabled buttons ignore clicks and are skipped by Tab. Icon-only buttons get their name from `aria-label` and hide the icon from screen readers.                                                |
 | `shared/ui/components/LoginForm/LoginForm.test.tsx` | Labelled fields. Empty submit is blocked and focus moves to the first invalid field. Errors appear on blur and are linked with `aria-describedby`. Values are trimmed on submit. Server errors are announced. Repeat submits are blocked while busy. The password visibility toggle works from the keyboard. |
 | `shared/ui/components/Modal/Modal.test.tsx`         | Focus moves into the dialog when it opens. Tab and Shift+Tab wrap inside the dialog and skip disabled controls. Escape closes the dialog and focus returns to the opener. Escape is ignored while not dismissible. Works with no focusable content.                                                          |
-| `context/sessionReducer.test.ts`                    | Setting, partially updating and clearing the user. Updates are ignored when nobody is signed in. The failure and retry states.                                                                                                                                                                               |
+| `store/sessionSlice.test.ts`                        | Setting, partially updating and clearing the user. Updates are ignored when nobody is signed in. The result of the session check, the failure and retry states, and stale checks being ignored.                                                                                                              |
 | `routes/ProtectedRoute.test.tsx`                    | Checking status, rendering for an authenticated user, redirects to login and forbidden, and the error state with a retry that recovers. `@/api/auth` is mocked.                                                                                                                                              |
 
 Total: 5 files, 26 tests. Each test was checked against a deliberate bug: making `Button` default
@@ -663,8 +662,8 @@ below.
 
 **Architecture**
 
-- Move to TanStack Query (or RTK Query) when screens start sharing server data
-  ([ADR-2](#adr-2-session-state-react-context--usereducer-instead-of-redux-toolkit)).
+- Add RTK Query when screens start sharing server data
+  ([ADR-2](#adr-2-global-state-redux-toolkit)).
 - Redirect already signed-in users away from `/login`.
 - When the session expires mid-use, a 401 from any API call should clear the session and send
   the user to the login page, instead of showing "HTTP 401" on the screen.

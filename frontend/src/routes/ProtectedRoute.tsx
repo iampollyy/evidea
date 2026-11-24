@@ -1,11 +1,13 @@
 import { Navigate, useLocation } from 'react-router-dom';
 
-import { useSession } from '@/shared/hooks/useSession';
 import type { ProtectedRouteProps } from '@/shared/types/routes.types';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { checkSession, selectSessionState } from '@/store/sessionSlice';
 import { ROUTES } from './paths';
 
 export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
-  const { sessionState, retrySession } = useSession();
+  const sessionState = useAppSelector(selectSessionState);
+  const dispatch = useAppDispatch();
   const location = useLocation();
 
   if (sessionState === 'checking') {
@@ -27,7 +29,7 @@ export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) 
   return (
     <main>
       <p role="alert">Unable to verify your session: {sessionState.error}</p>
-      <button type="button" onClick={retrySession}>
+      <button type="button" onClick={() => dispatch(checkSession())}>
         Try again
       </button>
     </main>
