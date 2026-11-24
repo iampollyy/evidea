@@ -28,3 +28,17 @@ export async function login(credentials: LoginCredentials, signal?: AbortSignal)
     throw new AuthError(response.status, response.statusText || 'Login failed');
   }
 }
+
+export async function checkSession(signal?: AbortSignal): Promise<boolean> {
+  const response = await fetch('/api/v1/me', {
+    credentials: 'include',
+    signal,
+  });
+
+  if (response.status === 401) return false;
+  if (!response.ok) {
+    throw new Error(`Session check failed: HTTP ${response.status}`);
+  }
+
+  return true;
+}

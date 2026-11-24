@@ -1,5 +1,5 @@
-import { LoginPage } from '@/shared/ui/pages/LoginPage/LoginPage';
+import { AppRoutes } from '@/routes/AppRoutes';
 
 export function App() {
-  return <LoginPage />;
+  return <AppRoutes />;
 }
