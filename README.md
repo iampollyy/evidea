@@ -66,7 +66,7 @@ Do not run the backend test suite against this database while the worker is runn
 
 ### Prerequisites
 
-- Node.js 20.19+ or 22.12+ and npm
+- Node.js 22.13+ or 24+ and npm
 - Python 3.12+ and `psql` (for the backend)
 - Docker (or a local PostgreSQL 16)
 
