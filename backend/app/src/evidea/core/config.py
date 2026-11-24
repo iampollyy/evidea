@@ -14,6 +14,11 @@ def _repo_env_file() -> Path | None:
 _REPO_ENV_FILE = _repo_env_file()
 
 
+def _repo_openapi_contract() -> Path | None:
+    parents = Path(__file__).resolve().parents
+    return parents[5] / "docs" / "reference" / "openapi.yaml" if len(parents) > 5 else None
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=_REPO_ENV_FILE,
@@ -47,6 +52,8 @@ class Settings(BaseSettings):
 
     login_max_attempts: int = 5
     login_window_seconds: int = 60
+
+    openapi_spec_path: Path | None = _repo_openapi_contract()
 
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     log_json: bool = True
