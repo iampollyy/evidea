@@ -9,6 +9,7 @@ const guards: Record<RouteAccess, (element: ReactNode) => ReactNode> = {
   public: (element) => element,
   authenticated: (element) => <ProtectedRoute>{element}</ProtectedRoute>,
   admin: (element) => <ProtectedRoute requiredRole="admin">{element}</ProtectedRoute>,
+  clinician: (element) => <ProtectedRoute requiredRole="clinician">{element}</ProtectedRoute>,
 };
 
 function renderRoute({ path, index, element, access = 'public', children }: IRoute) {

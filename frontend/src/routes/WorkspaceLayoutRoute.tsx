@@ -2,18 +2,23 @@ import { useState } from 'react';
 import { matchPath, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { logout } from '@/shared/api/auth';
+import type { SidebarNavItem } from '@/shared/ui/components/SidebarNav/SidebarNav';
 import { AdminLayout } from '@/shared/ui/organisms/AdminLayout/AdminLayout';
-import { ADMIN_NAV_ITEMS } from './adminNav';
 import { useCurrentUser } from './CurrentUserContext';
 import { ROUTES } from './paths';
 
-export function AdminLayoutRoute() {
+interface WorkspaceLayoutRouteProps {
+  navItems: SidebarNavItem[];
+  homeHref: string;
+}
+
+export function WorkspaceLayoutRoute({ navItems, homeHref }: WorkspaceLayoutRouteProps) {
   const user = useCurrentUser();
   const location = useLocation();
   const navigate = useNavigate();
   const [signOutError, setSignOutError] = useState<string | null>(null);
 
-  const activeNavId = ADMIN_NAV_ITEMS.find((item) =>
+  const activeNavId = navItems.find((item) =>
     matchPath({ path: item.href, end: false }, location.pathname),
   )?.id;
 
@@ -30,9 +35,9 @@ export function AdminLayoutRoute() {
   return (
     <AdminLayout
       user={user}
-      navItems={ADMIN_NAV_ITEMS}
+      navItems={navItems}
       activeNavId={activeNavId}
-      homeHref={ROUTES.admin.root}
+      homeHref={homeHref}
       signOutError={signOutError}
       onNavigate={(item, event) => {
         event.preventDefault();

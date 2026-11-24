@@ -2,11 +2,14 @@ import type { JSX } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { AdminDashboardPage } from '@/shared/ui/pages/AdminDashboard/AdminDashboardPage';
-import { AdminLayoutRoute } from './AdminLayoutRoute';
+import { DoctorDashboardPage } from '@/shared/ui/pages/DoctorDashboard/DoctorDashboardPage';
+import { ADMIN_NAV_ITEMS } from './adminNav';
+import { DOCTOR_NAV_ITEMS } from './doctorNav';
 import { ROUTES } from './paths';
 import { AcceptInvitationRoute, ForbiddenPage, HomeRoute, LoginRoute } from './RoutePages';
+import { WorkspaceLayoutRoute } from './WorkspaceLayoutRoute';
 
-export type RouteAccess = 'public' | 'authenticated' | 'admin';
+export type RouteAccess = 'public' | 'authenticated' | 'admin' | 'clinician';
 
 interface IRoute {
   path?: string;
@@ -39,7 +42,7 @@ export const routesConfig: IRoute[] = [
   },
   {
     path: ROUTES.admin.root,
-    element: <AdminLayoutRoute />,
+    element: <WorkspaceLayoutRoute navItems={ADMIN_NAV_ITEMS} homeHref={ROUTES.admin.root} />,
     access: 'admin',
     children: [
       {
@@ -49,6 +52,21 @@ export const routesConfig: IRoute[] = [
       {
         path: ROUTES.admin.doctors,
         element: <AdminDashboardPage />,
+      },
+    ],
+  },
+  {
+    path: ROUTES.doctor.root,
+    element: <WorkspaceLayoutRoute navItems={DOCTOR_NAV_ITEMS} homeHref={ROUTES.doctor.root} />,
+    access: 'clinician',
+    children: [
+      {
+        index: true,
+        element: <Navigate to={ROUTES.doctor.dashboard} replace />,
+      },
+      {
+        path: ROUTES.doctor.dashboard,
+        element: <DoctorDashboardPage />,
       },
     ],
   },

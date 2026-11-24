@@ -8,3 +8,12 @@ export const adminUserMock: CurrentUser = {
   role: 'admin',
   avatarUrl: null,
 };
+
+export const clinicianUserMock: CurrentUser = {
+  id: 'doctor-1',
+  name: 'Sarah',
+  surname: 'Chen',
+  email: 'sarah.chen@clinic.example',
+  role: 'clinician',
+  avatarUrl: null,
+};

@@ -21,6 +21,10 @@ const meta = {
     'aria-label': 'Patients',
   },
   argTypes: {
+    layout: {
+      control: 'inline-radio',
+      options: ['grid', 'list'],
+    },
     onPatientMenuClick: { action: 'patient menu clicked' },
   },
   decorators: [
@@ -37,6 +41,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const List: Story = {
+  args: {
+    layout: 'list',
+    patients: patients.slice(0, 4),
+  },
+};
 
 export const MixedContent: Story = {
   args: {

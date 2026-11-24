@@ -1,0 +1,128 @@
+.heading,
+.titleGroup,
+.actions,
+.pagination,
+.paginationActions {
+  display: flex;
+  align-items: center;
+}
+
+.heading,
+.pagination {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.titleGroup,
+.actions {
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.actions {
+  justify-content: flex-end;
+}
+
+.title {
+  margin: 0;
+  color: var(--ev-color-text-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+  white-space: nowrap;
+}
+
+.hint,
+.notice,
+.empty {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.21875rem;
+}
+
+.hint {
+  margin-top: 0.5rem;
+  color: var(--ev-color-text-secondary);
+}
+
+.notice {
+  color: var(--ev-color-status-active-text);
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+}
+
+.results > .hint {
+  margin: 0 0 0.75rem;
+}
+
+.empty {
+  padding: 3rem 1.25rem;
+  border: 0.0625rem dashed var(--ev-color-border-default);
+  border-radius: 0.375rem;
+  background-color: var(--ev-color-surface-default);
+  color: var(--ev-color-text-secondary);
+  text-align: center;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.625rem 0.75rem;
+  border: 0.0625rem solid var(--ev-color-red-130);
+  border-radius: 0.375rem;
+  background-color: var(--ev-color-status-error-surface);
+  color: var(--ev-color-status-error-text);
+  font-size: 0.8125rem;
+}
+
+.pagination {
+  color: var(--ev-color-text-secondary);
+  font-size: 0.75rem;
+}
+
+.paginationActions {
+  gap: 0.5rem;
+}
+
+.modalBackdrop {
+  position: fixed;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: color-mix(in srgb, var(--ev-color-primary) 40%, transparent);
+  inset: 0;
+}
+
+.modal {
+  width: 100%;
+  max-width: 50rem;
+  max-height: 100%;
+  overflow-y: auto;
+  border-radius: 0.625rem;
+  background-color: var(--ev-color-surface-default);
+  box-shadow: 0 1rem 2.5rem color-mix(in srgb, var(--ev-color-primary) 18%, transparent);
+}
+
+@media (max-width: 48rem) {
+  .heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .titleGroup {
+    flex-wrap: wrap;
+  }
+
+  .actions {
+    align-self: stretch;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}

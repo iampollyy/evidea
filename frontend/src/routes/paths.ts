@@ -9,9 +9,13 @@ export const ROUTES = {
     root: '/admin',
     doctors: '/admin/doctors',
   },
+  doctor: {
+    root: '/doctor',
+    dashboard: '/doctor/dashboard',
+  },
 } as const;
 
 export const HOME_PATH_BY_ROLE: Record<UserRole, string> = {
   admin: ROUTES.admin.root,
-  clinician: ROUTES.home,
+  clinician: ROUTES.doctor.root,
 };

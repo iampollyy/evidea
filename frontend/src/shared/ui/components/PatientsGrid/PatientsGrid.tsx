@@ -1,5 +1,6 @@
 import type { ComponentPropsWithRef } from 'react';
 
+import type { LayoutOption } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
 import {
   PatientCard,
   type PatientCardPatient,
@@ -12,16 +13,20 @@ export interface PatientsGridPatient extends PatientCardPatient {
 
 export interface PatientsGridProps extends Omit<ComponentPropsWithRef<'ul'>, 'children'> {
   patients: PatientsGridPatient[];
+  layout?: LayoutOption;
   onPatientMenuClick?: (patient: PatientsGridPatient) => void;
 }
 
 export function PatientsGrid({
   patients,
+  layout = 'grid',
   onPatientMenuClick,
   className,
   ...rest
 }: PatientsGridProps) {
-  const classes = [styles.grid, className].filter(Boolean).join(' ');
+  const classes = [styles.grid, layout === 'list' && styles.list, className]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <ul className={classes} {...rest}>
