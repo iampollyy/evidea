@@ -41,7 +41,10 @@ services:
     restart: "no"
 
   api:
-    build: ./backend/app
+    build:
+      context: ./backend/app
+      additional_contexts:
+        contract: ./docs/reference
     image: evidea-backend:latest
     restart: unless-stopped
     environment: *api-environment
