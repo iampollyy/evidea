@@ -1,10 +1,8 @@
-import { SessionProvider } from '@/context/SessionProvider';
 import { AppRoutes } from '@/routes/AppRoutes';
+import { useSessionCheck } from '@/shared/hooks/useSessionCheck';
 
 export function App() {
-  return (
-    <SessionProvider>
-      <AppRoutes />
-    </SessionProvider>
-  );
+  useSessionCheck();
+
+  return <AppRoutes />;
 }
