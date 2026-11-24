@@ -1,3 +1,5 @@
+import { PAGE_TITLES } from '@/constants/pageTitles.constants';
+import { useDocumentTitle } from '@/shared/hooks/useDocumentTitle';
 import { useLogin } from '@/shared/hooks/useLogin';
 import type { LoginPageProps } from '@/shared/types/pages.types';
 import { Logo } from '@/shared/ui/atoms/Logo/Logo';
@@ -5,10 +7,11 @@ import { LoginForm } from '@/shared/ui/components/LoginForm/LoginForm';
 import styles from './LoginPage.module.scss';
 
 export function LoginPage({ onLoginSuccess }: LoginPageProps) {
+  useDocumentTitle(PAGE_TITLES.login);
   const { isSubmitting, submitError, handleSubmit } = useLogin(onLoginSuccess);
 
   return (
-    <section className={styles.page}>
+    <main className={styles.page}>
       <div className={styles.content}>
         <Logo tone="inverse" size="lg" tagline={null} />
         <LoginForm
@@ -18,6 +21,6 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
           submitError={submitError}
         />
       </div>
-    </section>
+    </main>
   );
 }

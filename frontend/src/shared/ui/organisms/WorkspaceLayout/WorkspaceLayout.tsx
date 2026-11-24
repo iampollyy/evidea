@@ -4,6 +4,8 @@ import { Sidebar } from '@/shared/ui/components/Sidebar/Sidebar';
 import type { WorkspaceLayoutProps } from '@/shared/types/workspaceLayout.types';
 import styles from './WorkspaceLayout.module.scss';
 
+const MAIN_CONTENT_ID = 'main-content';
+
 export function WorkspaceLayout({
   user,
   navItems,
@@ -19,6 +21,17 @@ export function WorkspaceLayout({
 
   return (
     <div className={styles.shell}>
+      <a
+        href={`#${MAIN_CONTENT_ID}`}
+        className={styles.skipLink}
+        onClick={(event) => {
+          event.preventDefault();
+          document.getElementById(MAIN_CONTENT_ID)?.focus();
+        }}
+      >
+        Skip to main content
+      </a>
+
       <Sidebar
         className={styles.sidebar}
         logoHref={homeHref}
@@ -44,7 +57,9 @@ export function WorkspaceLayout({
           </p>
         )}
 
-        <main className={styles.content}>{children}</main>
+        <main id={MAIN_CONTENT_ID} tabIndex={-1} className={styles.content}>
+          {children}
+        </main>
       </div>
     </div>
   );

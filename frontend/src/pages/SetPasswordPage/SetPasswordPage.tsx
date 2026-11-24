@@ -1,3 +1,5 @@
+import { PAGE_TITLES } from '@/constants/pageTitles.constants';
+import { useDocumentTitle } from '@/shared/hooks/useDocumentTitle';
 import { INVALID_INVITATION_MESSAGE } from '@/constants/auth.constants';
 import { useSetPassword } from '@/shared/hooks/useSetPassword';
 import type { SetPasswordPageProps } from '@/shared/types/pages.types';
@@ -8,6 +10,7 @@ import { SetPasswordForm } from '@/shared/ui/components/SetPasswordForm/SetPassw
 import styles from './SetPasswordPage.module.scss';
 
 export function SetPasswordPage({ token, onGoToLogin }: SetPasswordPageProps) {
+  useDocumentTitle(PAGE_TITLES.setPassword);
   const { isSubmitting, submitError, isComplete, handleSubmit } = useSetPassword(token);
 
   const renderContent = () => {
@@ -50,11 +53,11 @@ export function SetPasswordPage({ token, onGoToLogin }: SetPasswordPageProps) {
   };
 
   return (
-    <section className={styles.page}>
+    <main className={styles.page}>
       <div className={styles.content}>
         <Logo tone="inverse" size="lg" tagline={null} />
         {renderContent()}
       </div>
-    </section>
+    </main>
   );
 }

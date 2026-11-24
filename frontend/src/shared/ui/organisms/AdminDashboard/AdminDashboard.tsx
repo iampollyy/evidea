@@ -3,6 +3,7 @@ import { Button } from '@/shared/ui/atoms/Button/Button';
 import { Dropdown } from '@/shared/ui/atoms/Dropdown/Dropdown';
 import { Icon } from '@/shared/ui/atoms/Icon/Icon';
 import { AddDoctorForm } from '@/shared/ui/components/AddDoctorForm/AddDoctorForm';
+import { Modal } from '@/shared/ui/components/Modal/Modal';
 import { SearchField } from '@/shared/ui/components/SearchField/SearchField';
 import { DoctorsTable } from '@/shared/ui/organisms/DoctorsTable/DoctorsTable';
 import {
@@ -160,16 +161,14 @@ export function AdminDashboard({
       </section>
 
       {isAddDoctorOpen && (
-        <div className={styles.modalBackdrop}>
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-label="Add doctor">
-            <AddDoctorForm
-              onSubmit={(values) => onAddDoctorSubmit?.(values)}
-              onCancel={onAddDoctorCancel}
-              isSubmitting={isAddingDoctor}
-              submitError={addDoctorError}
-            />
-          </div>
-        </div>
+        <Modal label="Add doctor" onClose={onAddDoctorCancel} dismissible={!isAddingDoctor}>
+          <AddDoctorForm
+            onSubmit={(values) => onAddDoctorSubmit?.(values)}
+            onCancel={onAddDoctorCancel}
+            isSubmitting={isAddingDoctor}
+            submitError={addDoctorError}
+          />
+        </Modal>
       )}
     </>
   );
