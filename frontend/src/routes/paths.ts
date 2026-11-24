@@ -3,6 +3,7 @@ import type { UserRole } from '@/shared/api/auth.types';
 export const ROUTES = {
   home: '/',
   login: '/login',
+  acceptInvitation: '/accept-invitation',
   forbidden: '/forbidden',
   admin: {
     root: '/admin',

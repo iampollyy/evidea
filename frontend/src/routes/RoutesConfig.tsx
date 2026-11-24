@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom';
 import { AdminDashboardPage } from '@/shared/ui/pages/AdminDashboard/AdminDashboardPage';
 import { AdminLayoutRoute } from './AdminLayoutRoute';
 import { ROUTES } from './paths';
-import { ForbiddenPage, HomeRoute, LoginRoute } from './RoutePages';
+import { AcceptInvitationRoute, ForbiddenPage, HomeRoute, LoginRoute } from './RoutePages';
 
 export type RouteAccess = 'public' | 'authenticated' | 'admin';
 
@@ -20,6 +20,11 @@ export const routesConfig: IRoute[] = [
   {
     path: ROUTES.login,
     element: <LoginRoute />,
+    access: 'public',
+  },
+  {
+    path: ROUTES.acceptInvitation,
+    element: <AcceptInvitationRoute />,
     access: 'public',
   },
   {
