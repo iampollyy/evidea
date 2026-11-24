@@ -1,6 +1,4 @@
-// TODO: the backend auth endpoint is not implemented yet — adjust the URL and
-// response handling once the API contract is defined.
-const LOGIN_URL = '/api/auth/login';
+const LOGIN_URL = '/api/v1/auth/login';
 
 export interface LoginCredentials {
   email: string;

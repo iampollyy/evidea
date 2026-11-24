@@ -211,11 +211,12 @@ for clinical identification purposes. Access restricted by RBAC (NFR-S2).
 | 3 | `surname` | `TEXT` | NN | Patient's last name |
 | 4 | `birth_date` | `DATE` | NN | Date of birth |
 | 5 | `sex` | `VARCHAR(64)` | NN | Biological sex. Allowed values: `male`, `female`, `other`, `unknown` (CHECK, DQ-26) |
-| 6 | `email` | `TEXT` | NN | Contact email |
+| 6 | `email` | `TEXT` | NN, UQ among active (case-insensitive) | Contact email. Unique among active patients: index `uq_patients_active_email` on `lower(email)` WHERE `deleted_at IS NULL` (migration 0012) |
 | 7 | `phone_number` | `TEXT` | — | Contact phone number (optional) |
 | 8 | `created_at` | `DATE` | NN, default `CURRENT_DATE` | Date the record was created |
 | 9 | `updated_at` | `TIMESTAMPTZ` | NN, default `now()` | Last modification timestamp |
 | 10 | `deleted_at` | `TIMESTAMPTZ` | — | Soft-delete timestamp. `NULL` = active |
+| 11 | `photo_key` | `TEXT` | 1–255 chars when set | Storage key of the patient photo; the file itself is kept in file storage. `NULL` = no photo (migration 0011) |
 
 **Indexes:** `patient_id` (PK), `(surname, name)` (search), `deleted_at` (filter active).
 
@@ -436,6 +437,7 @@ User accounts for clinicians and administrators. Patients do not have accounts
 | 10 | `created_at` | `DATE` | NN, default `CURRENT_DATE` | Account creation date |
 | 11 | `updated_at` | `TIMESTAMPTZ` | NN, default `now()` | Last profile update |
 | 12 | `deactivated_at` | `TIMESTAMPTZ` | — | Deactivation timestamp. `NULL` = active |
+| 13 | `avatar_key` | `TEXT` | 1–255 chars when set | Storage key of the avatar image. `NULL` = no avatar (migration 0011) |
 
 **Indexes:** `doc_id` (PK), `email` (UQ, login lookup), `role` (filter).
 
@@ -481,6 +483,7 @@ Tracks registration invitations sent by administrators to new clinicians (UC-2).
 | 3 | `token_hash` | `TEXT` | NN, UQ | SHA-256 hash of the invitation token |
 | 4 | `expires_at` | `TIMESTAMPTZ` | NN | Token expiration time |
 | 5 | `used_at` | `TIMESTAMPTZ` | — | When the invitation was accepted. `NULL` = pending |
+| 6 | `created_at` | `TIMESTAMPTZ` | NN, default `now()` | When the invitation was issued (migration 0014) |
 
 **Security:** Only the hash is stored; the raw token is sent to the user once and not persisted (NFR-S6).
 
@@ -532,10 +535,11 @@ for reproducibility and audit.
 | 7 | started_at | TIMESTAMPTZ | — | Inference start time |
 | 8 | completed_at | TIMESTAMPTZ | — | Inference completion time |
 | 9 | error_msg | TEXT | — | Error description if status = 'failed' |
+| 10 | created_at | TIMESTAMPTZ | NN, default now() | When the run was requested; `started_at` is set later by the worker (migration 0014) |
 
 **Allowed status values**: pending, processing, completed, failed, unsupported.
 
-**Indexes**: prediction_run_id (PK), case_id (lookup), initiated_by (audit).
+**Indexes**: prediction_run_id (PK), case_id (lookup), initiated_by (audit). `(case_id, created_at DESC)` for run history (0014). Partial unique `case_id` WHERE status IN (pending, processing): at most one open run per case (0013).
 
 **Note**: input_snapshot captures the exact text and lab values sent to the model, ensuring reproducibility even if the source case data is later edited (UC-1, step 9a).
 
@@ -673,6 +677,7 @@ Application-level event and error logging. Must not contain PII (NFR-S5).
   - *Roles and grants (migration 0008):* NOLOGIN roles `app_read`, `app_write`, `admin` with least-privilege grants; `PUBLIC` cannot create objects in schema `public`. A test checks that every table is granted to an app role and to `admin`. New objects get explicit grants in their own migration. Login users are created outside migrations, see [backend/db/README.md](../../db/README.md).
   - *Password hash CHECK (migration 0008):* `doctors_and_admin.password_hash` must be a bcrypt (`$2a$`/`$2b$`/`$2y$`, cost, 53 chars) or Argon2 string. MD5, SHA-1 and plaintext are rejected.
   - *Doctor sex CHECK (migration 0009):* `doctors_and_admin.sex` accepts the same values as `patients.sex` (`male`, `female`, `other`, `unknown`), and NULL.
+  - *Backend support (migrations 0010–0014):* `app_write` may INSERT into `doctors_and_admin` (0010; only admins can do it, enforced by the API, DELETE stays revoked); `photo_key` / `avatar_key` columns (0011); unique active patient email (0012); one open prediction run per case, which makes "request a prediction" idempotent (0013); `created_at` on `invitations` and `prediction_runs` (0014). Migrations 0012 and 0013 stop with a clear message if existing data violates the new rule.
   - *Procedure:* `anonymize_patient(patient_id)` for the right to erasure. It replaces name, surname, email and phone, reduces birth date to the year, and sets `deleted_at`. The row is kept so cases and runs stay linked. Free-text anamnesis fields are not changed by this procedure.
 
 ### 4.2 Application-Level Validation

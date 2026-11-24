@@ -1,0 +1,5 @@
+openapi.yaml:
+  operation-4xx-response:
+    - '#/paths/~1auth~1logout/post/responses'
+    - '#/paths/~1health~1live/get/responses'
+    - '#/paths/~1health~1ready/get/responses'

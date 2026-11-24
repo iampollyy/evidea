@@ -1,13 +1,6 @@
--- Negative tests for constraints, triggers and foreign keys.
--- Runs inside one transaction that is rolled back at the end, so the database stays unchanged.
--- Each case must fail with the expected SQLSTATE; a wrong error code (for example NOT NULL
--- violation instead of CHECK violation) is reported as a failure.
--- Usage (after migrations and dev seed):
---   psql -v ON_ERROR_STOP=1 -f backend/db/tests/constraints_test.sql
 
 BEGIN;
 
--- Extra fixtures, rolled back at the end.
 INSERT INTO patients (patient_id, name, surname, birth_date, sex, email, created_at, updated_at)
 VALUES ('00000000-0000-0000-0000-000000000199', 'Second', 'Patient', DATE '1990-01-01', 'female',
         'patient2.test@example.test', DATE '2025-02-01', TIMESTAMPTZ '2025-02-01 10:00+00');
@@ -44,7 +37,6 @@ BEGIN
 END;
 $$;
 
--- Vital signs ranges (DQ-21, DQ-08)
 SELECT pg_temp.expect_sqlstate('vital: systolic out of range',
     $s$INSERT INTO vital_signs (patient_id, systolic_bp_mmhg, created_at, updated_at)
        VALUES ('00000000-0000-0000-0000-000000000101', 500, now(), now())$s$, '23514');
@@ -52,97 +44,105 @@ SELECT pg_temp.expect_sqlstate('vital: spo2 above 100',
     $s$INSERT INTO vital_signs (patient_id, spo2_percent, created_at, updated_at)
        VALUES ('00000000-0000-0000-0000-000000000101', 101, now(), now())$s$, '23514');
 
--- Patient sex values
 SELECT pg_temp.expect_sqlstate('patient: invalid sex',
     $s$INSERT INTO patients (name, surname, birth_date, sex, email, created_at, updated_at)
        VALUES ('A', 'B', DATE '2000-01-01', 'robot', 'x@example.test', now(), now())$s$, '23514');
 
--- Email uniqueness is case-insensitive
 SELECT pg_temp.expect_sqlstate('doctor: duplicate email in other case',
     $s$INSERT INTO doctors_and_admin (name, surname, email, role, password_hash, created_at)
        SELECT 'Dup', 'User', 'DEV.CLINICIAN@example.test', role_id, '$2b$12$DEVONLYNOTAREALBCRYPTPLACEHOLDER0123456789ABCDEFGHIJK', DATE '2025-01-01'
        FROM roles WHERE role_name = 'clinician'$s$, '23505');
 
--- Anamnesis must belong to the same patient as its case (composite FK)
 SELECT pg_temp.expect_sqlstate('anamnesis: patient does not match case',
     $s$INSERT INTO case_anamneses (patient_id, case_id, created_by_id, chief_complaint, created_at, updated_at)
        VALUES ('00000000-0000-0000-0000-000000000199', '00000000-0000-0000-0000-000000000201',
                '00000000-0000-0000-0000-000000000001', 'x', now(), now())$s$, '23503');
 
--- Case vital signs must reference the patient's own vitals (composite FK)
 SELECT pg_temp.expect_sqlstate('case_vital_signs: vitals belong to another patient',
     $s$INSERT INTO case_vital_signs (vital_sign_id, case_id, patient_id, created_at)
        VALUES ('00000000-0000-0000-0000-000000000499', '00000000-0000-0000-0000-000000000201',
                '00000000-0000-0000-0000-000000000101', now())$s$, '23503');
 
--- Lab results: analyte must belong to the report's panel (trigger)
 SELECT pg_temp.expect_sqlstate('lab item: analyte from another panel',
     $s$INSERT INTO lab_results_items (report_id, analyte_id, numeric_val)
        VALUES ('00000000-0000-0000-0000-000000000801', '00000000-0000-0000-0000-000000000701', 13.5)$s$, '23514');
 
--- Lab results: numeric analyte requires numeric_val (trigger)
 SELECT pg_temp.expect_sqlstate('lab item: numeric analyte with text only',
     $s$INSERT INTO lab_results_items (report_id, analyte_id, text_val)
        VALUES ('00000000-0000-0000-0000-000000000801', '00000000-0000-0000-0000-000000000702', 'high')$s$, '23514');
 
--- Lab results: a report cannot have two results for the same analyte
 SELECT pg_temp.expect_sqlstate('lab item: duplicate analyte in report',
     $s$INSERT INTO lab_results_items (report_id, analyte_id, numeric_val)
        VALUES ('00000000-0000-0000-0000-000000000801', '00000000-0000-0000-0000-000000000702', 1.0)$s$, '23505');
 
--- Lab report collected date must not be after entry time
 SELECT pg_temp.expect_sqlstate('lab report: collected after entry',
     $s$INSERT INTO lab_reports (patient_id, panel_id, collected, created_at)
        VALUES ('00000000-0000-0000-0000-000000000101', '00000000-0000-0000-0000-000000000602',
                TIMESTAMPTZ '2025-03-01 00:00+00', TIMESTAMPTZ '2025-02-01 00:00+00')$s$, '23514');
 
--- ML: only one active model version
 SELECT pg_temp.expect_sqlstate('model_versions: second active model',
     $s$INSERT INTO model_versions (name, version, artifact_uri, trained_at, is_active)
        VALUES ('m2', '0.0.2', 'file:///x', now(), TRUE)$s$, '23505');
 
--- ML: rank must be unique within a prediction run (DQ-06)
 SELECT pg_temp.expect_sqlstate('disease_hypotheses: duplicate rank in run',
     $s$INSERT INTO disease_hypotheses (prediction_run_id, disease_id, rank, score)
        VALUES ('00000000-0000-0000-0000-000000000901', '00000000-0000-0000-0000-000000001101', 1, 0.5)$s$, '23505');
 
--- ML: unknown run status
 SELECT pg_temp.expect_sqlstate('prediction_runs: invalid status',
     $s$INSERT INTO prediction_runs (initiated_by, case_id, model_version_id, status)
        VALUES ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000201',
                '00000000-0000-0000-0000-000000001001', 'done')$s$, '23514');
 
--- Logs: unknown level
 SELECT pg_temp.expect_sqlstate('system_logs: invalid level',
     $s$INSERT INTO system_logs (log_lvl, message) VALUES ('DEBUG', 'x')$s$, '23514');
 
--- Referential protection: a case with prediction runs cannot be deleted (RESTRICT)
 SELECT pg_temp.expect_sqlstate('cases: delete with prediction runs',
     $s$DELETE FROM cases WHERE case_id = '00000000-0000-0000-0000-000000000201'$s$, '23503');
 
--- Prediction run status can only move forward (trigger): completed runs cannot be reopened
 SELECT pg_temp.expect_sqlstate('prediction_runs: completed run reopened',
     $s$UPDATE prediction_runs SET status = 'processing'
        WHERE prediction_run_id = '00000000-0000-0000-0000-000000000901'$s$, '23514');
 
--- Anonymization of an unknown patient must fail, not silently do nothing
 SELECT pg_temp.expect_sqlstate('anonymize_patient: unknown patient',
     $s$CALL anonymize_patient('00000000-0000-0000-0000-00000000dead')$s$, 'P0002');
 
--- Password hashes must be bcrypt or Argon2; MD5 is rejected
 SELECT pg_temp.expect_sqlstate('doctor: MD5 password hash rejected',
     $s$INSERT INTO doctors_and_admin (name, surname, email, role, password_hash, created_at)
        SELECT 'Md5', 'User', 'md5.user@example.test', role_id, '5f4dcc3b5aa765d61d8327deb882cf99', DATE '2025-01-01'
        FROM roles WHERE role_name = 'clinician'$s$, '23514');
 
--- Doctor sex is limited to the same values as patient sex
 SELECT pg_temp.expect_sqlstate('doctor: unknown sex value rejected',
     $s$INSERT INTO doctors_and_admin (name, surname, sex, email, role, password_hash, created_at)
        SELECT 'Sex', 'User', 'robot', 'sex.user@example.test', role_id,
               '$2b$12$DEVONLYNOTAREALBCRYPTPLACEHOLDER0123456789ABCDEFGHIJK', DATE '2025-01-01'
        FROM roles WHERE role_name = 'clinician'$s$, '23514');
 
--- Least privilege: app roles cannot read raw patient or credential data, and cannot delete clinical data
+SELECT pg_temp.expect_sqlstate('patients: empty photo_key rejected',
+    $s$UPDATE patients SET photo_key = '' WHERE patient_id = '00000000-0000-0000-0000-000000000101'$s$, '23514');
+
+SELECT pg_temp.expect_sqlstate('patients: duplicate active email in other case',
+    $s$INSERT INTO patients (name, surname, birth_date, sex, email)
+       VALUES ('Dup', 'Patient', DATE '1990-01-01', 'male', 'PATIENT.TEST@example.test')$s$, '23505');
+
+INSERT INTO patients (patient_id, name, surname, birth_date, sex, email, deleted_at)
+VALUES ('00000000-0000-0000-0000-000000000198', 'Archived', 'Twin', DATE '1990-01-01', 'male',
+        'patient.test@example.test', now());
+INSERT INTO test_results (label, ok, detail)
+SELECT 'patients: archived patient may share an email', count(*) = 2, ''
+FROM patients WHERE lower(email) = 'patient.test@example.test';
+
+INSERT INTO prediction_runs (prediction_run_id, initiated_by, case_id, model_version_id, status)
+VALUES ('00000000-0000-0000-0000-000000000902', '00000000-0000-0000-0000-000000000001',
+        '00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000001001', 'pending');
+SELECT pg_temp.expect_sqlstate('prediction_runs: second open run for a case',
+    $s$INSERT INTO prediction_runs (initiated_by, case_id, model_version_id, status)
+       VALUES ('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000201',
+               '00000000-0000-0000-0000-000000001001', 'pending')$s$, '23505');
+
+INSERT INTO test_results (label, ok, detail)
+SELECT 'prediction_runs: created_at set by default', created_at IS NOT NULL, ''
+FROM prediction_runs WHERE prediction_run_id = '00000000-0000-0000-0000-000000000902';
+
 INSERT INTO test_results (label, ok, detail) VALUES
     ('app_read: no direct access to patients', NOT has_table_privilege('app_read', 'patients', 'SELECT'), ''),
     ('app_read: no access to doctors_and_admin', NOT has_table_privilege('app_read', 'doctors_and_admin', 'SELECT'), ''),
@@ -151,11 +151,11 @@ INSERT INTO test_results (label, ok, detail) VALUES
     ('app_write: cannot change reference data', NOT has_table_privilege('app_write', 'lab_analytes', 'UPDATE'), ''),
     ('app_write: system log is append-only', NOT has_table_privilege('app_write', 'system_logs', 'UPDATE'), ''),
     ('app_write: can run anonymize_patient', has_function_privilege('app_write', 'anonymize_patient(uuid)', 'EXECUTE'), ''),
+    ('app_write: can create doctors', has_table_privilege('app_write', 'doctors_and_admin', 'INSERT'), ''),
+    ('app_write: cannot delete doctors', NOT has_table_privilege('app_write', 'doctors_and_admin', 'DELETE'), ''),
     ('admin: cannot change migration journal', NOT has_table_privilege('admin', 'migration_checksums', 'UPDATE'), ''),
     ('app_write: cannot change migration journal', NOT has_table_privilege('app_write', 'migration_checksums', 'UPDATE'), '');
 
--- Every table must be reachable by an app role; a new table without grants fails here,
--- so its privileges are reviewed when it is added
 INSERT INTO test_results (label, ok, detail)
 SELECT 'every table is granted to an app role', count(*) = 0, coalesce(string_agg(c.relname, ', '), '')
 FROM pg_class c
@@ -165,7 +165,6 @@ WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p')
   AND NOT has_table_privilege('app_read', c.oid, 'SELECT')
   AND NOT has_table_privilege('app_write', c.oid, 'SELECT');
 
--- Every table must also be readable by admin; a table created without an admin grant fails here
 INSERT INTO test_results (label, ok, detail)
 SELECT 'every table is granted to admin', count(*) = 0, coalesce(string_agg(c.relname, ', '), '')
 FROM pg_class c
@@ -173,7 +172,6 @@ JOIN pg_namespace n ON n.oid = c.relnamespace
 WHERE n.nspname = 'public' AND c.relkind IN ('r', 'p')
   AND NOT has_table_privilege('admin', c.oid, 'SELECT');
 
--- Masking functions return fixed outputs; the masked view hides raw name and email
 INSERT INTO test_results (label, ok, detail) VALUES
     ('mask_name: keeps first letter only', mask_name('Test') = 'T***', mask_name('Test')),
     ('mask_email: keeps first letter and domain', mask_email('john.doe@example.com') = 'j***@example.com', mask_email('john.doe@example.com')),
@@ -182,7 +180,6 @@ INSERT INTO test_results (label, ok, detail) VALUES
      coalesce((SELECT name = 'S*****' AND surname = 'P******' AND email = 'p***@example.test'
                FROM v_patients_masked WHERE patient_id = '00000000-0000-0000-0000-000000000199'), FALSE), '');
 
--- Top-1 hypothesis of the latest completed run is exposed per case
 INSERT INTO test_results (label, ok, detail)
 SELECT 'v_case_latest_prediction: top hypothesis of completed run',
        count(*) = 1 AND bool_and(prediction_run_id = '00000000-0000-0000-0000-000000000901' AND top_score = 0.9),
@@ -190,7 +187,6 @@ SELECT 'v_case_latest_prediction: top hypothesis of completed run',
 FROM v_case_latest_prediction
 WHERE case_id = '00000000-0000-0000-0000-000000000201';
 
--- Anonymization success path: personal data is replaced, row is soft-deleted and hidden from the masked view
 CALL anonymize_patient('00000000-0000-0000-0000-000000000199');
 
 INSERT INTO test_results (label, ok, detail)
@@ -205,7 +201,6 @@ SELECT 'v_patients_masked: anonymized patient is hidden',
        NOT EXISTS (SELECT 1 FROM v_patients_masked WHERE patient_id = '00000000-0000-0000-0000-000000000199'),
        '';
 
--- Report results
 SELECT label, CASE WHEN ok THEN 'PASS' ELSE 'FAIL' END AS status, detail FROM test_results ORDER BY label;
 
 DO $$
