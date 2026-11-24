@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
+import type { IRoute, RouteAccess } from '@/types/routes.types';
 import { ROUTES } from './paths';
 import { ProtectedRoute } from './ProtectedRoute';
-import { routesConfig, type IRoute, type RouteAccess } from './RoutesConfig';
+import { routesConfig } from './RoutesConfig';
 
 const guards: Record<RouteAccess, (element: ReactNode) => ReactNode> = {
   public: (element) => element,

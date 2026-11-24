@@ -1,6 +1,6 @@
 import { useId, type ComponentPropsWithRef, type ReactNode } from 'react';
 
-import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Icon } from '@/ui/atoms/Icon/Icon';
 import styles from './SectionCard.module.scss';
 
 export interface SectionCardProps extends Omit<ComponentPropsWithRef<'section'>, 'title'> {

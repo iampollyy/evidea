@@ -1,21 +1,18 @@
 import { useId, type ReactNode } from 'react';
 
-import { useValidatedForm } from '@/shared/lib/form/useValidatedForm';
-import { SEX_OPTIONS } from '@/shared/lib/person/sex';
-import { getAge, parseIsoDate, toIsoDate } from '@/shared/lib/validation/person';
-import { Button } from '@/shared/ui/atoms/Button/Button';
-import { Dropdown } from '@/shared/ui/atoms/Dropdown/Dropdown';
-import { Icon } from '@/shared/ui/atoms/Icon/Icon';
-import { Input } from '@/shared/ui/atoms/Input/Input';
-import {
-  PATIENT_FIELD_ORDER,
-  validatePatient,
-  type AddPatientFormValues,
-} from '@/shared/ui/components/AddPatientForm/validatePatient';
-import { SectionCard } from '@/shared/ui/components/SectionCard/SectionCard';
+import { PATIENT_FIELD_ORDER } from '@/constants/forms.constants';
+import { SEX_OPTIONS } from '@/constants/person.constants';
+import { useValidatedForm } from '@/hooks/useValidatedForm';
+import type { PersonalInfoValues } from '@/types/forms.types';
+import { Button } from '@/ui/atoms/Button/Button';
+import { Dropdown } from '@/ui/atoms/Dropdown/Dropdown';
+import { Icon } from '@/ui/atoms/Icon/Icon';
+import { Input } from '@/ui/atoms/Input/Input';
+import { SectionCard } from '@/ui/components/SectionCard/SectionCard';
+import { formatAge, parseIsoDate, toIsoDate } from '@/utils/date';
+import { getSexLabel } from '@/utils/sex';
+import { validatePatient } from '@/utils/validation/patient';
 import styles from './PersonalInfoForm.module.scss';
-
-export type PersonalInfoValues = AddPatientFormValues;
 
 export interface PersonalInfoFormProps {
   values: PersonalInfoValues;
@@ -35,13 +32,6 @@ const longDate = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
 });
 
-function formatAge(birthDate: string) {
-  const date = parseIsoDate(birthDate);
-  if (!date) return '';
-  const age = getAge(date, new Date());
-  return age >= 0 ? `${age} ${age === 1 ? 'year' : 'years'}` : '';
-}
-
 function ReadOnlyField({ label, value, wide }: { label: string; value: string; wide?: boolean }) {
   return (
     <Input
@@ -56,7 +46,7 @@ function ReadOnlyField({ label, value, wide }: { label: string; value: string; w
 
 function PersonalInfoView({ values }: { values: PersonalInfoValues }) {
   const birthDate = parseIsoDate(values.birthDate);
-  const sexLabel = SEX_OPTIONS.find((option) => option.value === values.sex)?.label ?? '';
+  const sexLabel = getSexLabel(values.sex) ?? '';
 
   return (
     <div className={styles.grid}>

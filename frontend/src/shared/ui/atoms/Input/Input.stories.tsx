@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Icon } from '@/ui/atoms/Icon/Icon';
 import { Input } from './Input';
 
 const meta = {

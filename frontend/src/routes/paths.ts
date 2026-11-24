@@ -1,4 +1,4 @@
-import type { UserRole } from '@/shared/api/auth.types';
+import type { UserRole } from '@/types/auth.types';
 
 export const ROUTES = {
   home: '/',

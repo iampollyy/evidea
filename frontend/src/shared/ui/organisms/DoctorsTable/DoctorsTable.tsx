@@ -1,6 +1,6 @@
-import { STATUS_ACTIONS } from '@/shared/lib/doctor/status';
+import { STATUS_ACTIONS } from '@/constants/doctor.constants';
+import type { DoctorColumnId, DoctorsTableProps } from '@/types/doctorsTable.types';
 import { DOCTOR_COLUMNS } from './DoctorsTable.constants';
-import type { DoctorColumnId, DoctorsTableProps } from './DoctorsTable.types';
 import styles from './DoctorsTable.module.scss';
 
 const columnClassNames: Record<DoctorColumnId, string> = {

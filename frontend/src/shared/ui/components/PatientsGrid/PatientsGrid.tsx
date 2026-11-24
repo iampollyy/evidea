@@ -1,10 +1,10 @@
 import type { ComponentPropsWithRef, MouseEvent } from 'react';
 
-import type { LayoutOption } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
+import type { LayoutOption } from '@/ui/atoms/LayoutOptions/LayoutOptions';
 import {
   PatientCard,
   type PatientCardPatient,
-} from '@/shared/ui/components/PatientCard/PatientCard';
+} from '@/ui/components/PatientCard/PatientCard';
 import styles from './PatientsGrid.module.scss';
 
 export interface PatientsGridPatient extends PatientCardPatient {

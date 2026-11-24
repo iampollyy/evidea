@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
-import { doctorsMock } from '@/shared/mocks/doctors.mock';
+import { doctorsMock } from '@/mocks/doctors.mock';
 import { DoctorsTable } from './DoctorsTable';
 
 const meta = {

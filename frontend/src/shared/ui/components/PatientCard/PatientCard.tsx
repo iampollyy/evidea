@@ -1,9 +1,10 @@
 import type { ComponentPropsWithRef, MouseEvent } from 'react';
 
-import { isPlainLeftClick } from '@/shared/lib/dom/isPlainLeftClick';
-import { Button } from '@/shared/ui/atoms/Button/Button';
-import { Icon } from '@/shared/ui/atoms/Icon/Icon';
-import { Avatar } from '@/shared/ui/components/Avatar/Avatar';
+import { Button } from '@/ui/atoms/Button/Button';
+import { Icon } from '@/ui/atoms/Icon/Icon';
+import { Avatar } from '@/ui/components/Avatar/Avatar';
+import { formatAppointmentDate, toIsoDate } from '@/utils/date';
+import { isPlainLeftClick } from '@/utils/isPlainLeftClick';
 import styles from './PatientCard.module.scss';
 
 export interface PatientCardPatient {
@@ -20,28 +21,6 @@ export interface PatientCardProps extends Omit<ComponentPropsWithRef<'article'>,
   href?: string;
   onNavigate?: (event: MouseEvent<HTMLAnchorElement>) => void;
   onMenuClick?: () => void;
-}
-
-function formatAppointmentDate(date: Date | string) {
-  if (typeof date === 'string') return date;
-
-  const parts = Object.fromEntries(
-    new Intl.DateTimeFormat('en-GB', {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    })
-      .formatToParts(date)
-      .map(({ type, value }) => [type, value]),
-  );
-
-  return `${parts.weekday}, ${parts.day} ${parts.month} ${parts.year}`;
-}
-
-function toIsoDate(date: Date) {
-  const pad = (value: number) => String(value).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
 export function PatientCard({

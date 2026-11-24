@@ -1,25 +1,16 @@
-import {
-  Navigate,
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-  type Location,
-} from 'react-router-dom';
+import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import type { CurrentUser } from '@/shared/api/auth.types';
-import { DoctorDashboardPage } from '@/shared/ui/pages/DoctorDashboard/DoctorDashboardPage';
-import { LoginPage } from '@/shared/ui/pages/LoginPage/LoginPage';
-import {
-  DEFAULT_PATIENT_PROFILE_TAB,
-  isPatientProfileTab,
-} from '@/shared/ui/pages/PatientProfile/PatientProfile.constants';
-import { PatientProfilePage } from '@/shared/ui/pages/PatientProfile/PatientProfilePage';
-import { SetPasswordPage } from '@/shared/ui/pages/SetPasswordPage/SetPasswordPage';
-import { useCurrentUser } from './CurrentUserContext';
+import { DEFAULT_PATIENT_PROFILE_TAB } from '@/constants/patientProfile.constants';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { DoctorDashboardPage } from '@/pages/DoctorDashboardPage/DoctorDashboardPage';
+import { HomePage } from '@/pages/HomePage/HomePage';
+import { LoginPage } from '@/pages/LoginPage/LoginPage';
+import { PatientProfilePage } from '@/pages/PatientProfilePage/PatientProfilePage';
+import { SetPasswordPage } from '@/pages/SetPasswordPage/SetPasswordPage';
+import type { CurrentUser } from '@/types/auth.types';
+import type { LoginLocationState } from '@/types/routes.types';
+import { isPatientProfileTab } from '@/utils/patientProfile';
 import { HOME_PATH_BY_ROLE, patientProfilePath, ROUTES } from './paths';
-
-type LoginLocationState = { from?: Pick<Location, 'pathname' | 'search' | 'hash'> } | null;
 
 export function LoginRoute() {
   const location = useLocation();
@@ -54,12 +45,7 @@ export function HomeRoute() {
     return <Navigate to={homePath} replace />;
   }
 
-  return (
-    <main>
-      <h1>EVIDEA</h1>
-      <p>You are signed in.</p>
-    </main>
-  );
+  return <HomePage />;
 }
 
 export function DoctorDashboardRoute() {
@@ -100,14 +86,5 @@ export function PatientProfileRoute() {
         navigate(ROUTES.doctor.dashboard);
       }}
     />
-  );
-}
-
-export function ForbiddenPage() {
-  return (
-    <main>
-      <h1>Access denied</h1>
-      <p>You do not have permission to view this page.</p>
-    </main>
   );
 }

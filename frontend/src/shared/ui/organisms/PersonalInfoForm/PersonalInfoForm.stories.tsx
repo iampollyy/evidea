@@ -2,8 +2,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { fn } from 'storybook/test';
 
-import { personalInfoMock } from '@/shared/mocks/patientProfile.mock';
-import { PersonalInfoForm, type PersonalInfoValues } from './PersonalInfoForm';
+import { personalInfoMock } from '@/mocks/patientProfile.mock';
+import type { PersonalInfoValues } from '@/types/forms.types';
+import { PersonalInfoForm } from './PersonalInfoForm';
 
 const meta = {
   title: 'Organisms/PersonalInfoForm',

@@ -2,15 +2,15 @@ import type { ComponentPropsWithRef } from 'react';
 
 import stripeBlue from '@/assets/decor/banner-stripe-blue.svg';
 import stripeViolet from '@/assets/decor/banner-stripe-violet.svg';
-import { SEX_OPTIONS, type Sex } from '@/shared/lib/person/sex';
-import { getAge, parseIsoDate, toIsoDate } from '@/shared/lib/validation/person';
-import { Badge } from '@/shared/ui/atoms/Badge/Badge';
-import { Button } from '@/shared/ui/atoms/Button/Button';
-import { Icon } from '@/shared/ui/atoms/Icon/Icon';
-import { Image } from '@/shared/ui/atoms/Image/Image';
+import type { PatientStatus } from '@/types/patients.types';
+import type { Sex } from '@/types/person.types';
+import { Badge } from '@/ui/atoms/Badge/Badge';
+import { Button } from '@/ui/atoms/Button/Button';
+import { Icon } from '@/ui/atoms/Icon/Icon';
+import { Image } from '@/ui/atoms/Image/Image';
+import { getAge, toDate, toIsoDate } from '@/utils/date';
+import { getSexLabel } from '@/utils/sex';
 import styles from './PatientBanner.module.scss';
-
-export type PatientStatus = 'active' | 'archived';
 
 export interface PatientBannerPatient {
   code: string;
@@ -40,10 +40,6 @@ const longDate = new Intl.DateTimeFormat('en-GB', {
   year: 'numeric',
 });
 
-function toDate(value: Date | string) {
-  return value instanceof Date ? value : parseIsoDate(value);
-}
-
 function FormattedDate({ value }: { value: Date | string }) {
   const date = toDate(value);
   if (!date) return <>{String(value)}</>;
@@ -66,7 +62,7 @@ export function PatientBanner({ patient, onAddCase, className, ...rest }: Patien
   const fullName = `${name} ${surname}`;
   const birth = toDate(birthDate);
   const age = birth ? getAge(birth, new Date()) : null;
-  const sexLabel = SEX_OPTIONS.find((option) => option.value === sex)?.label ?? sex;
+  const sexLabel = getSexLabel(sex) ?? sex;
   const badge = STATUS_BADGES[status];
   const classes = [styles.banner, className].filter(Boolean).join(' ');
 

@@ -1,19 +1,17 @@
 import type { ComponentPropsWithRef, ReactNode } from 'react';
 
-import { useValidatedForm } from '@/shared/lib/form/useValidatedForm';
-import { Button } from '@/shared/ui/atoms/Button/Button';
-import { Icon } from '@/shared/ui/atoms/Icon/Icon';
-import { PasswordInput } from '@/shared/ui/components/PasswordInput/PasswordInput';
-import styles from './SetPasswordForm.module.scss';
 import {
   EMPTY_SET_PASSWORD,
   PASSWORD_HINT,
   SET_PASSWORD_FIELD_ORDER,
-  validateSetPassword,
-  type SetPasswordFormValues,
-} from './validateSetPassword';
-
-export type { SetPasswordFormValues } from './validateSetPassword';
+} from '@/constants/forms.constants';
+import { useValidatedForm } from '@/hooks/useValidatedForm';
+import type { SetPasswordFormValues } from '@/types/forms.types';
+import { Button } from '@/ui/atoms/Button/Button';
+import { Icon } from '@/ui/atoms/Icon/Icon';
+import { PasswordInput } from '@/ui/components/PasswordInput/PasswordInput';
+import { validateSetPassword } from '@/utils/validation/setPassword';
+import styles from './SetPasswordForm.module.scss';
 
 export interface SetPasswordFormProps extends Omit<
   ComponentPropsWithRef<'form'>,

@@ -1,26 +1,16 @@
-import { ROLE_LABELS } from '@/shared/lib/doctor/role';
+import { ROLE_LABELS } from '@/constants/doctor.constants';
 import {
   ACTION_LABELS,
   STATUS_ACTIONS,
   STATUS_BADGE_VARIANTS,
   STATUS_LABELS,
-} from '@/shared/lib/doctor/status';
-import { Badge } from '@/shared/ui/atoms/Badge/Badge';
-import { Button } from '@/shared/ui/atoms/Button/Button';
-import { Avatar } from '@/shared/ui/components/Avatar/Avatar';
-import type { DoctorColumn } from './DoctorsTable.types';
+} from '@/constants/doctor.constants';
+import { Badge } from '@/ui/atoms/Badge/Badge';
+import { Button } from '@/ui/atoms/Button/Button';
+import type { DoctorColumn } from '@/types/doctorsTable.types';
+import { Avatar } from '@/ui/components/Avatar/Avatar';
+import { formatCreatedDate } from '@/utils/date';
 import styles from './DoctorsTable.module.scss';
-
-const dateFormatter = new Intl.DateTimeFormat('en', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric',
-});
-
-function formatCreatedDate(date: string) {
-  const parsedDate = new Date(`${date}T00:00:00`);
-  return Number.isNaN(parsedDate.getTime()) ? date : dateFormatter.format(parsedDate);
-}
 
 export const DOCTOR_COLUMNS: DoctorColumn[] = [
   {

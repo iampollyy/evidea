@@ -1,6 +1,6 @@
 import { useRef, type KeyboardEvent } from 'react';
 
-import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Icon } from '@/ui/atoms/Icon/Icon';
 import styles from './LayoutOptions.module.scss';
 
 export type LayoutOption = 'list' | 'grid';

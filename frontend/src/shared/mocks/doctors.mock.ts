@@ -1,4 +1,4 @@
-import type { DoctorMetrics, DoctorRecord } from '@/shared/api/doctors.types';
+import type { DoctorMetrics, DoctorRecord } from '@/types/doctors.types';
 
 export const doctorsMock: DoctorRecord[] = [
   {

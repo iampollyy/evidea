@@ -1,7 +1,7 @@
 import sampleImage from '@/assets/sample-image.jpg';
-import type { VitalSignsValues } from '@/shared/api/cases.types';
-import type { PatientBannerPatient } from '@/shared/ui/components/PatientBanner/PatientBanner';
-import type { PersonalInfoValues } from '@/shared/ui/organisms/PersonalInfoForm/PersonalInfoForm';
+import type { VitalSignsValues } from '@/types/cases.types';
+import type { PatientBannerPatient } from '@/ui/components/PatientBanner/PatientBanner';
+import type { PersonalInfoValues } from '@/types/forms.types';
 
 export const patientBannerMock: PatientBannerPatient = {
   code: '#3F9A1C2E',

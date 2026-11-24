@@ -1,0 +1,107 @@
+import { DOCTOR_ROLES } from '@/constants/doctor.constants';
+import type { AcceptInvitationInput, CurrentUser, LoginCredentials } from '@/types/auth.types';
+import { readErrorCode } from '@/utils/http';
+import { isOneOf, isRecord } from '@/utils/typeGuards';
+
+const LOGIN_URL = '/api/v1/auth/login';
+const CURRENT_USER_URL = '/api/v1/me';
+const LOGOUT_URL = '/api/v1/auth/logout';
+const ACCEPT_INVITATION_URL = '/api/v1/auth/invitations/accept';
+
+function isCurrentUser(value: unknown): value is CurrentUser {
+  return (
+    isRecord(value) &&
+    typeof value.id === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.surname === 'string' &&
+    typeof value.email === 'string' &&
+    isOneOf(DOCTOR_ROLES, value.role) &&
+    (typeof value.avatarUrl === 'string' || value.avatarUrl === null)
+  );
+}
+
+async function parseUser(response: Response, errorPrefix: string): Promise<CurrentUser> {
+  const user: unknown = await response.json();
+  if (!isCurrentUser(user)) {
+    throw new Error(`${errorPrefix}: invalid user response`);
+  }
+  return user;
+}
+
+export class AuthError extends Error {
+  readonly status: number;
+  readonly code: string | null;
+
+  constructor(status: number, message: string, code: string | null = null) {
+    super(message);
+    this.name = 'AuthError';
+    this.status = status;
+    this.code = code;
+  }
+}
+
+export async function login(
+  credentials: LoginCredentials,
+  signal?: AbortSignal,
+): Promise<CurrentUser> {
+  const response = await fetch(LOGIN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(credentials),
+    signal,
+  });
+
+  if (!response.ok) {
+    throw new AuthError(response.status, response.statusText || 'Login failed');
+  }
+
+  return parseUser(response, 'Unable to sign in');
+}
+
+export async function getCurrentUser(signal?: AbortSignal): Promise<CurrentUser | null> {
+  const response = await fetch(CURRENT_USER_URL, {
+    credentials: 'include',
+    signal,
+  });
+
+  if (response.status === 401) return null;
+  if (!response.ok) {
+    throw new Error(`Unable to verify your session: HTTP ${response.status}`);
+  }
+
+  return parseUser(response, 'Unable to verify your session');
+}
+
+export async function logout(signal?: AbortSignal): Promise<void> {
+  const response = await fetch(LOGOUT_URL, {
+    method: 'POST',
+    credentials: 'include',
+    signal,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Unable to sign out: HTTP ${response.status}`);
+  }
+}
+
+export async function acceptInvitation(
+  { token, password }: AcceptInvitationInput,
+  signal?: AbortSignal,
+): Promise<void> {
+  const response = await fetch(ACCEPT_INVITATION_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify({ token, password }),
+    signal,
+  });
+
+  if (!response.ok) {
+    throw new AuthError(
+      response.status,
+      response.statusText || 'Unable to set password',
+      await readErrorCode(response),
+    );
+  }
+}

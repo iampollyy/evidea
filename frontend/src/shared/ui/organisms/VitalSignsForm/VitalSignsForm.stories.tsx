@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import { fn } from 'storybook/test';
 
-import type { VitalSignsValues } from '@/shared/api/cases.types';
-import { vitalSignsMeasuredAtMock, vitalSignsMock } from '@/shared/mocks/patientProfile.mock';
+import type { VitalSignsValues } from '@/types/cases.types';
+import { vitalSignsMeasuredAtMock, vitalSignsMock } from '@/mocks/patientProfile.mock';
 import { VitalSignsForm } from './VitalSignsForm';
 
 const meta = {

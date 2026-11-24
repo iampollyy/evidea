@@ -1,29 +1,19 @@
-import type { JSX } from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { AdminDashboardPage } from '@/shared/ui/pages/AdminDashboard/AdminDashboardPage';
+import { AdminDashboardPage } from '@/pages/AdminDashboardPage/AdminDashboardPage';
+import { ForbiddenPage } from '@/pages/ForbiddenPage/ForbiddenPage';
+import type { IRoute } from '@/types/routes.types';
 import { ADMIN_NAV_ITEMS } from './adminNav';
 import { DOCTOR_NAV_ITEMS } from './doctorNav';
 import { ROUTES } from './paths';
 import {
   AcceptInvitationRoute,
   DoctorDashboardRoute,
-  ForbiddenPage,
   HomeRoute,
   LoginRoute,
   PatientProfileRoute,
 } from './RoutePages';
 import { WorkspaceLayoutRoute } from './WorkspaceLayoutRoute';
-
-export type RouteAccess = 'public' | 'authenticated' | 'admin' | 'clinician';
-
-interface IRoute {
-  path?: string;
-  index?: boolean;
-  element: JSX.Element;
-  access?: RouteAccess;
-  children?: IRoute[];
-}
 
 export const routesConfig: IRoute[] = [
   {
@@ -85,5 +75,3 @@ export const routesConfig: IRoute[] = [
     ],
   },
 ];
-
-export type { IRoute };

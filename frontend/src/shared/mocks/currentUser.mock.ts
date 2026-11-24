@@ -1,4 +1,4 @@
-import type { CurrentUser } from '@/shared/api/auth.types';
+import type { CurrentUser } from '@/types/auth.types';
 
 export const adminUserMock: CurrentUser = {
   id: 'admin-1',

@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef, MouseEvent } from 'react';
 
-import { isPlainLeftClick } from '@/shared/lib/dom/isPlainLeftClick';
+import { isPlainLeftClick } from '@/utils/isPlainLeftClick';
 import styles from './PatientProfileNav.module.scss';
 
 export interface PatientProfileNavItem {
