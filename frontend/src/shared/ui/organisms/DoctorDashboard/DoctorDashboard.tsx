@@ -4,6 +4,7 @@ import { Filter } from '@/shared/ui/atoms/Filter/Filter';
 import { Icon } from '@/shared/ui/atoms/Icon/Icon';
 import { LayoutOptions } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
 import { AddPatientForm } from '@/shared/ui/components/AddPatientForm/AddPatientForm';
+import { Modal } from '@/shared/ui/components/Modal/Modal';
 import { PatientsGrid } from '@/shared/ui/components/PatientsGrid/PatientsGrid';
 import { SearchField } from '@/shared/ui/components/SearchField/SearchField';
 import {
@@ -140,16 +141,14 @@ export function DoctorDashboard({
       )}
 
       {isAddPatientOpen && (
-        <div className={styles.modalBackdrop}>
-          <div className={styles.modal} role="dialog" aria-modal="true" aria-label="Add patient">
-            <AddPatientForm
-              onSubmit={(values) => onAddPatientSubmit?.(values)}
-              onCancel={onAddPatientCancel}
-              isSubmitting={isAddingPatient}
-              submitError={addPatientError}
-            />
-          </div>
-        </div>
+        <Modal label="Add patient" onClose={onAddPatientCancel} dismissible={!isAddingPatient}>
+          <AddPatientForm
+            onSubmit={(values) => onAddPatientSubmit?.(values)}
+            onCancel={onAddPatientCancel}
+            isSubmitting={isAddingPatient}
+            submitError={addPatientError}
+          />
+        </Modal>
       )}
     </>
   );
