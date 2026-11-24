@@ -76,7 +76,7 @@ npm run dev
 ```
 
 The app opens at http://localhost:5173.
-
+!Important note: frontend is still under development, therefor more unit tests will be added, as well as E2E, more components and a11y AA lvl requirements will be met
 ## Documentation
 
 More details are in [docs/](docs/): start with [Getting started](docs/getting-started.md).
