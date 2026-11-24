@@ -1,27 +1,48 @@
-import { useLocation, useNavigate, type Location } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate, type Location } from 'react-router-dom';
 
+import type { CurrentUser } from '@/shared/api/auth.types';
 import { LoginPage } from '@/shared/ui/pages/LoginPage/LoginPage';
+import { useCurrentUser } from './CurrentUserContext';
+import { HOME_PATH_BY_ROLE, ROUTES } from './paths';
+
+type LoginLocationState = { from?: Pick<Location, 'pathname' | 'search' | 'hash'> } | null;
 
 export function LoginRoute() {
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as
-    | { from?: Pick<Location, 'pathname' | 'search' | 'hash'> }
-    | null;
+  const from = (location.state as LoginLocationState)?.from;
 
-  const handleLoginSuccess = () => {
-    const from = state?.from;
-    navigate(from ? `${from.pathname}${from.search}${from.hash}` : '/', { replace: true });
+  const handleLoginSuccess = (user: CurrentUser) => {
+    const target = from
+      ? `${from.pathname}${from.search}${from.hash}`
+      : HOME_PATH_BY_ROLE[user.role];
+    navigate(target, { replace: true });
   };
 
   return <LoginPage onLoginSuccess={handleLoginSuccess} />;
 }
 
-export function ProtectedHomePage() {
+export function HomeRoute() {
+  const user = useCurrentUser();
+  const homePath = HOME_PATH_BY_ROLE[user.role];
+
+  if (homePath !== ROUTES.home) {
+    return <Navigate to={homePath} replace />;
+  }
+
   return (
     <main>
       <h1>EVIDEA</h1>
       <p>You are signed in.</p>
+    </main>
+  );
+}
+
+export function ForbiddenPage() {
+  return (
+    <main>
+      <h1>Access denied</h1>
+      <p>You do not have permission to view this page.</p>
     </main>
   );
 }

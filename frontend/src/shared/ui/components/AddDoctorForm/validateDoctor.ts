@@ -7,7 +7,7 @@ import {
   validatePhone,
   validateRequiredChoice,
 } from '@/shared/lib/validation/person';
-import type { DoctorRole } from './doctorOptions';
+import type { DoctorRole } from '@/shared/api/doctors.types';
 
 export interface AddDoctorFormValues {
   name: string;

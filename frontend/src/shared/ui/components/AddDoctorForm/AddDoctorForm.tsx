@@ -7,7 +7,7 @@ import { Dropdown } from '@/shared/ui/atoms/Dropdown/Dropdown';
 import { Input } from '@/shared/ui/atoms/Input/Input';
 import { FormPanel } from '@/shared/ui/components/FormPanel/FormPanel';
 import { FormSection } from '@/shared/ui/components/FormSection/FormSection';
-import { ROLE_OPTIONS } from './doctorOptions';
+import { ROLE_OPTIONS } from '@/shared/lib/doctor/role';
 import {
   DOCTOR_FIELD_ORDER,
   EMPTY_DOCTOR,

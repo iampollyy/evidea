@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { AuthError, login } from '@/shared/api/auth';
+import type { CurrentUser } from '@/shared/api/auth.types';
 import { Logo } from '@/shared/ui/atoms/Logo/Logo';
 import { LoginForm, type LoginFormValues } from '@/shared/ui/components/LoginForm/LoginForm';
 import styles from './LoginPage.module.scss';
 
 export interface LoginPageProps {
-  onLoginSuccess?: () => void;
+  onLoginSuccess?: (user: CurrentUser) => void;
 }
 
 function getErrorMessage(error: unknown) {
@@ -35,8 +36,8 @@ export function LoginPage({ onLoginSuccess }: LoginPageProps) {
     setSubmitError(null);
 
     try {
-      await login(values, controller.signal);
-      onLoginSuccess?.();
+      const user = await login(values, controller.signal);
+      onLoginSuccess?.(user);
     } catch (error) {
       if (controller.signal.aborted) return;
       setSubmitError(getErrorMessage(error));
