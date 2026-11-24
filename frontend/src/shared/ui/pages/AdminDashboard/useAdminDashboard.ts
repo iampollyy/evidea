@@ -99,6 +99,8 @@ export function useAdminDashboard(): AdminDashboardProps {
       await createDoctor(toDoctorInput(values));
       setIsAddDoctorOpen(false);
       setNotice(DOCTOR_ADDED_NOTICE);
+      setFilters(INITIAL_FILTERS);
+      setSearch('');
       refresh();
     } catch (error) {
       setAddDoctorError(getErrorMessage(error));
