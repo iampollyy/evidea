@@ -66,7 +66,7 @@ def test_doctor_create_rules() -> None:
 
 
 def test_case_create_rules() -> None:
-    from evidea.modules.cases.schemas import CaseCreate
+    from evidea.modules.cases.schemas import AnamnesisCreate, CaseCreate
 
     with pytest.raises(ValidationError) as caught:
         CaseCreate.model_validate(
@@ -89,6 +89,12 @@ def test_case_create_rules() -> None:
     )
     assert case.anamnesis.allergies is None
     assert case.vital_signs is None and case.lab_reports == []
+
+    with pytest.raises(ValidationError) as caught:
+        AnamnesisCreate.model_validate(
+            {"chiefComplaint": "Progressive muscle weakness", "familyHistory": "Null\x00character"}
+        )
+    assert "familyHistory" in field_errors(caught.value)
 
 
 @pytest.mark.parametrize(("value", "kind"), [(True, bool), (1520, int), (13.5, float), ("x", str)])

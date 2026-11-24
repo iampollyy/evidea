@@ -32,6 +32,13 @@ _OPTIONAL_TEXT = (
 
 
 class _AnamnesisInput(InputModel):
+    @field_validator("*", check_fields=False, mode="before")
+    @classmethod
+    def _reject_null_characters(cls, value: object) -> object:
+        if isinstance(value, str) and "\x00" in value:
+            raise ValueError("Text must not contain null characters.")
+        return value
+
     @field_validator(*_OPTIONAL_TEXT, check_fields=False)
     @classmethod
     def _empty_to_none(cls, value: str | None) -> str | None:

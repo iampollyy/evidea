@@ -193,6 +193,9 @@ def test_replace_anamnesis(api: TestClient, clinician: Doctor) -> None:
     assert body["allergies"] is None
     assert body["updatedAt"] >= body["createdAt"]
 
+    invalid = api.put(url, json={**full, "familyHistory": "Null\x00character"})
+    assert invalid.status_code == 422
+
 
 def test_archived_patient_gets_no_new_cases_or_changes(api: TestClient, clinician: Doctor) -> None:
     patient_id = create_patient(api)

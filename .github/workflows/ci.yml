@@ -108,6 +108,11 @@ jobs:
             | head -n 1 | cut -d: -f2- | tr -d '\r' | sed 's/;.*//;s/^[[:space:]]*//')"
           test -n "$cookie"
 
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c \
+            "UPDATE model_versions SET is_active = FALSE; \
+            INSERT INTO model_versions (model_version_id, name, version, artifact_uri, trained_at, is_active) \
+            VALUES (gen_random_uuid(), 'contract-test-stub', '0.1.0-contract', 'stub://evidea/contract-test', now(), TRUE)"
+
           schemathesis run ../../docs/reference/openapi.yaml \
             --url http://127.0.0.1:8000/api/v1 \
             --header "Cookie: $cookie" \
