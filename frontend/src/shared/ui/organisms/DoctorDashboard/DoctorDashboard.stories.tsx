@@ -2,14 +2,14 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState, type MouseEvent } from 'react';
 import { fn } from 'storybook/test';
 
-import { clinicianUserMock } from '@/mocks/currentUser.mock';
-import { doctorNavItemsMock } from '@/mocks/doctorNav.mock';
-import { patientsMock } from '@/mocks/patients.mock';
-import type { PatientsGridPatient } from '@/ui/components/PatientsGrid/PatientsGrid';
-import type { LayoutOption } from '@/ui/atoms/LayoutOptions/LayoutOptions';
-import { WorkspaceLayout } from '@/ui/organisms/WorkspaceLayout/WorkspaceLayout';
+import { clinicianUserMock } from '@/shared/mocks/currentUser.mock';
+import { doctorNavItemsMock } from '@/shared/mocks/doctorNav.mock';
+import { patientsMock } from '@/shared/mocks/patients.mock';
+import type { PatientsGridPatient } from '@/shared/ui/components/PatientsGrid/PatientsGrid';
+import type { LayoutOption } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
+import { WorkspaceLayout } from '@/shared/ui/organisms/WorkspaceLayout/WorkspaceLayout';
 import { INITIAL_FILTERS } from '@/constants/doctorDashboard.constants';
-import type { PatientFilters } from '@/types/doctorDashboard.types';
+import type { PatientFilters } from '@/shared/types/doctorDashboard.types';
 import { DoctorDashboard } from './DoctorDashboard';
 
 const meta = {

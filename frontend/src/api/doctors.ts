@@ -8,7 +8,7 @@ import type {
   DoctorStatusFilter,
   DoctorsPage,
   ListDoctorsOptions,
-} from '@/types/doctors.types';
+} from '@/shared/types/doctors.types';
 import { isOneOf, isRecord } from '@/utils/typeGuards';
 
 const DOCTORS_URL = '/api/v1/doctors';

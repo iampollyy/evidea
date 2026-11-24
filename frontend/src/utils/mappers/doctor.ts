@@ -1,5 +1,5 @@
-import type { DoctorCreateInput } from '@/types/doctors.types';
-import type { AddDoctorFormValues } from '@/types/forms.types';
+import type { DoctorCreateInput } from '@/shared/types/doctors.types';
+import type { AddDoctorFormValues } from '@/shared/types/forms.types';
 
 export function toDoctorInput({
   name,

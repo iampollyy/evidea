@@ -1,9 +1,9 @@
 import { matchPath, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { useSignOut } from '@/hooks/useSignOut';
-import type { WorkspaceLayoutRouteProps } from '@/types/routes.types';
-import { WorkspaceLayout } from '@/ui/organisms/WorkspaceLayout/WorkspaceLayout';
+import { useCurrentUser } from '@/shared/hooks/useCurrentUser';
+import { useSignOut } from '@/shared/hooks/useSignOut';
+import type { WorkspaceLayoutRouteProps } from '@/shared/types/routes.types';
+import { WorkspaceLayout } from '@/shared/ui/organisms/WorkspaceLayout/WorkspaceLayout';
 
 export function WorkspaceLayoutRoute({ navItems, homeHref }: WorkspaceLayoutRouteProps) {
   const user = useCurrentUser();

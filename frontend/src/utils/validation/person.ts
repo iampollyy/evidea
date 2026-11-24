@@ -1,5 +1,5 @@
 import { EMAIL_PATTERN, NAME_PATTERN, PHONE_PATTERN } from '@/constants/forms.constants';
-import type { BirthDateRules } from '@/types/person.types';
+import type { BirthDateRules } from '@/shared/types/person.types';
 import { getAge, parseIsoDate } from '@/utils/date';
 
 export function validatePersonName(value: string, label: string) {

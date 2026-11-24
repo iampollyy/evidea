@@ -2,16 +2,16 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { MouseEvent } from 'react';
 import { fn } from 'storybook/test';
 
-import { clinicianUserMock } from '@/mocks/currentUser.mock';
-import { doctorNavItemsMock } from '@/mocks/doctorNav.mock';
+import { clinicianUserMock } from '@/shared/mocks/currentUser.mock';
+import { doctorNavItemsMock } from '@/shared/mocks/doctorNav.mock';
 import {
   patientBannerMock,
   personalInfoMock,
   vitalSignsMeasuredAtMock,
   vitalSignsMock,
-} from '@/mocks/patientProfile.mock';
-import { WorkspaceLayout } from '@/ui/organisms/WorkspaceLayout/WorkspaceLayout';
-import type { PatientProfileTab } from '@/types/patientProfile.types';
+} from '@/shared/mocks/patientProfile.mock';
+import { WorkspaceLayout } from '@/shared/ui/organisms/WorkspaceLayout/WorkspaceLayout';
+import type { PatientProfileTab } from '@/shared/types/patientProfile.types';
 import { PatientProfile } from './PatientProfile';
 
 const personalInfo = {

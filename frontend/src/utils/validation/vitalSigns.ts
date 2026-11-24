@@ -1,5 +1,5 @@
 import { VITAL_FIELD_ORDER, VITAL_RULES } from '@/constants/vitalSigns.constants';
-import type { FormErrors, VitalRule, VitalSignsFormValues } from '@/types/forms.types';
+import type { FormErrors, VitalRule, VitalSignsFormValues } from '@/shared/types/forms.types';
 
 function validateMeasurement(raw: string, { label, min, max, decimals }: VitalRule) {
   const value = raw.trim();

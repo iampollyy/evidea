@@ -1,14 +1,14 @@
 import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { DEFAULT_PATIENT_PROFILE_TAB } from '@/constants/patientProfile.constants';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useCurrentUser } from '@/shared/hooks/useCurrentUser';
 import { DoctorDashboardPage } from '@/pages/DoctorDashboardPage/DoctorDashboardPage';
 import { HomePage } from '@/pages/HomePage/HomePage';
 import { LoginPage } from '@/pages/LoginPage/LoginPage';
 import { PatientProfilePage } from '@/pages/PatientProfilePage/PatientProfilePage';
 import { SetPasswordPage } from '@/pages/SetPasswordPage/SetPasswordPage';
-import type { CurrentUser } from '@/types/auth.types';
-import type { LoginLocationState } from '@/types/routes.types';
+import type { CurrentUser } from '@/shared/types/auth.types';
+import type { LoginLocationState } from '@/shared/types/routes.types';
 import { isPatientProfileTab } from '@/utils/patientProfile';
 import { HOME_PATH_BY_ROLE, patientProfilePath, ROUTES } from './paths';
 

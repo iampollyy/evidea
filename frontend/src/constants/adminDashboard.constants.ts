@@ -1,5 +1,9 @@
-import type { DoctorFilters, RoleFilterOption, StatusTab } from '@/types/adminDashboard.types';
-import type { DoctorAction, DoctorRecord } from '@/types/doctors.types';
+import type {
+  DoctorFilters,
+  RoleFilterOption,
+  StatusTab,
+} from '@/shared/types/adminDashboard.types';
+import type { DoctorAction, DoctorRecord } from '@/shared/types/doctors.types';
 import { DOCTOR_STATUSES, ROLE_OPTIONS, STATUS_LABELS } from './doctor.constants';
 
 export const PAGE_SIZE = 10;

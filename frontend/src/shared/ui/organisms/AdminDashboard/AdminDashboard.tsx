@@ -1,18 +1,18 @@
-import { Badge } from '@/ui/atoms/Badge/Badge';
-import { Button } from '@/ui/atoms/Button/Button';
-import { Dropdown } from '@/ui/atoms/Dropdown/Dropdown';
-import { Icon } from '@/ui/atoms/Icon/Icon';
-import { AddDoctorForm } from '@/ui/components/AddDoctorForm/AddDoctorForm';
-import { SearchField } from '@/ui/components/SearchField/SearchField';
-import { DoctorsTable } from '@/ui/organisms/DoctorsTable/DoctorsTable';
+import { Badge } from '@/shared/ui/atoms/Badge/Badge';
+import { Button } from '@/shared/ui/atoms/Button/Button';
+import { Dropdown } from '@/shared/ui/atoms/Dropdown/Dropdown';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { AddDoctorForm } from '@/shared/ui/components/AddDoctorForm/AddDoctorForm';
+import { SearchField } from '@/shared/ui/components/SearchField/SearchField';
+import { DoctorsTable } from '@/shared/ui/organisms/DoctorsTable/DoctorsTable';
 import {
   MIN_SEARCH_LENGTH,
   ROLE_FILTER_OPTIONS,
   SEARCH_MAX_LENGTH,
   STATUS_TABS,
 } from '@/constants/adminDashboard.constants';
-import type { AdminDashboardProps } from '@/types/adminDashboard.types';
-import type { PageControl } from '@/types/common.types';
+import type { AdminDashboardProps } from '@/shared/types/adminDashboard.types';
+import type { PageControl } from '@/shared/types/common.types';
 import styles from './AdminDashboard.module.scss';
 
 export function AdminDashboard({

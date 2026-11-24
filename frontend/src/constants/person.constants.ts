@@ -1,5 +1,5 @@
-import type { Option } from '@/types/common.types';
-import type { Sex } from '@/types/person.types';
+import type { Option } from '@/shared/types/common.types';
+import type { Sex } from '@/shared/types/person.types';
 
 export const SEXES = ['male', 'female', 'other', 'unknown'] as const satisfies readonly Sex[];
 

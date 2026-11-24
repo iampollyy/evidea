@@ -1,5 +1,5 @@
 import { MAX_PATIENT_AGE } from '@/constants/forms.constants';
-import type { AddPatientFormValues, FormErrors } from '@/types/forms.types';
+import type { AddPatientFormValues, FormErrors } from '@/shared/types/forms.types';
 import {
   validateBirthDate,
   validateEmail,

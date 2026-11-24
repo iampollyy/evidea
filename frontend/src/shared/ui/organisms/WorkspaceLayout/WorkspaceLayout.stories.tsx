@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
-import { adminUserMock } from '@/mocks/currentUser.mock';
-import { adminNavItemsMock } from '@/mocks/adminNav.mock';
+import { adminUserMock } from '@/shared/mocks/currentUser.mock';
+import { adminNavItemsMock } from '@/shared/mocks/adminNav.mock';
 import { WorkspaceLayout } from './WorkspaceLayout';
 
 const meta = {

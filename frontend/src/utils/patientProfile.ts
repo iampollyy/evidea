@@ -1,5 +1,5 @@
 import { PATIENT_PROFILE_TABS } from '@/constants/patientProfile.constants';
-import type { PatientProfileTab } from '@/types/patientProfile.types';
+import type { PatientProfileTab } from '@/shared/types/patientProfile.types';
 
 export function isPatientProfileTab(value: unknown): value is PatientProfileTab {
   return PATIENT_PROFILE_TABS.some((tab) => tab.id === value);

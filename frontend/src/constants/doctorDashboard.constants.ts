@@ -1,7 +1,7 @@
-import type { PatientFilters } from '@/types/doctorDashboard.types';
-import type { PatientStatus } from '@/types/patients.types';
-import type { FilterOption } from '@/ui/atoms/Filter/Filter';
-import type { LayoutOption } from '@/ui/atoms/LayoutOptions/LayoutOptions';
+import type { PatientFilters } from '@/shared/types/doctorDashboard.types';
+import type { PatientStatus } from '@/shared/types/patients.types';
+import type { FilterOption } from '@/shared/ui/atoms/Filter/Filter';
+import type { LayoutOption } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
 
 export const PAGE_SIZE = 15;
 export const MIN_SEARCH_LENGTH = 2;

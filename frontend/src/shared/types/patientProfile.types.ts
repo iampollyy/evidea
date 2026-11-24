@@ -1,9 +1,9 @@
 import type { MouseEvent } from 'react';
 
 import type { PATIENT_PROFILE_TABS } from '@/constants/patientProfile.constants';
-import type { PatientBannerPatient } from '@/ui/components/PatientBanner/PatientBanner';
-import type { PersonalInfoFormProps } from '@/ui/organisms/PersonalInfoForm/PersonalInfoForm';
-import type { VitalSignsFormProps } from '@/ui/organisms/VitalSignsForm/VitalSignsForm';
+import type { PatientBannerPatient } from '@/shared/ui/components/PatientBanner/PatientBanner';
+import type { PersonalInfoFormProps } from '@/shared/ui/organisms/PersonalInfoForm/PersonalInfoForm';
+import type { VitalSignsFormProps } from '@/shared/ui/organisms/VitalSignsForm/VitalSignsForm';
 import type { VitalSignsRecord } from './cases.types';
 import type { PatientDetail } from './patients.types';
 

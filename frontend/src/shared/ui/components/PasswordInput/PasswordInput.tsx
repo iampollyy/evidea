@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { Button } from '@/ui/atoms/Button/Button';
-import { Icon } from '@/ui/atoms/Icon/Icon';
-import { Input, type InputProps } from '@/ui/atoms/Input/Input';
+import { Button } from '@/shared/ui/atoms/Button/Button';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Input, type InputProps } from '@/shared/ui/atoms/Input/Input';
 import styles from './PasswordInput.module.scss';
 
 export type PasswordInputProps = Omit<InputProps, 'type' | 'trailing'>;

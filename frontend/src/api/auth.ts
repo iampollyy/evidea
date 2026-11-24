@@ -1,5 +1,9 @@
 import { DOCTOR_ROLES } from '@/constants/doctor.constants';
-import type { AcceptInvitationInput, CurrentUser, LoginCredentials } from '@/types/auth.types';
+import type {
+  AcceptInvitationInput,
+  CurrentUser,
+  LoginCredentials,
+} from '@/shared/types/auth.types';
 import { readErrorCode } from '@/utils/http';
 import { isOneOf, isRecord } from '@/utils/typeGuards';
 

@@ -1,11 +1,11 @@
-import { Badge } from '@/ui/atoms/Badge/Badge';
-import { Button } from '@/ui/atoms/Button/Button';
-import { Filter } from '@/ui/atoms/Filter/Filter';
-import { Icon } from '@/ui/atoms/Icon/Icon';
-import { LayoutOptions } from '@/ui/atoms/LayoutOptions/LayoutOptions';
-import { AddPatientForm } from '@/ui/components/AddPatientForm/AddPatientForm';
-import { PatientsGrid } from '@/ui/components/PatientsGrid/PatientsGrid';
-import { SearchField } from '@/ui/components/SearchField/SearchField';
+import { Badge } from '@/shared/ui/atoms/Badge/Badge';
+import { Button } from '@/shared/ui/atoms/Button/Button';
+import { Filter } from '@/shared/ui/atoms/Filter/Filter';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { LayoutOptions } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
+import { AddPatientForm } from '@/shared/ui/components/AddPatientForm/AddPatientForm';
+import { PatientsGrid } from '@/shared/ui/components/PatientsGrid/PatientsGrid';
+import { SearchField } from '@/shared/ui/components/SearchField/SearchField';
 import {
   INITIAL_FILTERS,
   LAYOUT_TITLES,
@@ -13,8 +13,8 @@ import {
   SEARCH_MAX_LENGTH,
   STATUS_FILTER_OPTIONS,
 } from '@/constants/doctorDashboard.constants';
-import type { PageControl } from '@/types/common.types';
-import type { DoctorDashboardProps } from '@/types/doctorDashboard.types';
+import type { PageControl } from '@/shared/types/common.types';
+import type { DoctorDashboardProps } from '@/shared/types/doctorDashboard.types';
 import styles from './DoctorDashboard.module.scss';
 
 export function DoctorDashboard({

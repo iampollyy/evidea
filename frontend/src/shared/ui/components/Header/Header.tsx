@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef } from 'react';
 
-import { HeaderNav, type HeaderNavProps } from '@/ui/components/HeaderNav/HeaderNav';
-import { SearchField, type SearchFieldProps } from '@/ui/components/SearchField/SearchField';
+import { HeaderNav, type HeaderNavProps } from '@/shared/ui/components/HeaderNav/HeaderNav';
+import { SearchField, type SearchFieldProps } from '@/shared/ui/components/SearchField/SearchField';
 import styles from './Header.module.scss';
 
 export interface HeaderProps extends Omit<ComponentPropsWithRef<'header'>, 'children'> {

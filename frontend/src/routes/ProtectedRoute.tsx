@@ -1,8 +1,8 @@
 import { Navigate, useLocation } from 'react-router-dom';
 
 import { CurrentUserContext } from '@/context/CurrentUserContext';
-import { useSession } from '@/hooks/useSession';
-import type { ProtectedRouteProps } from '@/types/routes.types';
+import { useSession } from '@/shared/hooks/useSession';
+import type { ProtectedRouteProps } from '@/shared/types/routes.types';
 import { ROUTES } from './paths';
 
 export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {

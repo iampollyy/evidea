@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { login } from '@/api/auth';
-import type { CurrentUser } from '@/types/auth.types';
-import type { LoginFormValues } from '@/types/forms.types';
+import type { CurrentUser } from '@/shared/types/auth.types';
+import type { LoginFormValues } from '@/shared/types/forms.types';
 import { getLoginErrorMessage } from '@/utils/authErrors';
 
 export function useLogin(onLoginSuccess?: (user: CurrentUser) => void) {

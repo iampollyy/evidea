@@ -1,7 +1,7 @@
 import { ROLE_LABELS } from '@/constants/doctor.constants';
-import { HeaderNav } from '@/ui/components/HeaderNav/HeaderNav';
-import { Sidebar } from '@/ui/components/Sidebar/Sidebar';
-import type { WorkspaceLayoutProps } from '@/types/workspaceLayout.types';
+import { HeaderNav } from '@/shared/ui/components/HeaderNav/HeaderNav';
+import { Sidebar } from '@/shared/ui/components/Sidebar/Sidebar';
+import type { WorkspaceLayoutProps } from '@/shared/types/workspaceLayout.types';
 import styles from './WorkspaceLayout.module.scss';
 
 export function WorkspaceLayout({

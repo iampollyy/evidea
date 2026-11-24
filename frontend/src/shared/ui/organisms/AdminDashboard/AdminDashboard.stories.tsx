@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
-import { adminNavItemsMock } from '@/mocks/adminNav.mock';
-import { adminUserMock } from '@/mocks/currentUser.mock';
-import { doctorMetricsMock, doctorsMock } from '@/mocks/doctors.mock';
-import { WorkspaceLayout } from '@/ui/organisms/WorkspaceLayout/WorkspaceLayout';
+import { adminNavItemsMock } from '@/shared/mocks/adminNav.mock';
+import { adminUserMock } from '@/shared/mocks/currentUser.mock';
+import { doctorMetricsMock, doctorsMock } from '@/shared/mocks/doctors.mock';
+import { WorkspaceLayout } from '@/shared/ui/organisms/WorkspaceLayout/WorkspaceLayout';
 import { INITIAL_FILTERS } from '@/constants/adminDashboard.constants';
 import { AdminDashboard } from './AdminDashboard';
 

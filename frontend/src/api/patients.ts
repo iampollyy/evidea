@@ -7,7 +7,7 @@ import type {
   PatientListItem,
   PatientReplaceInput,
   PatientsPage,
-} from '@/types/patients.types';
+} from '@/shared/types/patients.types';
 import { readErrorCode } from '@/utils/http';
 import { isNullableString, isOneOf, isRecord } from '@/utils/typeGuards';
 

@@ -1,6 +1,6 @@
 import { useId, useState, type ChangeEvent, type FormEvent } from 'react';
 
-import type { FieldName, StringField, UseValidatedFormOptions } from '@/types/forms.types';
+import type { FieldName, StringField, UseValidatedFormOptions } from '@/shared/types/forms.types';
 import { trimStrings } from '@/utils/trimStrings';
 
 export function useValidatedForm<T extends object>({

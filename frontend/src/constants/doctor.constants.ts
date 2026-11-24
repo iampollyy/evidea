@@ -1,6 +1,6 @@
-import type { Option } from '@/types/common.types';
-import type { DoctorAction, DoctorRole, DoctorStatus } from '@/types/doctors.types';
-import type { BadgeVariant } from '@/ui/atoms/Badge/Badge';
+import type { Option } from '@/shared/types/common.types';
+import type { DoctorAction, DoctorRole, DoctorStatus } from '@/shared/types/doctors.types';
+import type { BadgeVariant } from '@/shared/ui/atoms/Badge/Badge';
 
 export const DOCTOR_ROLES = ['clinician', 'admin'] as const;
 export const DOCTOR_STATUSES = ['active', 'invited', 'deactivated'] as const;

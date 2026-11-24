@@ -1,5 +1,5 @@
 import { MAX_DOCTOR_AGE, MIN_DOCTOR_AGE } from '@/constants/forms.constants';
-import type { AddDoctorFormValues, FormErrors } from '@/types/forms.types';
+import type { AddDoctorFormValues, FormErrors } from '@/shared/types/forms.types';
 import {
   validateBirthDate,
   validateEmail,

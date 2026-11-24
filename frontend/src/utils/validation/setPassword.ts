@@ -3,7 +3,7 @@ import {
   PASSWORD_MIN_LENGTH,
   PASSWORD_RULES,
 } from '@/constants/forms.constants';
-import type { FormErrors, SetPasswordFormValues } from '@/types/forms.types';
+import type { FormErrors, SetPasswordFormValues } from '@/shared/types/forms.types';
 
 export function validatePassword(value: string) {
   const password = value.trim();

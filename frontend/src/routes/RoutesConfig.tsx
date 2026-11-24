@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 
 import { AdminDashboardPage } from '@/pages/AdminDashboardPage/AdminDashboardPage';
 import { ForbiddenPage } from '@/pages/ForbiddenPage/ForbiddenPage';
-import type { IRoute } from '@/types/routes.types';
+import type { IRoute } from '@/shared/types/routes.types';
 import { ADMIN_NAV_ITEMS } from './adminNav';
 import { DOCTOR_NAV_ITEMS } from './doctorNav';
 import { ROUTES } from './paths';

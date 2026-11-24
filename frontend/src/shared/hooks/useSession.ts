@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { getCurrentUser } from '@/api/auth';
-import type { SessionState } from '@/types/routes.types';
+import type { SessionState } from '@/shared/types/routes.types';
 
 export function useSession() {
   const [sessionState, setSessionState] = useState<SessionState>('checking');

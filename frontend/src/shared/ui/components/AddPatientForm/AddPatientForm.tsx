@@ -2,12 +2,12 @@ import type { ComponentPropsWithRef, ReactNode } from 'react';
 
 import { EMPTY_PATIENT, PATIENT_FIELD_ORDER } from '@/constants/forms.constants';
 import { SEX_OPTIONS } from '@/constants/person.constants';
-import { useValidatedForm } from '@/hooks/useValidatedForm';
-import type { AddPatientFormValues } from '@/types/forms.types';
-import { Dropdown } from '@/ui/atoms/Dropdown/Dropdown';
-import { Input } from '@/ui/atoms/Input/Input';
-import { FormPanel } from '@/ui/components/FormPanel/FormPanel';
-import { FormSection } from '@/ui/components/FormSection/FormSection';
+import { useValidatedForm } from '@/shared/hooks/useValidatedForm';
+import type { AddPatientFormValues } from '@/shared/types/forms.types';
+import { Dropdown } from '@/shared/ui/atoms/Dropdown/Dropdown';
+import { Input } from '@/shared/ui/atoms/Input/Input';
+import { FormPanel } from '@/shared/ui/components/FormPanel/FormPanel';
+import { FormSection } from '@/shared/ui/components/FormSection/FormSection';
 import { toIsoDate } from '@/utils/date';
 import { validatePatient } from '@/utils/validation/patient';
 

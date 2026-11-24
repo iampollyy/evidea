@@ -5,10 +5,10 @@ import {
   STATUS_BADGE_VARIANTS,
   STATUS_LABELS,
 } from '@/constants/doctor.constants';
-import { Badge } from '@/ui/atoms/Badge/Badge';
-import { Button } from '@/ui/atoms/Button/Button';
-import type { DoctorColumn } from '@/types/doctorsTable.types';
-import { Avatar } from '@/ui/components/Avatar/Avatar';
+import { Badge } from '@/shared/ui/atoms/Badge/Badge';
+import { Button } from '@/shared/ui/atoms/Button/Button';
+import type { DoctorColumn } from '@/shared/types/doctorsTable.types';
+import { Avatar } from '@/shared/ui/components/Avatar/Avatar';
 import { formatCreatedDate } from '@/utils/date';
 import styles from './DoctorsTable.module.scss';
 

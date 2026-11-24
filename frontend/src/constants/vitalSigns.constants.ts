@@ -1,5 +1,5 @@
-import type { VitalSignsValues } from '@/types/cases.types';
-import type { VitalRule } from '@/types/forms.types';
+import type { VitalSignsValues } from '@/shared/types/cases.types';
+import type { VitalRule } from '@/shared/types/forms.types';
 
 export const VITAL_RULES: Record<keyof VitalSignsValues, VitalRule> = {
   weightKg: { label: 'Weight', min: 0.1, max: 500, decimals: 1 },
@@ -12,4 +12,3 @@ export const VITAL_RULES: Record<keyof VitalSignsValues, VitalRule> = {
 };
 
 export const VITAL_FIELD_ORDER = Object.keys(VITAL_RULES) as (keyof VitalSignsValues)[];
-

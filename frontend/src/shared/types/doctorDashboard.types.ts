@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react';
 
-import type { LayoutOption } from '@/ui/atoms/LayoutOptions/LayoutOptions';
-import type { PatientsGridPatient } from '@/ui/components/PatientsGrid/PatientsGrid';
+import type { LayoutOption } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
+import type { PatientsGridPatient } from '@/shared/ui/components/PatientsGrid/PatientsGrid';
 import type { AddPatientFormValues } from './forms.types';
 import type { PatientStatus } from './patients.types';
 

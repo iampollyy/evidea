@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { acceptInvitation } from '@/api/auth';
-import type { SetPasswordFormValues } from '@/types/forms.types';
+import type { SetPasswordFormValues } from '@/shared/types/forms.types';
 import { getSetPasswordErrorMessage } from '@/utils/authErrors';
 
 export function useSetPassword(token: string | null) {

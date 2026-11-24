@@ -4,7 +4,7 @@ import type {
   LoginFormValues,
   PasswordRule,
   SetPasswordFormValues,
-} from '@/types/forms.types';
+} from '@/shared/types/forms.types';
 
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export const PHONE_PATTERN = /^\+?[\d\s()-]+$/;

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
-import type { IRoute, RouteAccess } from '@/types/routes.types';
+import type { IRoute, RouteAccess } from '@/shared/types/routes.types';
 import { ROUTES } from './paths';
 import { ProtectedRoute } from './ProtectedRoute';
 import { routesConfig } from './RoutesConfig';

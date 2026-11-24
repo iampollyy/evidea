@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 
-import { Icon } from '@/ui/atoms/Icon/Icon';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
 import styles from './Filter.module.scss';
 
 export interface FilterOption<T extends string = string> {

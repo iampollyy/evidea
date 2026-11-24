@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef } from 'react';
 
-import { Image } from '@/ui/atoms/Image/Image';
+import { Image } from '@/shared/ui/atoms/Image/Image';
 import { getInitials } from '@/utils/getInitials';
 import styles from './Avatar.module.scss';
 

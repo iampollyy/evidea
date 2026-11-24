@@ -1,8 +1,8 @@
 import type { ComponentPropsWithRef, MouseEvent } from 'react';
 
-import { Button } from '@/ui/atoms/Button/Button';
-import { Icon } from '@/ui/atoms/Icon/Icon';
-import { Avatar } from '@/ui/components/Avatar/Avatar';
+import { Button } from '@/shared/ui/atoms/Button/Button';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Avatar } from '@/shared/ui/components/Avatar/Avatar';
 import { formatAppointmentDate, toIsoDate } from '@/utils/date';
 import { isPlainLeftClick } from '@/utils/isPlainLeftClick';
 import styles from './PatientCard.module.scss';

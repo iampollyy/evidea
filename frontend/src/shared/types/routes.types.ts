@@ -1,7 +1,7 @@
 import type { JSX, ReactNode } from 'react';
 import type { Location } from 'react-router-dom';
 
-import type { SidebarNavItem } from '@/ui/components/SidebarNav/SidebarNav';
+import type { SidebarNavItem } from '@/shared/ui/components/SidebarNav/SidebarNav';
 import type { CurrentUser, UserRole } from './auth.types';
 
 export type RouteAccess = 'public' | 'authenticated' | 'admin' | 'clinician';
@@ -14,7 +14,8 @@ export interface IRoute {
   children?: IRoute[];
 }
 
-export type SessionState = 'checking' | { user: CurrentUser } | 'unauthenticated' | { error: string };
+export type SessionState =
+  'checking' | { user: CurrentUser } | 'unauthenticated' | { error: string };
 
 export interface ProtectedRouteProps {
   children: ReactNode;

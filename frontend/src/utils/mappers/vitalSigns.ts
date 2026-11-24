@@ -1,6 +1,6 @@
 import { VITAL_FIELD_ORDER } from '@/constants/vitalSigns.constants';
-import type { VitalSignsValues } from '@/types/cases.types';
-import type { VitalSignsFormValues } from '@/types/forms.types';
+import type { VitalSignsValues } from '@/shared/types/cases.types';
+import type { VitalSignsFormValues } from '@/shared/types/forms.types';
 
 export function toVitalFormValues(vitals: VitalSignsValues | null): VitalSignsFormValues {
   return Object.fromEntries(

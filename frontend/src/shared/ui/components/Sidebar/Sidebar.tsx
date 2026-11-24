@@ -1,10 +1,10 @@
 import type { ComponentPropsWithRef } from 'react';
 
-import { Button } from '@/ui/atoms/Button/Button';
-import { Icon } from '@/ui/atoms/Icon/Icon';
-import { Logo } from '@/ui/atoms/Logo/Logo';
-import { Avatar } from '@/ui/components/Avatar/Avatar';
-import { SidebarNav, type SidebarNavProps } from '@/ui/components/SidebarNav/SidebarNav';
+import { Button } from '@/shared/ui/atoms/Button/Button';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Logo } from '@/shared/ui/atoms/Logo/Logo';
+import { Avatar } from '@/shared/ui/components/Avatar/Avatar';
+import { SidebarNav, type SidebarNavProps } from '@/shared/ui/components/SidebarNav/SidebarNav';
 import styles from './Sidebar.module.scss';
 
 export interface SidebarDoctor {

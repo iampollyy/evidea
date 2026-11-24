@@ -1,5 +1,5 @@
 import { VITAL_FIELD_ORDER } from '@/constants/vitalSigns.constants';
-import type { VitalSignsRecord } from '@/types/cases.types';
+import type { VitalSignsRecord } from '@/shared/types/cases.types';
 import { isRecord } from '@/utils/typeGuards';
 
 const API_URL = '/api/v1';

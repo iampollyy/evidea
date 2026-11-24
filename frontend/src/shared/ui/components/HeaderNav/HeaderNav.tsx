@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef } from 'react';
 
-import { Icon } from '@/ui/atoms/Icon/Icon';
-import { Avatar } from '@/ui/components/Avatar/Avatar';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Avatar } from '@/shared/ui/components/Avatar/Avatar';
 import styles from './HeaderNav.module.scss';
 
 export interface HeaderNavUser {

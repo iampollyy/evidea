@@ -10,15 +10,15 @@ import {
   PAGE_SIZE,
   SEARCH_DEBOUNCE_MS,
 } from '@/constants/adminDashboard.constants';
-import type { AdminDashboardProps, DoctorFilters } from '@/types/adminDashboard.types';
-import type { Loaded } from '@/types/common.types';
+import type { AdminDashboardProps, DoctorFilters } from '@/shared/types/adminDashboard.types';
+import type { Loaded } from '@/shared/types/common.types';
 import type {
   DoctorAction,
   DoctorMetrics,
   DoctorRecord,
   DoctorsPage,
-} from '@/types/doctors.types';
-import type { AddDoctorFormValues } from '@/types/forms.types';
+} from '@/shared/types/doctors.types';
+import type { AddDoctorFormValues } from '@/shared/types/forms.types';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { toDoctorInput } from '@/utils/mappers/doctor';
 

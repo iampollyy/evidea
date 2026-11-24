@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 import type { CurrentUser } from './auth.types';
-import type { SidebarNavItem, SidebarNavProps } from '@/ui/components/SidebarNav/SidebarNav';
+import type { SidebarNavItem, SidebarNavProps } from '@/shared/ui/components/SidebarNav/SidebarNav';
 
 export interface WorkspaceLayoutProps {
   user: CurrentUser;

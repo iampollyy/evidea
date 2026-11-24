@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
-import type { SidebarNavItem } from '@/ui/components/SidebarNav/SidebarNav';
+import type { SidebarNavItem } from '@/shared/ui/components/SidebarNav/SidebarNav';
 import { Sidebar } from './Sidebar';
 
 const items: SidebarNavItem[] = [

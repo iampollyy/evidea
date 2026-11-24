@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 
 import { CurrentUserContext } from '@/context/CurrentUserContext';
-import type { CurrentUser } from '@/types/auth.types';
+import type { CurrentUser } from '@/shared/types/auth.types';
 
 export function useCurrentUser(): CurrentUser {
   const user = useContext(CurrentUserContext);

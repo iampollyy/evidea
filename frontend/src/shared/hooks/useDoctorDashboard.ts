@@ -7,11 +7,11 @@ import {
   PAGE_SIZE,
   PATIENT_ADDED_NOTICE,
 } from '@/constants/doctorDashboard.constants';
-import type { Loaded } from '@/types/common.types';
-import type { DoctorDashboardProps, PatientFilters } from '@/types/doctorDashboard.types';
-import type { AddPatientFormValues } from '@/types/forms.types';
-import type { PatientsPage } from '@/types/patients.types';
-import type { LayoutOption } from '@/ui/atoms/LayoutOptions/LayoutOptions';
+import type { Loaded } from '@/shared/types/common.types';
+import type { DoctorDashboardProps, PatientFilters } from '@/shared/types/doctorDashboard.types';
+import type { AddPatientFormValues } from '@/shared/types/forms.types';
+import type { PatientsPage } from '@/shared/types/patients.types';
+import type { LayoutOption } from '@/shared/ui/atoms/LayoutOptions/LayoutOptions';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { toGridPatient, toPatientInput } from '@/utils/mappers/patient';
 

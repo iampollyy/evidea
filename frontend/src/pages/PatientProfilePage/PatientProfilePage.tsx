@@ -1,6 +1,6 @@
-import { usePatientProfile } from '@/hooks/usePatientProfile';
-import type { PatientProfilePageProps } from '@/types/patientProfile.types';
-import { PatientProfile } from '@/ui/organisms/PatientProfile/PatientProfile';
+import { usePatientProfile } from '@/shared/hooks/usePatientProfile';
+import type { PatientProfilePageProps } from '@/shared/types/patientProfile.types';
+import { PatientProfile } from '@/shared/ui/organisms/PatientProfile/PatientProfile';
 
 export function PatientProfilePage({ patientId, ...navigation }: PatientProfilePageProps) {
   const profile = usePatientProfile(patientId);

@@ -1,5 +1,5 @@
 import { STATUS_ACTIONS } from '@/constants/doctor.constants';
-import type { DoctorColumnId, DoctorsTableProps } from '@/types/doctorsTable.types';
+import type { DoctorColumnId, DoctorsTableProps } from '@/shared/types/doctorsTable.types';
 import { DOCTOR_COLUMNS } from './DoctorsTable.constants';
 import styles from './DoctorsTable.module.scss';
 

@@ -1,4 +1,4 @@
-import type { PatientProfileTab, ProfileSectionState } from '@/types/patientProfile.types';
+import type { PatientProfileTab, ProfileSectionState } from '@/shared/types/patientProfile.types';
 
 export const PATIENT_PROFILE_TABS = [
   { id: 'overview', label: 'Overview' },

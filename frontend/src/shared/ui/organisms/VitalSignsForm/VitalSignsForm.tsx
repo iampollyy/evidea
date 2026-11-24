@@ -1,12 +1,12 @@
 import { useId, type ReactNode } from 'react';
 
-import type { VitalSignsValues } from '@/types/cases.types';
+import type { VitalSignsValues } from '@/shared/types/cases.types';
 import { VITAL_FIELD_ORDER, VITAL_RULES } from '@/constants/vitalSigns.constants';
-import { useValidatedForm } from '@/hooks/useValidatedForm';
-import { Button } from '@/ui/atoms/Button/Button';
-import { Icon } from '@/ui/atoms/Icon/Icon';
-import { Input } from '@/ui/atoms/Input/Input';
-import { SectionCard } from '@/ui/components/SectionCard/SectionCard';
+import { useValidatedForm } from '@/shared/hooks/useValidatedForm';
+import { Button } from '@/shared/ui/atoms/Button/Button';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Input } from '@/shared/ui/atoms/Input/Input';
+import { SectionCard } from '@/shared/ui/components/SectionCard/SectionCard';
 import { formatMeasurement, toVitalFormValues, toVitalValues } from '@/utils/mappers/vitalSigns';
 import { validateVitalSigns } from '@/utils/validation/vitalSigns';
 import styles from './VitalSignsForm.module.scss';

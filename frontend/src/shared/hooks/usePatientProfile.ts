@@ -2,17 +2,14 @@ import { useEffect, useState } from 'react';
 
 import { getLatestVitalSigns } from '@/api/cases';
 import { getPatient, replacePatient } from '@/api/patients';
-import {
-  IDLE_SECTION_STATE,
-  VITALS_LOCAL_ONLY_NOTICE,
-} from '@/constants/patientProfile.constants';
-import type { VitalSignsValues } from '@/types/cases.types';
-import type { PersonalInfoValues } from '@/types/forms.types';
+import { IDLE_SECTION_STATE, VITALS_LOCAL_ONLY_NOTICE } from '@/constants/patientProfile.constants';
+import type { VitalSignsValues } from '@/shared/types/cases.types';
+import type { PersonalInfoValues } from '@/shared/types/forms.types';
 import type {
   LoadedProfile,
   PatientProfileData,
   ProfileSectionState,
-} from '@/types/patientProfile.types';
+} from '@/shared/types/patientProfile.types';
 import { getErrorMessage } from '@/utils/getErrorMessage';
 import { toBannerPatient, toPatientInput, toPersonalInfoValues } from '@/utils/mappers/patient';
 

@@ -1,7 +1,11 @@
-import type { AddPatientFormValues, PersonalInfoValues } from '@/types/forms.types';
-import type { PatientCreateInput, PatientDetail, PatientListItem } from '@/types/patients.types';
-import type { PatientBannerPatient } from '@/ui/components/PatientBanner/PatientBanner';
-import type { PatientsGridPatient } from '@/ui/components/PatientsGrid/PatientsGrid';
+import type { AddPatientFormValues, PersonalInfoValues } from '@/shared/types/forms.types';
+import type {
+  PatientCreateInput,
+  PatientDetail,
+  PatientListItem,
+} from '@/shared/types/patients.types';
+import type { PatientBannerPatient } from '@/shared/ui/components/PatientBanner/PatientBanner';
+import type { PatientsGridPatient } from '@/shared/ui/components/PatientsGrid/PatientsGrid';
 import { getSexLabel } from '@/utils/sex';
 
 export function toPatientInput({

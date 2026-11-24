@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef, MouseEvent } from 'react';
 
-import { Icon } from '@/ui/atoms/Icon/Icon';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
 import styles from './SidebarNav.module.scss';
 
 export interface SidebarNavItem {

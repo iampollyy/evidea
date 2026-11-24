@@ -2,12 +2,12 @@ import type { ComponentPropsWithRef } from 'react';
 
 import stripeBlue from '@/assets/decor/banner-stripe-blue.svg';
 import stripeViolet from '@/assets/decor/banner-stripe-violet.svg';
-import type { PatientStatus } from '@/types/patients.types';
-import type { Sex } from '@/types/person.types';
-import { Badge } from '@/ui/atoms/Badge/Badge';
-import { Button } from '@/ui/atoms/Button/Button';
-import { Icon } from '@/ui/atoms/Icon/Icon';
-import { Image } from '@/ui/atoms/Image/Image';
+import type { PatientStatus } from '@/shared/types/patients.types';
+import type { Sex } from '@/shared/types/person.types';
+import { Badge } from '@/shared/ui/atoms/Badge/Badge';
+import { Button } from '@/shared/ui/atoms/Button/Button';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Image } from '@/shared/ui/atoms/Image/Image';
 import { getAge, toDate, toIsoDate } from '@/utils/date';
 import { getSexLabel } from '@/utils/sex';
 import styles from './PatientBanner.module.scss';

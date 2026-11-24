@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 
-import { Icon } from '@/ui/atoms/Icon/Icon';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
 import styles from './Dropdown.module.scss';
 
 export type DropdownSize = 'sm' | 'md' | 'lg';

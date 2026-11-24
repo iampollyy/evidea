@@ -3,12 +3,12 @@ import type { ComponentPropsWithRef, ReactNode } from 'react';
 import { ROLE_OPTIONS } from '@/constants/doctor.constants';
 import { DOCTOR_FIELD_ORDER, EMPTY_DOCTOR } from '@/constants/forms.constants';
 import { SEX_OPTIONS } from '@/constants/person.constants';
-import { useValidatedForm } from '@/hooks/useValidatedForm';
-import type { AddDoctorFormValues } from '@/types/forms.types';
-import { Dropdown } from '@/ui/atoms/Dropdown/Dropdown';
-import { Input } from '@/ui/atoms/Input/Input';
-import { FormPanel } from '@/ui/components/FormPanel/FormPanel';
-import { FormSection } from '@/ui/components/FormSection/FormSection';
+import { useValidatedForm } from '@/shared/hooks/useValidatedForm';
+import type { AddDoctorFormValues } from '@/shared/types/forms.types';
+import { Dropdown } from '@/shared/ui/atoms/Dropdown/Dropdown';
+import { Input } from '@/shared/ui/atoms/Input/Input';
+import { FormPanel } from '@/shared/ui/components/FormPanel/FormPanel';
+import { FormSection } from '@/shared/ui/components/FormSection/FormSection';
 import { toIsoDate } from '@/utils/date';
 import { validateDoctor } from '@/utils/validation/doctor';
 

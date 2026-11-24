@@ -1,7 +1,7 @@
-import { useLogin } from '@/hooks/useLogin';
-import type { LoginPageProps } from '@/types/pages.types';
-import { Logo } from '@/ui/atoms/Logo/Logo';
-import { LoginForm } from '@/ui/components/LoginForm/LoginForm';
+import { useLogin } from '@/shared/hooks/useLogin';
+import type { LoginPageProps } from '@/shared/types/pages.types';
+import { Logo } from '@/shared/ui/atoms/Logo/Logo';
+import { LoginForm } from '@/shared/ui/components/LoginForm/LoginForm';
 import styles from './LoginPage.module.scss';
 
 export function LoginPage({ onLoginSuccess }: LoginPageProps) {

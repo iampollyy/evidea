@@ -1,5 +1,5 @@
 import sampleAvatar from '@/assets/sample-image.jpg';
-import type { PatientsGridPatient } from '@/ui/components/PatientsGrid/PatientsGrid';
+import type { PatientsGridPatient } from '@/shared/ui/components/PatientsGrid/PatientsGrid';
 
 export const patientsMock: PatientsGridPatient[] = Array.from({ length: 15 }, (_, index) => ({
   id: `patient-${index + 1}`,

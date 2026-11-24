@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef } from 'react';
 
 import logoMark from '@/assets/brand/logo-mark.svg';
-import { Image } from '@/ui/atoms/Image/Image';
+import { Image } from '@/shared/ui/atoms/Image/Image';
 import styles from './Logo.module.scss';
 
 export type LogoTone = 'default' | 'inverse';

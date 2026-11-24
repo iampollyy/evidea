@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, type ComponentPropsWithRef } from 'react';
 
-import { Icon } from '@/ui/atoms/Icon/Icon';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
 import { assignRef } from '@/utils/assignRef';
 import styles from './SearchField.module.scss';
 

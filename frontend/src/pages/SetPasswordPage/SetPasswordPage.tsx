@@ -1,10 +1,10 @@
 import { INVALID_INVITATION_MESSAGE } from '@/constants/auth.constants';
-import { useSetPassword } from '@/hooks/useSetPassword';
-import type { SetPasswordPageProps } from '@/types/pages.types';
-import { Button } from '@/ui/atoms/Button/Button';
-import { Icon } from '@/ui/atoms/Icon/Icon';
-import { Logo } from '@/ui/atoms/Logo/Logo';
-import { SetPasswordForm } from '@/ui/components/SetPasswordForm/SetPasswordForm';
+import { useSetPassword } from '@/shared/hooks/useSetPassword';
+import type { SetPasswordPageProps } from '@/shared/types/pages.types';
+import { Button } from '@/shared/ui/atoms/Button/Button';
+import { Icon } from '@/shared/ui/atoms/Icon/Icon';
+import { Logo } from '@/shared/ui/atoms/Logo/Logo';
+import { SetPasswordForm } from '@/shared/ui/components/SetPasswordForm/SetPasswordForm';
 import styles from './SetPasswordPage.module.scss';
 
 export function SetPasswordPage({ token, onGoToLogin }: SetPasswordPageProps) {
