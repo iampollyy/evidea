@@ -1,0 +1,59 @@
+.spinner {
+  --spinner-size: 5.125rem;
+  --spinner-stroke: 0.3125rem;
+  --spinner-core: 1.875rem;
+
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  border: var(--spinner-stroke) solid var(--ev-color-blue-045);
+  border-radius: 50%;
+}
+
+.arc {
+  position: absolute;
+  inset: calc(var(--spinner-stroke) * -1);
+  box-sizing: border-box;
+  border: var(--spinner-stroke) solid transparent;
+  border-top-color: var(--ev-color-action-secondary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--spinner-core);
+  height: var(--spinner-core);
+  border-radius: 50%;
+  background-color: var(--ev-color-blue-030);
+  transform: translate(-50%, -50%);
+}
+
+.sm {
+  --spinner-size: 1.5rem;
+  --spinner-stroke: 0.1875rem;
+  --spinner-core: 0;
+}
+
+.md {
+  --spinner-size: 3rem;
+  --spinner-stroke: 0.25rem;
+  --spinner-core: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arc {
+    animation-duration: 3s;
+  }
+}
