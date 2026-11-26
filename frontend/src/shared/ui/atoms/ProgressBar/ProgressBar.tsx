@@ -1,10 +1,9 @@
-import type { ComponentPropsWithRef } from 'react';
-
 import styles from './ProgressBar.module.scss';
 
-export interface ProgressBarProps extends ComponentPropsWithRef<'div'> {
+export interface ProgressBarProps {
   value: number;
   label?: string;
+  className?: string;
 }
 
 export function ProgressBar({ value, label = 'Progress', className, ...rest }: ProgressBarProps) {

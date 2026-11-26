@@ -1,12 +1,11 @@
-import type { ComponentPropsWithRef } from 'react';
-
 import styles from './Spinner.module.scss';
 
 export type SpinnerSize = 'sm' | 'md' | 'lg';
 
-export interface SpinnerProps extends ComponentPropsWithRef<'span'> {
+export interface SpinnerProps {
   size?: SpinnerSize;
   label?: string;
+  className?: string;
 }
 
 export function Spinner({ size = 'lg', label = 'Loading', className, ...rest }: SpinnerProps) {

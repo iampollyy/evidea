@@ -1,11 +1,13 @@
-import type { ComponentPropsWithRef } from 'react';
+import type { ReactNode } from 'react';
 
 import type { ProgressStepStatus } from '@/shared/types/predictions.types';
 import { Icon } from '../Icon/Icon';
 import styles from './ProgressStep.module.scss';
 
-export interface ProgressStepProps extends ComponentPropsWithRef<'span'> {
+export interface ProgressStepProps {
   status: ProgressStepStatus;
+  className?: string;
+  children?: ReactNode;
 }
 
 export function ProgressStep({ status, className, children, ...rest }: ProgressStepProps) {
