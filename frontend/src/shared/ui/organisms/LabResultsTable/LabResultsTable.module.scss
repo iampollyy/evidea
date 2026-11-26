@@ -1,0 +1,44 @@
+.scrollRegion {
+  margin: -1.25rem;
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 56rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.heading {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2.28fr) minmax(0, 1.63fr) minmax(0, 1.15fr) minmax(0, 1.16fr)
+    minmax(0, 1.81fr) 3.75rem;
+  background-color: var(--ev-color-surface-canvas-diagnostic);
+}
+
+.headingCell {
+  padding: 0.75rem 1rem;
+  color: var(--ev-color-text-secondary);
+  font-size: 0.6875rem;
+  line-height: 1.03125rem;
+  letter-spacing: 0.01375rem;
+  text-transform: uppercase;
+
+  &:first-child {
+    padding-left: 1.25rem;
+  }
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+}
+
+.empty {
+  margin: 0;
+  padding: 2rem 1.25rem;
+  border-top: 0.0625rem solid var(--ev-color-border-subtle);
+  color: var(--ev-color-text-secondary);
+  font-size: 0.8125rem;
+  text-align: center;
+}

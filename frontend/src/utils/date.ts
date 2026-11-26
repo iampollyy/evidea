@@ -56,3 +56,14 @@ export function formatCreatedDate(date: string) {
   const parsedDate = parseIsoDate(date);
   return parsedDate ? createdDateFormatter.format(parsedDate) : date;
 }
+
+const labDateFormatter = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+
+export function formatLabDate(date: string) {
+  const parsedDate = parseIsoDate(date);
+  return parsedDate ? labDateFormatter.format(parsedDate) : date;
+}
