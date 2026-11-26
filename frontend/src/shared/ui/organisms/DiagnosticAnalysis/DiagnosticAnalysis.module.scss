@@ -1,0 +1,87 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  box-sizing: border-box;
+  min-height: 35.5rem;
+  padding: 2rem 0;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
+}
+
+.create {
+  position: relative;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 6.5rem;
+  height: 6.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0;
+  border: 0.5rem solid var(--ev-color-blue-030);
+  border-radius: 50%;
+  background-color: var(--ev-color-action-primary);
+  background-clip: padding-box;
+  color: var(--ev-color-action-on-primary);
+  filter: drop-shadow(
+    0 0.75rem 0.9375rem color-mix(in srgb, var(--ev-color-blue-510) 24%, transparent)
+  );
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
+
+  &::after {
+    position: absolute;
+    border: 0.0625rem solid var(--ev-color-blue-075);
+    border-radius: 50%;
+    content: '';
+    inset: -1rem;
+    pointer-events: none;
+  }
+
+  &:hover {
+    background-color: var(--ev-color-action-hover);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:focus-visible {
+    outline: 0.125rem solid var(--ev-color-action-focus);
+    outline-offset: 0.625rem;
+  }
+}
+
+.createIcon {
+  font-size: 3rem;
+}
+
+.title {
+  margin: 0;
+  color: var(--ev-color-neutral-890);
+  font-family: 'Instrument Sans', 'Inter', sans-serif;
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 2.0625rem;
+}
+
+.description {
+  max-width: 29.375rem;
+  margin: 0;
+  color: var(--ev-color-text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.375rem;
+}
+
+.note {
+  margin: 0;
+  padding-top: 1rem;
+  border-top: 0.0625rem solid var(--ev-color-border-subtle);
+  color: var(--ev-color-text-diagnostic-subtle);
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+}

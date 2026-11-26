@@ -1,0 +1,137 @@
+.row {
+  border-top: 0.0625rem solid var(--ev-color-border-subtle);
+  font-family: 'Inter', sans-serif;
+  list-style: none;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: var(--ev-color-neutral-020);
+  }
+}
+
+.checked,
+.checked:hover {
+  background-color: var(--ev-color-blue-015);
+}
+
+.main {
+  display: grid;
+  grid-template-columns:
+    2.625rem minmax(0, 0.64fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2.07fr)
+    minmax(0, 1fr);
+  align-items: center;
+  min-height: 5.0625rem;
+  cursor: pointer;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0.625rem;
+  color: var(--ev-color-text-diagnostic-secondary);
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  overflow-wrap: anywhere;
+}
+
+.select {
+  position: relative;
+  justify-content: flex-start;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+}
+
+.radio {
+  box-sizing: border-box;
+  width: 1.0625rem;
+  height: 1.0625rem;
+  border: 0.0625rem solid var(--ev-color-neutral-235);
+  border-radius: 50%;
+  background-color: var(--ev-color-surface-default);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.input:checked + .radio {
+  border: 0.3125rem solid var(--ev-color-action-primary);
+}
+
+.input:focus-visible + .radio {
+  box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--ev-color-action-focus) 35%, transparent);
+}
+
+.code {
+  font-family: 'Source Sans 3', 'Inter', sans-serif;
+  font-weight: 500;
+}
+
+.caseCode {
+  color: var(--ev-color-brand);
+}
+
+.availability {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 1rem;
+}
+
+.availabilityItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  color: var(--ev-color-status-active-text);
+  font-size: 0.6875rem;
+  line-height: 1.03125rem;
+  white-space: nowrap;
+}
+
+.availabilityIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.9375rem;
+  height: 0.9375rem;
+  border-radius: 50%;
+  background-color: var(--ev-color-status-active-surface);
+  font-size: 0.6875rem;
+}
+
+.missing {
+  color: var(--ev-color-text-diagnostic-muted);
+
+  .availabilityIcon {
+    background-color: var(--ev-color-surface-subtle);
+  }
+}
+
+.badge {
+  --badge-height: 1.5rem;
+  --badge-px: 0.5rem;
+  --badge-font-size: 0.6875rem;
+  --badge-line-height: 1rem;
+
+  font-weight: 400;
+}
+
+.dismissed {
+  --badge-color: var(--ev-color-red-675);
+  --badge-surface: var(--ev-color-red-090);
+  --badge-border: var(--ev-color-red-130);
+}
+
+.noCase {
+  --badge-color: var(--ev-color-text-diagnostic-muted);
+  --badge-surface: var(--ev-color-surface-canvas-diagnostic);
+  --badge-border: var(--ev-color-neutral-110);
+}
