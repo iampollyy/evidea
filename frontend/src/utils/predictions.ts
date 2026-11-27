@@ -1,4 +1,9 @@
-import type { DiseaseHypothesis, HypothesisTone } from '@/shared/types/predictions.types';
+import type {
+  ContributionDirection,
+  DiseaseHypothesis,
+  FeatureContribution,
+  HypothesisTone,
+} from '@/shared/types/predictions.types';
 
 export const toPercent = (score: number) => Math.round(Math.min(1, Math.max(0, score)) * 100);
 
@@ -18,3 +23,16 @@ export const getTopHypothesis = (hypotheses: DiseaseHypothesis[]) =>
     (top, hypothesis) => (top === null || hypothesis.rank < top.rank ? hypothesis : top),
     null,
   );
+
+export const getContributionScale = (contributions: FeatureContribution[]) => {
+  const maxImpact = Math.max(0, ...contributions.map(({ value }) => Math.abs(value)));
+  return Math.max(0.1, Math.ceil(maxImpact * 10) / 10);
+};
+
+export const sortByImpact = (contributions: FeatureContribution[]) =>
+  [...contributions].sort(
+    (a, b) => Number(b.value >= 0) - Number(a.value >= 0) || Math.abs(b.value) - Math.abs(a.value),
+  );
+
+export const getContributionDirection = (value: number): ContributionDirection =>
+  value < 0 ? 'negative' : 'positive';

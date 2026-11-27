@@ -1,0 +1,22 @@
+.tag {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: 'Source Sans 3', 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+  text-decoration: none;
+}
+
+.clinical {
+  background-color: var(--ev-color-blue-030);
+  color: var(--ev-color-data-clinical);
+}
+
+.laboratory {
+  background-color: var(--ev-color-data-laboratory-surface);
+  color: var(--ev-color-data-laboratory);
+}

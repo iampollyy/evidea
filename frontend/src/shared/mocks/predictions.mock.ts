@@ -1,4 +1,8 @@
-import type { DiseaseHypothesis, EvidenceFactor } from '@/shared/types/predictions.types';
+import type {
+  DiseaseHypothesis,
+  EvidenceFactor,
+  HypothesisExplanation,
+} from '@/shared/types/predictions.types';
 
 export const hypothesesMock: DiseaseHypothesis[] = [
   {
@@ -62,3 +66,71 @@ export const labFactorsMock: EvidenceFactor[] = [
   { label: 'AST 95 U/L', contribution: 0.08 },
   { label: 'ALT 72 U/L', contribution: 0.05 },
 ];
+
+export const explanationsMock: Record<string, HypothesisExplanation> = {
+  'hypothesis-1': {
+    shap: [
+      { id: 'ck', label: 'CK = 1850 U/L', source: 'laboratory', value: 0.24 },
+      { id: 'weakness', label: 'Progressive muscle weakness', source: 'clinical', value: 0.19 },
+      { id: 'dysphagia', label: 'Dysphagia', source: 'clinical', value: 0.13 },
+      { id: 'family', label: 'Family history — neuromuscular', source: 'clinical', value: 0.11 },
+      { id: 'ast', label: 'AST = 95 U/L', source: 'laboratory', value: 0.08 },
+      { id: 'alt', label: 'ALT = 72 U/L', source: 'laboratory', value: 0.05 },
+      { id: 'age', label: 'Age (34 years)', source: 'clinical', value: -0.04 },
+      { id: 'crp', label: 'CRP = 3.2 mg/L', source: 'laboratory', value: -0.02 },
+    ],
+    lime: [
+      { id: 'ck', label: 'CK > 1000 U/L', source: 'laboratory', value: 0.27 },
+      { id: 'weakness', label: 'Progressive muscle weakness', source: 'clinical', value: 0.16 },
+      { id: 'family', label: 'Family history — neuromuscular', source: 'clinical', value: 0.14 },
+      { id: 'dysphagia', label: 'Dysphagia', source: 'clinical', value: 0.09 },
+      { id: 'ast', label: 'AST > 40 U/L', source: 'laboratory', value: 0.06 },
+      { id: 'age', label: 'Age > 18 years', source: 'clinical', value: -0.07 },
+      { id: 'crp', label: 'CRP ≤ 5 mg/L', source: 'laboratory', value: -0.01 },
+    ],
+  },
+  'hypothesis-2': {
+    shap: [
+      { id: 'weakness', label: 'Progressive muscle weakness', source: 'clinical', value: 0.21 },
+      { id: 'ck', label: 'CK = 1850 U/L', source: 'laboratory', value: 0.15 },
+      { id: 'age', label: 'Age (34 years)', source: 'clinical', value: 0.09 },
+      { id: 'ast', label: 'AST = 95 U/L', source: 'laboratory', value: 0.04 },
+      { id: 'family', label: 'Family history — neuromuscular', source: 'clinical', value: -0.06 },
+      { id: 'dysphagia', label: 'Dysphagia', source: 'clinical', value: -0.03 },
+    ],
+    lime: [
+      { id: 'weakness', label: 'Progressive muscle weakness', source: 'clinical', value: 0.18 },
+      { id: 'ck', label: 'CK > 1000 U/L', source: 'laboratory', value: 0.17 },
+      { id: 'age', label: 'Age > 18 years', source: 'clinical', value: 0.11 },
+      { id: 'family', label: 'Family history — neuromuscular', source: 'clinical', value: -0.08 },
+    ],
+  },
+  'hypothesis-3': {
+    shap: [
+      { id: 'dysphagia', label: 'Dysphagia', source: 'clinical', value: 0.12 },
+      { id: 'ck', label: 'CK = 1850 U/L', source: 'laboratory', value: 0.07 },
+      { id: 'alt', label: 'ALT = 72 U/L', source: 'laboratory', value: 0.05 },
+      { id: 'family', label: 'Family history — neuromuscular', source: 'clinical', value: -0.11 },
+      { id: 'weakness', label: 'Progressive muscle weakness', source: 'clinical', value: -0.04 },
+    ],
+    lime: [
+      { id: 'dysphagia', label: 'Dysphagia', source: 'clinical', value: 0.1 },
+      { id: 'alt', label: 'ALT > 40 U/L', source: 'laboratory', value: 0.06 },
+      { id: 'family', label: 'Family history — neuromuscular', source: 'clinical', value: -0.13 },
+    ],
+  },
+  'hypothesis-4': {
+    shap: [
+      { id: 'ck', label: 'CK = 1850 U/L', source: 'laboratory', value: 0.14 },
+      { id: 'family', label: 'Family history — neuromuscular', source: 'clinical', value: 0.08 },
+      { id: 'age', label: 'Age (34 years)', source: 'clinical', value: 0.06 },
+      { id: 'weakness', label: 'Progressive muscle weakness', source: 'clinical', value: -0.09 },
+      { id: 'dysphagia', label: 'Dysphagia', source: 'clinical', value: -0.07 },
+    ],
+    lime: [
+      { id: 'ck', label: 'CK > 1000 U/L', source: 'laboratory', value: 0.12 },
+      { id: 'age', label: 'Age > 18 years', source: 'clinical', value: 0.08 },
+      { id: 'weakness', label: 'Progressive muscle weakness', source: 'clinical', value: -0.1 },
+    ],
+  },
+};

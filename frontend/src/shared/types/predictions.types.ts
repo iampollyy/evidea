@@ -27,3 +27,16 @@ export interface EvidenceFactor {
   label: string;
   contribution: number;
 }
+
+export type ExplanationMethod = 'shap' | 'lime';
+
+export type ContributionDirection = 'positive' | 'negative';
+
+export interface FeatureContribution {
+  id: string;
+  label: string;
+  source: EvidenceSource;
+  value: number;
+}
+
+export type HypothesisExplanation = Record<ExplanationMethod, FeatureContribution[]>;
