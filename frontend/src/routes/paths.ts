@@ -14,11 +14,16 @@ export const ROUTES = {
     dashboard: '/doctor/dashboard',
     patient: '/doctor/patients/:patientId',
     patientTab: '/doctor/patients/:patientId/:tab',
+    caseReview: '/doctor/patients/:patientId/cases/:caseId/review',
   },
 } as const;
 
 export function patientProfilePath(patientId: string, tab = 'overview') {
   return `/doctor/patients/${encodeURIComponent(patientId)}/${tab}`;
+}
+
+export function caseReviewPath(patientId: string, caseId: string) {
+  return `/doctor/patients/${encodeURIComponent(patientId)}/cases/${encodeURIComponent(caseId)}/review`;
 }
 
 export const HOME_PATH_BY_ROLE: Record<UserRole, string> = {

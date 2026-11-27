@@ -1,8 +1,19 @@
 import { VITAL_FIELD_ORDER } from '@/constants/vitalSigns.constants';
-import type { VitalSignsRecord } from '@/shared/types/cases.types';
-import { isRecord } from '@/utils/typeGuards';
+import type { CaseDetail, CaseLabReport } from '@/shared/types/caseReview.types';
+import type { AnamnesisValues, VitalSignsRecord } from '@/shared/types/cases.types';
+import { isNullableString, isRecord } from '@/utils/typeGuards';
 
 const API_URL = '/api/v1';
+
+const ANAMNESIS_KEYS: (keyof AnamnesisValues)[] = [
+  'chiefComplaint',
+  'symptomsDuration',
+  'clinicalNotes',
+  'familyHistory',
+  'medications',
+  'pastMedicalHistory',
+  'allergies',
+];
 
 function isVitalSignsRecord(value: unknown): value is VitalSignsRecord {
   return (
@@ -57,4 +68,42 @@ export async function getLatestVitalSigns(
     (latest, record) => (!latest || record.createdAt > latest.createdAt ? record : latest),
     null,
   );
+}
+
+function isAnamnesis(value: unknown): value is AnamnesisValues {
+  return isRecord(value) && ANAMNESIS_KEYS.every((key) => isNullableString(value[key]));
+}
+
+function toCaseLabReport(value: unknown): CaseLabReport | null {
+  if (!isRecord(value) || typeof value.id !== 'string' || !isRecord(value.panel)) return null;
+  const { name } = value.panel;
+  return typeof name === 'string' ? { id: value.id, panelName: name } : null;
+}
+
+export async function getCase(caseId: string, signal?: AbortSignal): Promise<CaseDetail> {
+  const detail = await getJson(
+    `${API_URL}/cases/${encodeURIComponent(caseId)}`,
+    'Unable to load clinical case',
+    signal,
+  );
+  if (
+    !isRecord(detail) ||
+    typeof detail.id !== 'string' ||
+    typeof detail.patientId !== 'string' ||
+    !isAnamnesis(detail.anamnesis) ||
+    !Array.isArray(detail.vitalSigns) ||
+    !Array.isArray(detail.labReports)
+  ) {
+    throw new Error('Unable to load clinical case: invalid response');
+  }
+
+  return {
+    id: detail.id,
+    patientId: detail.patientId,
+    anamnesis: detail.anamnesis,
+    vitalSigns: detail.vitalSigns.filter(isVitalSignsRecord),
+    labReports: detail.labReports
+      .map(toCaseLabReport)
+      .filter((report): report is CaseLabReport => report !== null),
+  };
 }

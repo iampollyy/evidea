@@ -8,6 +8,7 @@ import { DOCTOR_NAV_ITEMS } from './doctorNav';
 import { ROUTES } from './paths';
 import {
   AcceptInvitationRoute,
+  CaseReviewRoute,
   DoctorDashboardRoute,
   HomeRoute,
   LoginRoute,
@@ -71,6 +72,10 @@ export const routesConfig: IRoute[] = [
       {
         path: ROUTES.doctor.patientTab,
         element: <PatientProfileRoute />,
+      },
+      {
+        path: ROUTES.doctor.caseReview,
+        element: <CaseReviewRoute />,
       },
     ],
   },

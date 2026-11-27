@@ -8,4 +8,5 @@ export const PAGE_TITLES = {
   doctors: 'Doctors',
   patients: 'Patients',
   patientProfile: 'Patient profile',
+  caseReview: 'Review clinical data',
 } as const;
