@@ -2,6 +2,7 @@ import { Navigate, useLocation, useNavigate, useParams, useSearchParams } from '
 
 import { DEFAULT_PATIENT_PROFILE_TAB } from '@/constants/patientProfile.constants';
 import { useCurrentUser } from '@/shared/hooks/useCurrentUser';
+import { CaseReviewPage } from '@/pages/CaseReviewPage/CaseReviewPage';
 import { DoctorDashboardPage } from '@/pages/DoctorDashboardPage/DoctorDashboardPage';
 import { HomePage } from '@/pages/HomePage/HomePage';
 import { LoginPage } from '@/pages/LoginPage/LoginPage';
@@ -62,6 +63,20 @@ export function DoctorDashboardRoute() {
         event.preventDefault();
         navigate(patientProfilePath(patient.id));
       }}
+    />
+  );
+}
+
+export function CaseReviewRoute() {
+  const { patientId = '', caseId = '' } = useParams();
+  const navigate = useNavigate();
+
+  return (
+    <CaseReviewPage
+      key={`${patientId}/${caseId}`}
+      patientId={patientId}
+      caseId={caseId}
+      onBack={() => navigate(patientProfilePath(patientId, 'diagnostics'))}
     />
   );
 }

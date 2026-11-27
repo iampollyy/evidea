@@ -1,0 +1,24 @@
+.badge {
+  --badge-color: var(--ev-color-data-clinical);
+  --badge-surface: var(--ev-color-blue-030);
+  --badge-border: transparent;
+  --badge-height: 1.5rem;
+  --badge-px: 0.5625rem;
+  --badge-font-size: 0.6875rem;
+  --badge-line-height: 1.03125rem;
+
+  font-weight: 400;
+}
+
+.list {
+  margin: -1rem 0;
+  padding: 0;
+}
+
+.empty {
+  margin: 0;
+  color: var(--ev-color-text-diagnostic-subtle);
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  text-align: center;
+}

@@ -1,0 +1,109 @@
+.availability,
+.availabilityMissing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  color: var(--ev-color-status-active-text);
+  font-size: 0.6875rem;
+  line-height: 1.03125rem;
+}
+
+.availabilityIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.9375rem;
+  height: 0.9375rem;
+  border-radius: 50%;
+  background-color: var(--ev-color-status-active-surface);
+  font-size: 0.6875rem;
+}
+
+.availabilityMissing {
+  color: var(--ev-color-text-diagnostic-muted);
+
+  .availabilityIcon {
+    background-color: var(--ev-color-surface-subtle);
+  }
+}
+
+.brief,
+.briefClamped {
+  margin: 0;
+  color: var(--ev-color-text-diagnostic-secondary);
+  font-size: 0.8125rem;
+  line-height: 1.3125rem;
+  white-space: pre-line;
+}
+
+.briefClamped {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: 0.75rem 1.25rem;
+  margin: 1rem 0 0;
+  padding-top: 1rem;
+  border-top: 0.0625rem solid var(--ev-color-border-subtle);
+}
+
+.detail {
+  min-width: 0;
+}
+
+.detailLabel {
+  color: var(--ev-color-text-diagnostic-muted);
+  font-size: 0.6875rem;
+  line-height: 1.03125rem;
+}
+
+.detailValue {
+  margin: 0.125rem 0 0;
+  color: var(--ev-color-text-diagnostic-secondary);
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ev-color-data-clinical);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.125rem;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    border-radius: 0.125rem;
+    outline: 0.125rem solid var(--ev-color-action-focus);
+    outline-offset: 0.125rem;
+  }
+}
+
+.toggleIcon {
+  font-size: 0.875rem;
+}
+
+.empty {
+  margin: 0;
+  color: var(--ev-color-text-diagnostic-subtle);
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+  text-align: center;
+}
