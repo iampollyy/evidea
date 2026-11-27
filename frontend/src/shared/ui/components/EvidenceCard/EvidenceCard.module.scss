@@ -1,0 +1,98 @@
+.card {
+  --evidence-surface: var(--ev-color-blue-030);
+  --evidence-border: var(--ev-color-status-info-border);
+  --evidence-title: var(--ev-color-blue-590);
+  --evidence-badge-surface: var(--ev-color-blue-075);
+  --evidence-badge-text: var(--ev-color-blue-415);
+  --evidence-label: var(--ev-color-data-clinical);
+
+  box-sizing: border-box;
+  padding: 0.875rem;
+  border: 0.0625rem solid var(--evidence-border);
+  border-radius: 0.5rem;
+  background-color: var(--evidence-surface);
+  font-family: 'Source Sans 3', 'Inter', sans-serif;
+}
+
+.laboratory {
+  --evidence-surface: var(--ev-color-data-laboratory-surface);
+  --evidence-border: var(--ev-color-teal-220);
+  --evidence-title: var(--ev-color-teal-815);
+  --evidence-badge-surface: var(--ev-color-teal-110);
+  --evidence-badge-text: var(--ev-color-teal-705);
+  --evidence-label: var(--ev-color-data-laboratory);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.title {
+  margin: 0;
+  color: var(--evidence-title);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1rem;
+  letter-spacing: 0.01875rem;
+  text-transform: uppercase;
+}
+
+.model {
+  flex-shrink: 0;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999rem;
+  background-color: var(--evidence-badge-surface);
+  color: var(--evidence-badge-text);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.factors {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0.625rem 0 0;
+  list-style: none;
+}
+
+.factor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.label {
+  overflow: hidden;
+  color: var(--evidence-label);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contribution,
+.negative {
+  flex-shrink: 0;
+  color: var(--evidence-title);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1rem;
+}
+
+.negative {
+  color: var(--ev-color-data-negative-contribution);
+}
+
+.empty {
+  margin: 0;
+  padding-top: 0.625rem;
+  color: var(--evidence-label);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}

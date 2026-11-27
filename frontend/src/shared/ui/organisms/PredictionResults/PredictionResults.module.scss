@@ -1,0 +1,82 @@
+.results {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 23.75rem;
+  align-items: start;
+  gap: 1.5rem;
+  width: 100%;
+
+  @media (max-width: 64rem) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.fusion {
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 0.0625rem solid var(--ev-color-border-diagnostic);
+  border-radius: 0.75rem;
+  background-color: var(--ev-color-surface-default);
+  font-family: 'Source Sans 3', 'Inter', sans-serif;
+}
+
+.header {
+  padding: 1rem 1.25rem;
+  border-bottom: 0.0625rem solid var(--ev-color-neutral-040);
+}
+
+.title {
+  margin: 0;
+  color: var(--ev-color-text-diagnostic-heading);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+}
+
+.subtitle {
+  margin: 0.125rem 0 0;
+  color: var(--ev-color-text-diagnostic-subtle);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.connector {
+  display: block;
+  align-self: center;
+  margin: 0.75rem 0 0.75rem;
+}
+
+.fullExplanation {
+  align-self: stretch;
+  margin-top: 0.5rem;
+  padding: 0.4375rem 0.5rem;
+  border: none;
+  border-radius: 0.375rem;
+  background: none;
+  color: var(--ev-color-data-clinical);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: var(--ev-color-blue-030);
+  }
+
+  &:focus-visible {
+    outline: 0.125rem solid var(--ev-color-action-focus);
+    outline-offset: 0.0625rem;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}

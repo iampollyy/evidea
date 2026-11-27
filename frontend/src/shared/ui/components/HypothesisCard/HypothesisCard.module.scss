@@ -1,0 +1,151 @@
+.card {
+  --hypothesis-accent: var(--ev-color-blue-350);
+  --hypothesis-rank: var(--ev-color-neutral-160);
+  --hypothesis-name: var(--ev-color-text-diagnostic-body);
+  --hypothesis-score: var(--ev-color-text-diagnostic-secondary);
+
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.5rem;
+  background-color: var(--ev-color-surface-default);
+  font-family: 'Source Sans 3', 'Inter', sans-serif;
+}
+
+.primary {
+  --hypothesis-accent: var(--ev-color-data-score);
+  --hypothesis-rank: var(--ev-color-data-clinical);
+  --hypothesis-name: var(--ev-color-text-diagnostic-heading);
+  --hypothesis-score: var(--ev-color-data-clinical);
+
+  background-color: rgb(239 246 255 / 40%);
+}
+
+.secondary {
+  --hypothesis-accent: var(--ev-color-teal-690);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.rank {
+  color: var(--hypothesis-rank);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.75rem;
+}
+
+.name {
+  margin: 0;
+  color: var(--hypothesis-name);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+
+.code {
+  display: block;
+  padding: 0.25rem 0;
+  color: var(--ev-color-text-diagnostic-subtle);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  gap: 0.25rem;
+  text-align: right;
+}
+
+.scoreLabel {
+  color: var(--ev-color-text-diagnostic-subtle);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.scoreValue {
+  color: var(--hypothesis-score);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.75rem;
+}
+
+.scoreBar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding-top: 0.75rem;
+}
+
+.card .bar {
+  flex: 1;
+  height: 0.375rem;
+  border-radius: 999rem;
+  background-color: var(--ev-color-surface-subtle);
+
+  > * {
+    background-color: var(--hypothesis-accent);
+  }
+}
+
+.percent {
+  flex-shrink: 0;
+  min-width: 2rem;
+  color: var(--hypothesis-accent);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+}
+
+.card .explain {
+  --btn-py: 0.375rem;
+  --btn-px: 0.75rem;
+  --btn-shadow: none;
+
+  font-family: 'Source Sans 3', 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+}
+
+.primary .explain {
+  background-color: var(--ev-color-action-secondary);
+
+  &:hover:not(:disabled) {
+    background-color: var(--ev-color-data-score);
+  }
+}
+
+.card:not(.primary) .explain {
+  border-color: var(--ev-color-status-info-border);
+  color: var(--ev-color-data-clinical);
+
+  &:hover:not(:disabled) {
+    background-color: var(--ev-color-blue-030);
+  }
+}
